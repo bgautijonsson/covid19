@@ -1,0 +1,1 @@
+Hér eru skrár og kóði á bak við vefsíðuna bgautijonsson.shinyapps.io/COVID_Dashboard
