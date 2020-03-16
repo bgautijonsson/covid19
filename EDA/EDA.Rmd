@@ -1,0 +1,79 @@
+---
+title: "EDA"
+author: "Brynjólfur Gauti Jónsson"
+date: "3/16/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = F, fig.asp = 0.621, out.width = "100%", fig.width = 8)
+```
+
+
+
+```{r}
+library(tidyverse); library(cowplot); library(kableExtra); library(scales); library(gganimate)
+library(lubridate)
+theme_set(theme_classic(base_size = 12) + 
+              background_grid(color.major = "grey90", 
+                              color.minor = "grey95", 
+                              minor = "xy", major = "xy") +
+              theme(legend.position = "none"))
+```
+
+```{r}
+d <- read_csv("../Data/ECDC_Data.csv")
+```
+
+```{r}
+d %>% 
+    group_by(country) %>% 
+    filter(date == max(date)) %>% 
+    ggplot(aes(pop, case_rate, col = country == "Iceland")) +
+    geom_point() +
+    scale_x_log10() +
+    scale_y_log10() +
+    scale_colour_manual(values = c("grey", "blue")) +
+    geom_text(aes(x = 3e5, y = 0.87, label = "Ísland"), colour = "blue") +
+    labs(x = "Höfðatala", y = "Tíðni smita per 1000 íbúa",
+         title = "Lögmál smárra talna í hnotskurn",
+         subtitle = "Sterkt samband milli fólksfjölda og smitatíðni vegna þess að í fámennu landi mun eitt smit hækka tíðnina meira") +
+    theme(legend.position = "none") +
+    ggsave("tidni_vs_pop.png", width = 8, height = 0.621 * 8, scale = 2)
+```
+
+```{r}
+d %>% 
+    filter(date >= ymd("2020-02-27")) %>%
+    ggplot(aes(pop, case_rate, col = country == "Iceland", group = country)) +
+    geom_point() +
+    scale_x_log10() +
+    scale_y_log10() +
+    scale_colour_manual(values = c("grey", "blue")) +
+    labs(x = "Höfðatala", y = "Tíðni smita per 1000 íbúa",
+         title = "<i style='color:blue'>Ísland</i> byrjar með háa tíðni eingöngu vegna íbúafjöda",
+         subtitle = "Dagsetning: {closest_state}") +
+    theme(legend.position = "none",
+          plot.title = element_markdown())
+```
+
+
+
+```{r}
+p <- d %>% 
+    filter(date >= ymd("2020-02-27")) %>%
+    ggplot(aes(pop, case_rate, col = country == "Iceland", group = country)) +
+    geom_point() +
+    scale_x_log10() +
+    scale_y_log10() +
+    scale_colour_manual(values = c("grey", "blue")) +
+    labs(x = "Höfðatala", y = "Tíðni smita per 1000 íbúa",
+         title = "<i style='color:blue'><strong>Ísland</strong></i> byrjar með háa tíðni eingöngu vegna íbúafjölda",
+         subtitle = "Dagsetning: {closest_state}") +
+    theme(legend.position = "none",
+          plot.title = element_markdown()) +
+    transition_states(date,
+                      transition_length = 2,
+                      state_length = 1) +
+    shadow_wake(wake_length = 0.5)
+```
