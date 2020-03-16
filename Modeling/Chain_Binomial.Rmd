@@ -1,0 +1,90 @@
+---
+title: "The Chain-Binomial Model"
+author: "Brynjólfur Gauti Jónsson"
+date: "3/16/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
+```
+
+```{r}
+library(tidyverse); library(bbmle)
+```
+
+```{r}
+d <- read_csv("../Data/smit.csv") %>% 
+    filter(tegund == "Samtals") %>% 
+    select(-tegund) %>% 
+    mutate(ny_smit = c(0, diff(fjoldi))) 
+```
+
+```{r}
+llik.cb = function(S0, beta, I) { 
+    n = length(I)
+    
+    S = floor(S0 - cumsum(I[-n]))
+    p = 1 - exp(-beta * (I[-n])/S0)
+    L = -sum(dbinom(I[-1], S, p, log = TRUE)) 
+    return(L)
+}
+
+y <- d %>% filter(fjoldi > 0) %>% .$ny_smit
+
+S0cand= 300
+
+betacand=seq(0,20, by=.1) 
+
+ll=rep(NA, length(betacand))
+
+for(i in 1:length(betacand)){
+    ll[i]=llik.cb(S0=S0cand, beta=betacand[i], I=y)
+}
+
+
+
+betacand= betacand[which.min(ll)]
+S0cand=seq(300, 2000, length=101) 
+ll=rep(NA, length=101)
+for(i in 1:101){
+    ll[i]=llik.cb(S0=S0cand[i], beta=betacand, I=y) 
+}
+S0cand[which.min(ll)]
+```
+
+```{r}
+fit <- mle2(llik.cb, start = list(S0 = 300000, beta = 2),
+            method = "Nelder-Mead", data = list(I = y))
+summary(fit)
+confint(fit)
+```
+
+```{r}
+sim.cb <- function(S0, beta, I0) {
+    I <- I0
+    S <- S0
+    i <- 1
+    while (!any(I == 0)) {
+        i <- i + 1
+        I[i] <- rbinom(1, size = S[i - 1], 
+                       prob = 1 - exp(-beta * I[i - 1]/S0))
+        S[i] <- S[i - 1] - I[i]
+    }
+    
+    out <- tibble(S = S, I = I)
+    return(out)
+}
+
+
+plot(y, type="n", xlim=c(1,18), ylab="Predicted/observed", xlab="Week")
+for(i in 1:100){ 
+    sim = sim.cb(S0=3139, 
+                 beta=1.08, 
+                 I0=11) 
+    lines(sim$I, col=grey(.5))
+}
+points(y, type="b", col=2)
+
+```
+

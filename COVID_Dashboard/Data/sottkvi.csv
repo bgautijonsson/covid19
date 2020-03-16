@@ -8,6 +8,7 @@ dags,stadur,fjoldi,dagar
 2020-03-12,Austurland,2,6
 2020-03-13,Austurland,4,7
 2020-03-14,Austurland,2,8
+2020-03-15,Austurland,4,9
 2020-03-06,Höfuðborgarsvæði,289,0
 2020-03-07,Höfuðborgarsvæði,321,1
 2020-03-08,Höfuðborgarsvæði,410,2
@@ -17,6 +18,7 @@ dags,stadur,fjoldi,dagar
 2020-03-12,Höfuðborgarsvæði,797,6
 2020-03-13,Höfuðborgarsvæði,989,7
 2020-03-14,Höfuðborgarsvæði,873,8
+2020-03-15,Höfuðborgarsvæði,1164,9
 2020-03-06,Norðurland,15,0
 2020-03-07,Norðurland,15,1
 2020-03-08,Norðurland,18,2
@@ -26,6 +28,7 @@ dags,stadur,fjoldi,dagar
 2020-03-12,Norðurland,34,6
 2020-03-13,Norðurland,35,7
 2020-03-14,Norðurland,25,8
+2020-03-15,Norðurland,30,9
 2020-03-06,Samtals,320,0
 2020-03-07,Samtals,361,1
 2020-03-08,Samtals,461,2
@@ -35,6 +38,7 @@ dags,stadur,fjoldi,dagar
 2020-03-12,Samtals,896,6
 2020-03-13,Samtals,1094,7
 2020-03-14,Samtals,1023,8
+2020-03-15,Samtals,1653,9
 2020-03-06,Suðurland,2,0
 2020-03-07,Suðurland,8,1
 2020-03-08,Suðurland,14,2
@@ -44,6 +48,7 @@ dags,stadur,fjoldi,dagar
 2020-03-12,Suðurland,26,6
 2020-03-13,Suðurland,37,7
 2020-03-14,Suðurland,99,8
+2020-03-15,Suðurland,401,9
 2020-03-06,Suðurnes,8,0
 2020-03-07,Suðurnes,7,1
 2020-03-08,Suðurnes,11,2
@@ -53,6 +58,7 @@ dags,stadur,fjoldi,dagar
 2020-03-12,Suðurnes,21,6
 2020-03-13,Suðurnes,21,7
 2020-03-14,Suðurnes,17,8
+2020-03-15,Suðurnes,34,9
 2020-03-06,Vesturland,4,0
 2020-03-07,Vesturland,6,1
 2020-03-08,Vesturland,6,2
@@ -62,3 +68,4 @@ dags,stadur,fjoldi,dagar
 2020-03-12,Vesturland,16,6
 2020-03-13,Vesturland,8,7
 2020-03-14,Vesturland,7,8
+2020-03-15,Vesturland,20,9

@@ -1,0 +1,73 @@
+---
+title: "Modeling"
+author: "Brynjólfur Gauti Jónsson"
+date: "3/15/2020"
+output: 
+    html_document:
+        theme: flaty
+        code_folding: hide
+        toc: true
+        toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, 
+                      fig.width = 8, fig.asp = 0.621, out.width = "100%")
+```
+
+# Packages
+
+```{r}
+packages <- c("tidyverse", "knitr", "kableExtra", "broom", "cowplot", "rstan", "tidybayes", "scales", 
+              "lubridate", "rvest")
+sapply(packages, require, character.only = TRUE, quietly = TRUE)
+theme_set(theme_bw() + 
+              panel_border(colour = "grey30", size = 1) + 
+              background_grid(color.major = "grey90", 
+                              color.minor = "grey95", 
+                              minor = "xy", major = "xy"))
+rm(packages)
+options(mc.cores = parallel::detectCores())
+```
+
+```{r}
+url <- "https://is.wikipedia.org/wiki/%C3%8Dslensk_sveitarf%C3%A9l%C3%B6g_eftir_mannfj%C3%B6lda"
+read_xml(url) %>% 
+    html_table(header = F) %>% 
+    .[[1]] %>% 
+    janitor::clean_names() %>% 
+    select(x4, x5) %>% 
+    slice(-1) %>% 
+    filter(x4 == "Höfuðborgarsvæðið")  %>% 
+    mutate(x5 = str_replace(x5, "\\.", ",") %>% parse_number) %>% 
+    summarise(fjoldi = sum(x5))
+
+```
+
+
+```{r}
+d <- read_csv("../Data/total.csv") %>% 
+    mutate(ny_smit = c(0, diff(smit)),
+           gomul_smit = lag(smit),
+           hlutf_sykt = smit / syni) %>% 
+    filter(dags >= ymd("2020-03-06")) %>% 
+    select(dags, syni, hlutf_sykt, gamlar_greiningar = gomul_smit, nyjar_greiningar = ny_smit)
+d
+```
+
+```{r}
+N_obs <- nrow(d)
+mannfjoldi <- 222484
+syni <- d$syni
+hlutf_sykt <- d$hlutf_sykt
+gamlar <- d$gamlar_greiningar
+nyjar <- d$nyjar_greiningar
+stan_data <- list(N_obs = N_obs, mannfjoldi = mannfjoldi,
+                  syni = syni, hlutf_sykt = hlutf_sykt, gamlar = gamlar, nyjar = nyjar)
+```
+
+```{r}
+m <- sampling(stan_model("True_Cases.stan"), 
+              data  = stan_data, chains = 4, iter = 1000, warmup = 500)
+```
+

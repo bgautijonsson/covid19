@@ -1,0 +1,90 @@
+---
+title: "Modeling"
+author: "Brynjólfur Gauti Jónsson"
+date: "3/15/2020"
+output: 
+    html_document:
+        theme: flaty
+        code_folding: hide
+        toc: true
+        toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, 
+                      fig.width = 8, fig.asp = 0.621, out.width = "100%")
+```
+
+# Packages
+
+```{r}
+packages <- c("tidyverse", "knitr", "kableExtra", "broom", "cowplot", "rstan", "tidybayes", "scales", "ggridges")
+sapply(packages, require, character.only = TRUE, quietly = TRUE)
+theme_set(theme_bw() + 
+            panel_border(colour = "grey30", size = 1) + 
+            background_grid(color.major = "grey90", 
+                            color.minor = "grey95", 
+                            minor = "xy", major = "xy"))
+rm(packages)
+options(mc.cores = parallel::detectCores())
+```
+
+
+```{r}
+d <- read_csv("../Data/euro_smit.csv") %>% 
+    filter(date >= ymd("2020-03-02")) %>%
+    select(country, pop, days, cases = cum_cases, rate) %>% 
+    group_by(country) %>% 
+    mutate(days = row_number() - 1) %>% 
+    ungroup %>% 
+    mutate(country_id = as.numeric(as.factor(country)))
+d
+```
+
+```{r}
+d %>% 
+    ggplot(aes(days, rate, group = country)) +
+    geom_line() +
+    scale_y_log10()
+```
+
+
+```{r}
+N_obs <- nrow(d)
+N_countries <- max(d$country_id)
+days <- d$days
+cases <- d$cases %>% as.integer
+country <- d$country_id %>% as.integer
+pop <- d %>% distinct(country_id, pop) %>% .$pop / 1000
+stan_data <- list(N_obs = N_obs, N_countries = N_countries, days = days, cases = cases, country = country, pop = pop)
+str(stan_data)
+```
+
+$$
+\mathrm{Smit_t} = \mathrm{Syni_t}
+$$
+
+
+
+```{r}
+m <- sampling(stan_model("Euro_Model.stan"), 
+                data  = stan_data, chains = 4, iter = 1000, warmup = 500)
+```
+
+```{r}
+tidyMCMC(m, pars = c("alpha", "beta"), conf.int = T, ess = T, rhat = T) %>% 
+    mutate(par = str_extract(term, "^alpha|beta")) %>%
+    filter(par == "beta") %>% 
+    group_by(par) %>% 
+    mutate(country_id = row_number()) %>% 
+    inner_join(
+        d %>% distinct(country, country_id)
+    ) %>% 
+    select(country, par, estimate, conf.low, conf.high) %>% 
+    mutate(country = fct_reorder(country, beta)) %>% 
+    ggplot(aes(country, estimate, ymin = conf.low, ymax = conf.high)) +
+    geom_linerange() +
+    geom_point() +
+    coord_flip()
+```
+
