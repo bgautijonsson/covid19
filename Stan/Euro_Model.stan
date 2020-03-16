@@ -5,11 +5,6 @@ data {
   vector[N_obs] days;
   int country[N_obs];
   vector[N_countries] pop;
-  
-  
-  int<lower = 0> N_preds;
-  vector[N_preds] pred_days;
-  int pred_country[N_preds];
 }
 
 parameters {
@@ -32,14 +27,4 @@ model {
   rate = alpha[country] + beta[country] .* days;
   
   cases ~ neg_binomial_2(exp(rate) .* pop[country], phi);
-}
-
-
-generated quantities {
-  int pred_cases[N_preds];
-  vector[N_preds] pred_rate;
-  
-  pred_rate = alpha[pred_country] + beta[pred_country] .* pred_days;
-  
-  pred_cases = neg_binomial_2_rng(exp(pred_rate) .* pop[pred_country], phi);
 }
