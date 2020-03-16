@@ -1,0 +1,1 @@
+Kóðinn á bak við vefsíðuna er í app.R. Ég hef ekki komið mér í að commenta hann ítarlega, en ef þið hafið áhuga endilega hafið samband.
