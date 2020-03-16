@@ -1,12 +1,13 @@
 ---
 title: "Slembiþáttalíkan fyrir NegBinomial dreifð tilfelli"
-subtitle: "Metið fyrir öll lönd heims"
 author: "Brynjólfur Gauti Jónsson"
-date: "3/15/2020"
-output: 
-    html_document:
-        theme: flatly
-        code_folding: hide
+date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  html_document:
+    code_folding: hide
+    theme: flatly
+subtitle: Metið fyrir öll lönd heims
 ---
 
 ```{r setup, include=FALSE}
