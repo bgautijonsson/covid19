@@ -1,4 +1,4 @@
-Hér eru skrár og kóði á bak við vefsíðuna [bgautijonsson.shinyapps.io/COVID_Dashboard](https://www.bgautijonsson.shinyapps.io/COVID_Dashboard) og annar kóði sem ég hef verið að fikta við.
+Hér eru skrár og kóði á bak við vefsíðuna [bgautijonsson.shinyapps.io/COVID_Dashboard](https://bgautijonsson.shinyapps.io/COVID_Dashboard/) og annar kóði sem ég hef verið að fikta við.
 
 # Gögn
 
