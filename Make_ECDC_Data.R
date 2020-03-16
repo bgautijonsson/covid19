@@ -23,14 +23,9 @@ if (url.exists(url)) {
 out <- read_xls(temp) %>% 
     select(date = DateRep, country = CountryExp, cases = NewConfCases, deaths = NewDeaths) %>% 
     inner_join(
-        read_csv("Data/thyding.csv"),
+        read_csv("Data/world_pops.csv"),
         by = "country"
     ) %>% 
-    inner_join(
-        read_csv("Data/euro_pops.csv"),
-        by = "country"
-    ) %>% 
-    select(-country, -X1, country = land) %>% 
     mutate(date = as.Date(date)) %>% 
     arrange(country, date) %>% 
     group_by(country) %>% 
@@ -41,7 +36,7 @@ out <- read_xls(temp) %>%
     filter(cum_cases > 1) %>% 
     mutate(days = as.numeric(date - min(date))) %>% 
     ungroup %>% 
-    select(country, pop, date, days, contains("case"), contains("death"))
+    select(country, continent, region, pop, date, days, contains("case"), contains("death"))
 
 out %>% 
     write_csv("Data/ECDC_Data.csv")
