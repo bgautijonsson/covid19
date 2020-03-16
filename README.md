@@ -4,7 +4,7 @@ Hér eru skrár og kóði á bak við vefsíðuna bgautijonsson.shinyapps.io/COV
 
 Ég vinn með tvenns konar gögn:
 
-* Heimsgögn frá ECDC (European CDC). Þau sæki ég með Make_ECDC_Data.R skránni, sem leitar á vefsíðunni hvort komið hafa ný gögn í dag og ef ekki sækir hún gögn gærdagsins.
+* Heimsgögn frá ECDC (European CDC). Þau sæki ég með Make_ECDC_Data.R skránni, sem leitar á vefsíðunni hvort komið hafa ný gögn í dag og ef ekki sækir hún gögn gærdagsins. Ég nota þessi gögn því ég hef fundið skrýtnar villur í *JHU* gögnunum, eins og t.d. 5 dauðsföll á Íslandi 16. mars.
 
 * Íslandsgögn frá Landlækni og Almannavörnum, sem ég hef sjálfur sótt og geymi í google drive í slóð: https://docs.google.com/spreadsheets/d/1xgDhtejTtcyy6EN5dbDp5W3TeJhKFRRgm6Xk0s0YFeA sæki svo gögnin með googlesheets4 pakkanum og skrifa út þær skrár sem ég tel mig munu vilja nota.
 
