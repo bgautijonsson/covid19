@@ -56,11 +56,12 @@ if (!file.exists("preds.csv")) {
 ```{r}
 preds  %>% 
   mutate(dags = min(d$dags) + dagar) %>% 
-  ggplot(aes(dagar, pred)) +
+  ggplot(aes(dags, pred)) +
   geom_line() +
   geom_line(aes(y = upper), lty = 2) +
   labs(title = "Forspáð þróun og 95% PI") +
-  theme(axis.title = element_blank())
+  theme(axis.title = element_blank()) +
+  ggsave("Myndir/Heild/syktir.png", width = 8, height = 0.621 * 8, scale = 2)
 ```
 
 # Herma
@@ -72,10 +73,16 @@ Gagnataflan að neðan er sett saman með
 `p_spitali` og `p_alvarlegt`: [tafla 1 héðan]
 
 ```{r}
-aldur <- tibble(aldur = c("0 - 9", "10 - 19", "20 - 29",
-                          "30 - 39", "40 - 49", "50 - 59", "60 - 69", 
-                          "70 - 79", "80+"),
-                tilfelli = c(2, 11, 27, 23, 54, 43, 35, 3, 0) + 1) %>% 
+aldur <- tibble(aldur = c("[0 - 9]",
+                          "[10 - 19]", 
+                          "[20 - 29]",
+                          "[30 - 39]",
+                          "[40 - 49]",
+                          "[50 - 59]", 
+                          "[60 - 69]", 
+                          "[70 - 79]",
+                          "80+"),
+                tilfelli = c(2, 12, 28, 34, 61, 45, 38, 5, 0) + 1) %>% 
   mutate(p_tilfelli = tilfelli / sum(tilfelli),
          p_spitali = c(0.001, 0.003, 0.012, 0.032, 0.049, 0.102, 0.166, 0.243, 0.273),
          p_alvarlegt = c(0.05, 0.05, 0.05, 0.05, 0.063, 0.122, 0.274, 0.432, 0.709))
@@ -95,26 +102,35 @@ Skref í hermun:
 
 
 ```{r}
-make_pred <- function(cases, n = 1000, q = 0.95) {
-  cases <- rmultinom(n = n, size = cases, prob = aldur$p_tilfelli)
+make_pred <- function(estimate, upper, n = 1000, q = 0.95) {
+  cases_est <- rmultinom(n = n, size = estimate, prob = aldur$p_tilfelli)
+  cases_upper <- rmultinom(n = n, size = upper, prob = aldur$p_tilfelli)
   
-  hospital <- matrix(0, nrow = nrow(cases), ncol = ncol(cases))
-  serious <- matrix(0, nrow = nrow(cases), ncol = ncol(cases))
+  rows <- nrow(cases_est)
+  cols <- ncol(cases_est)
   
-  for (i in seq_len(ncol(cases))) {
-    hospital[, i] <- rbinom(nrow(cases), size = cases[, i], prob = aldur$p_spitali)
-    serious[, i] <- rbinom(nrow(hospital), size = hospital[, i], prob = aldur$p_alvarlegt)
+  hospital_est <- matrix(0, nrow = rows, ncol = cols)
+  hospital_upper <- matrix(0, nrow = rows, ncol = cols)
+  serious_est <- matrix(0, nrow = rows, ncol = cols)
+  serious_upper <- matrix(0, nrow = rows, ncol = cols)
+  
+  for (i in seq_len(cols)) {
+    hospital_est[, i] <- rbinom(rows, size = cases_est[, i], prob = aldur$p_spitali)
+    serious_est[, i] <- rbinom(rows, size = hospital_est[, i], prob = aldur$p_alvarlegt)
+    
+    hospital_upper[, i] <- rbinom(rows, size = cases_upper[, i], prob = aldur$p_spitali)
+    serious_upper[, i] <- rbinom(rows, size = hospital_upper[, i], prob = aldur$p_alvarlegt)
   }
   
   
-  median_cases <- apply(cases, 1, median)
-  upper_cases <- apply(cases, 1, quantile, probs = q)
+  median_cases <- apply(cases_est, 1, median)
+  upper_cases <- apply(cases_upper, 1, quantile, probs = q)
   
-  median_hospital <- apply(hospital, 1, median)
-  upper_hospital <- apply(hospital, 1, quantile, prob = q)
+  median_hospital <- apply(hospital_est, 1, median)
+  upper_hospital <- apply(hospital_upper, 1, quantile, prob = q)
   
-  median_serious <- apply(serious, 1, median)
-  upper_serious <- apply(serious, 1, quantile, prob = q)
+  median_serious <- apply(serious_est, 1, median)
+  upper_serious <- apply(serious_upper, 1, quantile, prob = q)
   
   tibble(aldur = aldur$aldur,
          median_cases = median_cases,
@@ -125,11 +141,13 @@ make_pred <- function(cases, n = 1000, q = 0.95) {
          upper_serious = upper_serious) %>% 
     list
 }
+```
 
+```{r}
 if (!file.exists("simulations.csv")) {
   simulations <- preds %>% 
     rowwise %>% 
-    mutate(simulation = make_pred(upper, n = 4000)) %>% 
+    mutate(simulation = make_pred(pred, upper, n = 10000)) %>% 
     unnest(simulation) %>% 
     mutate(dags = dagar + min(d$dags)) %>% 
     pivot_longer(c(starts_with("median_"), starts_with("upper_"))) %>% 
@@ -142,6 +160,7 @@ if (!file.exists("simulations.csv")) {
   simulations <- read_csv("simulations.csv")
 }
 ```
+
 
 # Aldursskipting
 
@@ -157,7 +176,7 @@ simulations %>%
        subtitle = "Reiknað út frá 97.5% PI á fjölda og hermt með fjölkostadreifingu",
        y = "Tilfelli") +
   theme(axis.title = element_blank())  +
-  ggsave("tilvik_aldursskipting_simulations.png", width = 8, height = 8, scale = 2)
+  ggsave("Myndir/Eftir aldri/syktir.png", width = 8, height = 8, scale = 2)
 ```
 
 # Sjúkrahúslegur
@@ -175,7 +194,7 @@ simulations %>%
   labs(title = "Forspáðar sjúkrahúslegur eftir aldri",
        subtitle = "Reiknað út frá 97.5% PI á fjölda og hermt með fjölkostadreifingu") +
   theme(axis.title = element_blank())  +
-  ggsave("sjukrahus_aldursskipt_simulations.png", width = 8, height = 8, scale = 2)
+  ggsave("Myndir/Eftir aldri/sjukrahus_innlagnir.png", width = 8, height = 8, scale = 2)
 ```
 
 
@@ -197,7 +216,7 @@ simulations %>%
        subtitle = "Reiknað út frá 97.5% PI á fjölda og hermt með fjölkostadreifingu",
        y = "Tilfelli") +
   theme(axis.title = element_blank())  +
-  ggsave("sjukrahus_heild_simulations.png", width = 8, height = 8, scale = 2)
+  ggsave("Myndir/Heild/sjukrahus_innlagnir.png", width = 8, height = 8, scale = 2)
 ```
 
 
@@ -215,7 +234,7 @@ simulations %>%
        subtitle = "Reiknað út frá 97.5% PI á fjölda og hermt með fjölkostadreifingu",
        y = "Tilfelli") +
   theme(axis.title = element_blank())  +
-  ggsave("sjukrahus_alvarlegt_aldur_simulations.png", width = 8, height = 8, scale = 2)
+  ggsave("Myndir/Eftir aldri/sjukrahus_alvarleg_tilfelli.png", width = 8, height = 8, scale = 2)
 ```
 
 
@@ -235,6 +254,6 @@ simulations %>%
        subtitle = "Reiknað út frá 97.5% PI á fjölda og hermt með fjölkostadreifingu",
        y = "Tilfelli") +
   theme(axis.title = element_blank())  +
-  ggsave("sjukrahus_alvarlegt_heild_simulations.png", width = 8, height = 8, scale = 2)
+  ggsave("Myndir/Heild/sjukrahus_alvarleg_tilfelli.png", width = 8, height = 8, scale = 2)
 ```
 
