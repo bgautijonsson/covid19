@@ -1,0 +1,89 @@
+---
+title: "Herma framtíðar aldursgögn"
+author: "Brynjólfur Gauti Jónsson"
+date: "3/17/2020"
+output: 
+  html_document:
+    theme: flatly
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = F, fig.asp = 0.621, out.width = "100%", fig.width = 8)
+```
+
+
+
+```{r}
+library(tidyverse); library(cowplot); library(kableExtra); library(scales); library(gganimate)
+library(lubridate); library(emmeans); library(broom); library(propagate)
+theme_set(theme_classic(base_size = 12) + 
+            background_grid(color.major = "grey90", 
+                            color.minor = "grey95", 
+                            minor = "xy", major = "xy") +
+            theme(legend.position = "none"))
+```
+
+```{r}
+d <- read_csv("../../Data/smit.csv") %>% 
+  filter(tegund == "Samtals",
+         fjoldi > 0)
+```
+
+
+```{r}
+ice.g <- nls(fjoldi ~ SSlogis(dagar, phi1, phi2, phi3), data = d)
+```
+
+```{r}
+if (!file.exists("preds.csv")) {
+  preds_obj <- predictNLS(ice.g, newdata = tibble(dagar = seq(0, 50)), interval = "prediction")
+  
+  preds <- preds_obj$summary %>% 
+    as_tibble %>%
+    select(pred = "Sim.Mean", upper = "Sim.97.5%") %>% 
+    mutate(dagar = row_number() - 1)
+  write_csv(preds, "preds.csv")
+  
+} else {
+  preds <- read_csv("preds.csv")
+}
+```
+
+
+```{r}
+aldur <- tibble(aldur = c("0 - 9", "10 - 19", "20 - 29",
+                          "30 - 39", "40 - 49", "50 - 59", "60 - 69", 
+                          "70 - 79", "80+"),
+                tilfelli = c(2, 11, 27, 23, 54, 43, 35, 3, 0) + 1) %>% 
+  mutate(hlutf = tilfelli / sum(tilfelli))
+```
+
+
+```{r, fig.asp = 1}
+make_pred <- function(cases, n = 100, q = 0.95) {
+  sims <- rmultinom(n = n, size = cases, prob = aldur$hlutf)
+  
+  est <- apply(sims, 1, median)
+  upper <- apply(sims, 1, quantile, probs = q)
+  
+  tibble(aldur = aldur$aldur,
+         median_tilfelli = est,
+         upper_tilfelli = upper) %>% 
+    list
+}
+simulations <- preds %>% 
+  rowwise %>% 
+  mutate(simulation = make_pred(upper, n = 30000)) %>% 
+  unnest(simulation)
+
+simulations %>% 
+  ggplot(aes(dagar, median_tilfelli)) +
+  geom_line() +
+  geom_line(aes(y = upper_tilfelli), lty = 2) +
+  facet_wrap("aldur", scales = "free") +
+  labs(title = "Forspáð tilfelli eftir aldri",
+       subtitle = "Reiknað út frá núverandi aldursdreifingu smita",
+       y = "Tilfelli") +
+  ggsave("aldur_simulations.png", width = 8, height = 8, scale = 2)
+```
