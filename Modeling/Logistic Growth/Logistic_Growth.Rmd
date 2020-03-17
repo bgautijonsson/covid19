@@ -2,10 +2,11 @@
 title: "Herma framtíðar aldursgögn"
 author: "Brynjólfur Gauti Jónsson"
 date: "3/17/2020"
-output: 
+output:
   html_document:
-    theme: flatly
     code_folding: hide
+    theme: flatly
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -25,7 +26,7 @@ theme_set(theme_classic(base_size = 12) +
 ```
 
 ```{r}
-d <- read_csv("../../Data/smit.csv") %>% 
+d <- read_csv("smit.csv") %>% 
   filter(tegund == "Samtals",
          fjoldi > 0)
 ```
@@ -59,6 +60,13 @@ aldur <- tibble(aldur = c("0 - 9", "10 - 19", "20 - 29",
   mutate(hlutf = tilfelli / sum(tilfelli))
 ```
 
+Skref í hermun:
+
+1) Met logistic growth líkan
+2) Fæ forspá úr því, mean og 97.5% predictive interval
+3) Nota fyrirliggjandi aldursdreifingu smita og forspár til að herma framtíðartilfelli með multinomial (bætti einu tilviki við alla aldurshópa til að fá ekki 0 í 80+)
+3) Sækja valið quantile úr forspáðum multinomial gildum
+
 
 ```{r, fig.asp = 1}
 make_pred <- function(cases, n = 100, q = 0.95) {
@@ -74,16 +82,18 @@ make_pred <- function(cases, n = 100, q = 0.95) {
 }
 simulations <- preds %>% 
   rowwise %>% 
-  mutate(simulation = make_pred(upper, n = 30000)) %>% 
+  mutate(simulation = make_pred(upper, n = 100000)) %>% 
   unnest(simulation)
 
 simulations %>% 
-  ggplot(aes(dagar, median_tilfelli)) +
+  mutate(dags = dagar + min(d$dags)) %>% 
+  ggplot(aes(dags, median_tilfelli)) +
   geom_line() +
   geom_line(aes(y = upper_tilfelli), lty = 2) +
   facet_wrap("aldur", scales = "free") +
   labs(title = "Forspáð tilfelli eftir aldri",
-       subtitle = "Reiknað út frá núverandi aldursdreifingu smita",
+       subtitle = "Reiknað út frá 97.5% PI á fjölad og hermt með fjölkostadreifingu",
        y = "Tilfelli") +
+  theme(axis.title = element_blank()) +
   ggsave("aldur_simulations.png", width = 8, height = 8, scale = 2)
 ```
