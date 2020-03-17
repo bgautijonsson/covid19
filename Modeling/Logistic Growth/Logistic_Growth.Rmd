@@ -92,7 +92,7 @@ simulations %>%
   geom_line(aes(y = upper_tilfelli), lty = 2) +
   facet_wrap("aldur", scales = "free") +
   labs(title = "Forspáð tilfelli eftir aldri",
-       subtitle = "Reiknað út frá 97.5% PI á fjölad og hermt með fjölkostadreifingu",
+       subtitle = "Reiknað út frá 97.5% PI á fjölda og hermt með fjölkostadreifingu",
        y = "Tilfelli") +
   theme(axis.title = element_blank()) +
   ggsave("aldur_simulations.png", width = 8, height = 8, scale = 2)
