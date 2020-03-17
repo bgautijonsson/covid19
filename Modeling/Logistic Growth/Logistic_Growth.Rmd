@@ -65,6 +65,12 @@ preds  %>%
 
 # Herma
 
+Gagnataflan að neðan er sett saman með
+
+`p_tilfelli`: aldursdreifing smita skv [covid.is](covid.is). Bæti við einu tilfelli í alla aldurshópa til að leyfa smit í 80+
+
+`p_spitali` og `p_alvarlegt`: [tafla 1 héðan]
+
 ```{r}
 aldur <- tibble(aldur = c("0 - 9", "10 - 19", "20 - 29",
                           "30 - 39", "40 - 49", "50 - 59", "60 - 69", 
@@ -73,25 +79,29 @@ aldur <- tibble(aldur = c("0 - 9", "10 - 19", "20 - 29",
   mutate(p_tilfelli = tilfelli / sum(tilfelli),
          p_spitali = c(0.001, 0.003, 0.012, 0.032, 0.049, 0.102, 0.166, 0.243, 0.273),
          p_alvarlegt = c(0.05, 0.05, 0.05, 0.05, 0.063, 0.122, 0.274, 0.432, 0.709))
+aldur %>% 
+  kable %>% 
+  kable_styling()
 ```
 
 
 Skref í hermun:
 
-1) Met logistic growth líkan
-2) Fæ forspá úr því, mean og 97.5% predictive interval
-3) Nota fyrirliggjandi aldursdreifingu smita og forspár til að herma framtíðartilfelli með multinomial (bætti einu tilviki við alla aldurshópa til að fá ekki 0 í 80+)
-3) Sækja valið quantile úr forspáðum multinomial gildum
+1) Met logistic growth líkan og fæ forspá úr því, mean og 97.5% predictive upper limit
+2) Nota fyrirliggjandi aldursdreifingu smita og forspár til að herma framtíðartilfelli með multinomial (bætti einu tilviki við alla aldurshópa til að fá ekki 0 í 80+)
+3) Nota [table 1 héðan](https://www.imperial.ac.uk/media/imperial-college/medicine/sph/ide/gida-fellowships/Imperial-College-COVID19-NPI-modelling-16-03-2020.pdf?fbclid=IwAR2jkFkpT583W2vFnbYNzHE539Gj6dzKvAVVfT0Tkyg8TEilNuUkW7V0yzk) til að herma sjúkahúslegur út frá skiptingu tilfella
+4) Nota sömu töflu til að spá fyrir um bráð tilfelli meðal ofangreinda sjúkrahúsinnlagna
+5) Sæki miðgildi og valið quantile úr öllum ofangreindum hermunum og skila í gagnatöflu.
 
 
 ```{r}
-make_pred <- function(cases, n = 100, q = 0.95) {
+make_pred <- function(cases, n = 1000, q = 0.95) {
   cases <- rmultinom(n = n, size = cases, prob = aldur$p_tilfelli)
   
-  hospital <- matrix(0, nrow = nrow(sims), ncol = ncol(sims))
-  serious <- matrix(0, nrow = nrow(sims), ncol = ncol(sims))
+  hospital <- matrix(0, nrow = nrow(cases), ncol = ncol(cases))
+  serious <- matrix(0, nrow = nrow(cases), ncol = ncol(cases))
   
-  for (i in seq_len(ncol(sims))) {
+  for (i in seq_len(ncol(cases))) {
     hospital[, i] <- rbinom(nrow(cases), size = cases[, i], prob = aldur$p_spitali)
     serious[, i] <- rbinom(nrow(hospital), size = hospital[, i], prob = aldur$p_alvarlegt)
   }
@@ -119,7 +129,7 @@ make_pred <- function(cases, n = 100, q = 0.95) {
 if (!file.exists("simulations.csv")) {
   simulations <- preds %>% 
     rowwise %>% 
-    mutate(simulation = make_pred(upper, n = 100000)) %>% 
+    mutate(simulation = make_pred(upper, n = 4000)) %>% 
     unnest(simulation) %>% 
     mutate(dags = dagar + min(d$dags)) %>% 
     pivot_longer(c(starts_with("median_"), starts_with("upper_"))) %>% 
