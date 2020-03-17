@@ -63,7 +63,7 @@ preds  %>%
   theme(axis.title = element_blank())
 ```
 
-# Herma aldursskiptingu
+# Herma
 
 ```{r}
 aldur <- tibble(aldur = c("0 - 9", "10 - 19", "20 - 29",
@@ -86,14 +86,33 @@ Skref í hermun:
 
 ```{r}
 make_pred <- function(cases, n = 100, q = 0.95) {
-  sims <- rmultinom(n = n, size = cases, prob = aldur$p_tilfelli)
+  cases <- rmultinom(n = n, size = cases, prob = aldur$p_tilfelli)
   
-  est <- apply(sims, 1, median)
-  upper <- apply(sims, 1, quantile, probs = q)
+  hospital <- matrix(0, nrow = nrow(sims), ncol = ncol(sims))
+  serious <- matrix(0, nrow = nrow(sims), ncol = ncol(sims))
+  
+  for (i in seq_len(ncol(sims))) {
+    hospital[, i] <- rbinom(nrow(cases), size = cases[, i], prob = aldur$p_spitali)
+    serious[, i] <- rbinom(nrow(hospital), size = hospital[, i], prob = aldur$p_alvarlegt)
+  }
+  
+  
+  median_cases <- apply(cases, 1, median)
+  upper_cases <- apply(cases, 1, quantile, probs = q)
+  
+  median_hospital <- apply(hospital, 1, median)
+  upper_hospital <- apply(hospital, 1, quantile, prob = q)
+  
+  median_serious <- apply(serious, 1, median)
+  upper_serious <- apply(serious, 1, quantile, prob = q)
   
   tibble(aldur = aldur$aldur,
-         median_tilfelli = est,
-         upper_tilfelli = upper) %>% 
+         median_cases = median_cases,
+         upper_cases = upper_cases,
+         median_hospital = median_hospital,
+         upper_hospital = upper_hospital,
+         median_serious = median_serious,
+         upper_serious = upper_serious) %>% 
     list
 }
 
@@ -101,7 +120,12 @@ if (!file.exists("simulations.csv")) {
   simulations <- preds %>% 
     rowwise %>% 
     mutate(simulation = make_pred(upper, n = 100000)) %>% 
-    unnest(simulation)
+    unnest(simulation) %>% 
+    mutate(dags = dagar + min(d$dags)) %>% 
+    pivot_longer(c(starts_with("median_"), starts_with("upper_"))) %>% 
+    separate(name, into = c("type", "variable"), sep = "_") %>% 
+    select(dags, aldur, variable, type, value) %>% 
+    pivot_wider(names_from = "type", values_from = "value")
   
   write_csv(simulations, "simulations.csv")
 } else {
@@ -109,22 +133,98 @@ if (!file.exists("simulations.csv")) {
 }
 ```
 
-
-
+# Aldursskipting
 
 ```{r, fig.asp = 1}
 simulations %>% 
-  mutate(dags = dagar + min(d$dags)) %>% 
-  ggplot(aes(dags, median_tilfelli)) +
+  filter(variable == "cases") %>% 
+  ggplot(aes(dags, median)) +
   geom_line() +
-  geom_line(aes(y = upper_tilfelli), lty = 2) +
+  geom_line(aes(y = upper), lty = 2) +
   facet_wrap("aldur", scales = "free") +
   scale_y_continuous(breaks = pretty_breaks(5)) +
   labs(title = "Forspáð tilfelli eftir aldri",
        subtitle = "Reiknað út frá 97.5% PI á fjölda og hermt með fjölkostadreifingu",
        y = "Tilfelli") +
   theme(axis.title = element_blank())  +
-  ggsave("aldur_simulations.png", width = 8, height = 8, scale = 2)
+  ggsave("tilvik_aldursskipting_simulations.png", width = 8, height = 8, scale = 2)
 ```
 
-# Herma sjúkrahúslegur
+# Sjúkrahúslegur
+
+## Aldursskipt
+
+```{r, fig.asp = 1}
+simulations %>% 
+  filter(variable == "hospital") %>% 
+  ggplot(aes(dags, median)) +
+  geom_line() +
+  geom_line(aes(y = upper), lty = 2) +
+  facet_wrap("aldur", scales = "free") +
+  scale_y_continuous(breaks = pretty_breaks(5)) +
+  labs(title = "Forspáðar sjúkrahúslegur eftir aldri",
+       subtitle = "Reiknað út frá 97.5% PI á fjölda og hermt með fjölkostadreifingu") +
+  theme(axis.title = element_blank())  +
+  ggsave("sjukrahus_aldursskipt_simulations.png", width = 8, height = 8, scale = 2)
+```
+
+
+## Samtals
+
+```{r, fig.asp = 0.621}
+simulations %>% 
+  filter(variable == "hospital") %>% 
+  group_by(dags) %>% 
+  summarise(median = sum(median),
+            upper = sum(upper)) %>% 
+  ggplot(aes(dags, median)) +
+  geom_smooth() +
+  geom_line() +
+  geom_smooth(aes(y = upper), lty = 2) +
+  geom_line(aes(y = upper), lty = 2) +
+  scale_y_continuous(breaks = pretty_breaks(5)) +
+  labs(title = "Forspáðar sjúkrahúslegur í heildina",
+       subtitle = "Reiknað út frá 97.5% PI á fjölda og hermt með fjölkostadreifingu",
+       y = "Tilfelli") +
+  theme(axis.title = element_blank())  +
+  ggsave("sjukrahus_heild_simulations.png", width = 8, height = 8, scale = 2)
+```
+
+
+# Alvarleg tilfelli á sjúkrahúsi
+
+```{r, fig.asp = 1}
+simulations %>% 
+  filter(variable == "serious") %>% 
+  ggplot(aes(dags, median)) +
+  geom_line() +
+  geom_line(aes(y = upper), lty = 2) +
+  facet_wrap("aldur", scales = "free") +
+  scale_y_continuous(breaks = pretty_breaks(5)) +
+  labs(title = "Forspáð alvarleg tilfelli á sjúkrahúsi eftir aldri",
+       subtitle = "Reiknað út frá 97.5% PI á fjölda og hermt með fjölkostadreifingu",
+       y = "Tilfelli") +
+  theme(axis.title = element_blank())  +
+  ggsave("sjukrahus_alvarlegt_aldur_simulations.png", width = 8, height = 8, scale = 2)
+```
+
+
+```{r, fig.asp = 0.621}
+simulations %>% 
+  filter(variable == "serious") %>% 
+  group_by(dags) %>% 
+  summarise(median = sum(median),
+            upper = sum(upper)) %>% 
+  ggplot(aes(dags, median)) +
+  geom_smooth() +
+  geom_line() +
+  geom_smooth(aes(y = upper), lty = 2) +
+  geom_line(aes(y = upper), lty = 2) +
+  scale_y_continuous(breaks = pretty_breaks(5)) +
+  labs(title = "Forspáð alvarleg tilfelli á sjúkrahúsi í heildina",
+       subtitle = "Reiknað út frá 97.5% PI á fjölda og hermt með fjölkostadreifingu",
+       y = "Tilfelli") +
+  theme(axis.title = element_blank())  +
+  ggsave("sjukrahus_alvarlegt_heild_simulations.png", width = 8, height = 8, scale = 2)
+```
+
