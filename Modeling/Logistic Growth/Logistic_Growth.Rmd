@@ -56,20 +56,6 @@ make_hist_preds <- function(index) {
 map_df(seq(10, 18))
 ```
 
-```{r}
-read_csv("historical_preds.csv") %>% 
-  # filter(last_day >= ymd("2020-03-15")) %>% 
-  ggplot(aes(dagar, pred)) +
-  geom_line() +
-  geom_line(aes(y = upper), lty = 2) +
-  labs(title = "Forspáður smitafjöldi",
-       subtitle = "Miðað við gögn upp að: {previous_state}") +
-  transition_states(last_day, state_length = 0.12, transition_length =0.1) +
-  ease_aes() +
-  view_follow()
-anim_save("forspa_gif.gif")
-```
-
 
 
 ```{r}
@@ -445,4 +431,47 @@ simulations %>%
        y = "Tilfelli") +
   theme(axis.title = element_blank())  +
   ggsave("Myndir/Heild/sjukrahus_alvarleg_tilfelli.png", width = 8, height = 8, scale = 2)
+```
+
+# Sögulegar forspár
+
+```{r}
+read_csv("historical_preds.csv") %>% 
+  # filter(last_day >= ymd("2020-03-15")) %>% 
+  ggplot(aes(dagar, pred)) +
+  geom_line() +
+  geom_line(aes(y = upper), lty = 2) +
+  labs(title = "Forspáður smitafjöldi",
+       subtitle = "Miðað við gögn TIL OG MEÐ: {previous_state}") +
+  transition_states(last_day, state_length = 0.12, transition_length =0.1) +
+  ease_aes() +
+  view_follow()
+anim_save("forspa_gif.gif")
+```
+
+```{r}
+read_csv("historical_preds.csv") %>% 
+  # filter(last_day >= ymd("2020-03-15")) %>% 
+  ggplot(aes(dagar, pred)) +
+  geom_line() +
+  geom_line(aes(y = upper), lty = 2) +
+  labs(title = "Forspáður smitafjöldi",
+       subtitle = "Miðað við gögn TIL OG MEÐ: {previous_state}") +
+  transition_states(last_day, state_length = 0.2, transition_length =0.1) +
+  ease_aes()
+anim_save("forspa_gif_fastir_asar.gif")
+```
+
+```{r}
+read_csv("historical_preds.csv") %>% 
+  # filter(last_day >= ymd("2020-03-15")) %>% 
+  ggplot(aes(dagar, pred)) +
+  geom_line() +
+  geom_line(aes(y = upper), lty = 2) +
+  labs(title = "Forspáður smitafjöldi",
+       subtitle = "Miðað við gögn TIL OG MEÐ: {previous_state}") +
+  transition_states(last_day, state_length = 0.2, transition_length =0.1) +
+  coord_cartesian(ylim = c(0, 2000)) +
+  ease_aes()
+anim_save("forspa_gif_fastir_asar_2.gif")
 ```
