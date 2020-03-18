@@ -10,7 +10,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = F, message = F, fig.asp = 0.621, out.width = "100%", fig.width = 8)
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = F, fig.asp = 0.621, out.width = "100%", fig.width = 6)
 ```
 
 
@@ -33,30 +33,6 @@ d <- read_csv("smit.csv") %>%
 ```
 
 # Logistic growth
-
-```{r}
-hist_preds <- list()
-for (i in seq(10, 18)) {
-  model_d <- d %>% slice(seq_len(i))
-  ice.g <- nls(fjoldi ~ SSlogis(dagar, phi1, phi2, phi3), data = model_d)
-  hist_preds[[i]] <- predict(ice.g)
-}
-
-make_hist_preds <- function(index) {
-  model_d <- d %>% slice(seq_len(index))
-  ice.g <- nls(fjoldi ~ SSlogis(dagar, phi1, phi2, phi3), data = model_d)
-  preds_obj <- predictNLS(ice.g, newdata = tibble(dagar = seq(0, 60)), interval = "prediction")
-  preds <- preds_obj$summary %>% 
-    as_tibble %>%
-    select(pred = "Sim.Mean", upper = "Sim.97.5%") %>% 
-    mutate(dagar = row_number() - 1, 
-           last_day = ymd("2020-02-29") + index)
-}
-
-map_df(seq(10, 18))
-```
-
-
 
 ```{r}
 ice.g <- nls(fjoldi ~ SSlogis(dagar, phi1, phi2, phi3), data = d)
@@ -85,7 +61,7 @@ preds  %>%
   geom_line(aes(y = upper), lty = 2) +
   labs(title = "Forspáð þróun og 95% PI") +
   theme(axis.title = element_blank()) +
-  ggsave("Myndir/Heild/syktir.png", width = 8, height = 0.621 * 8, scale = 2)
+  ggsave("Myndir/Heild/syktir.png", width = 8, height = 0.621 * 8, scale = 1.5)
 ```
 
 # Herma
@@ -171,7 +147,7 @@ make_pred <- function(estimate, upper, aldur, n = 1000, q = 0.95) {
 if (!file.exists("simulations.csv")) {
   simulations <- preds %>% 
     rowwise %>% 
-    mutate(simulation = make_pred(pred, upper, aldur, n = 10000)) %>% 
+    mutate(simulation = make_pred(pred, upper, aldur, n = 20000)) %>% 
     unnest(simulation) %>% 
     mutate(dags = dagar + min(d$dags)) %>% 
     pivot_longer(c(starts_with("median_"), starts_with("upper_"))) %>% 
@@ -200,7 +176,7 @@ simulations %>%
        subtitle = "Reiknað út frá 97.5% PI á fjölda og hermt með fjölkostadreifingu",
        y = "Tilfelli") +
   theme(axis.title = element_blank())  +
-  ggsave("Myndir/Eftir aldri/syktir.png", width = 8, height = 8, scale = 2)
+  ggsave("Myndir/Eftir aldri/syktir.png", width = 8, height = 8, scale = 1.5)
 ```
 
 ## Sjúkrahúslegur
@@ -218,7 +194,7 @@ simulations %>%
   labs(title = "Forspáðar sjúkrahúslegur eftir aldri",
        subtitle = "Reiknað út frá 97.5% PI á fjölda og hermt með fjölkostadreifingu") +
   theme(axis.title = element_blank())  +
-  ggsave("Myndir/Eftir aldri/sjukrahus_innlagnir.png", width = 8, height = 8, scale = 2)
+  ggsave("Myndir/Eftir aldri/sjukrahus_innlagnir.png", width = 8, height = 8, scale = 1.5)
 ```
 
 
@@ -240,7 +216,7 @@ simulations %>%
        subtitle = "Reiknað út frá 97.5% PI á fjölda og hermt með fjölkostadreifingu",
        y = "Tilfelli") +
   theme(axis.title = element_blank())  +
-  ggsave("Myndir/Heild/sjukrahus_innlagnir.png", width = 8, height = 8, scale = 2)
+  ggsave("Myndir/Heild/sjukrahus_innlagnir.png", width = 8, height = 8, scale = 1.5)
 ```
 
 
@@ -260,7 +236,7 @@ simulations %>%
        subtitle = "Reiknað út frá 97.5% PI á fjölda og hermt með fjölkostadreifingu",
        y = "Tilfelli") +
   theme(axis.title = element_blank())  +
-  ggsave("Myndir/Eftir aldri/sjukrahus_alvarleg_tilfelli.png", width = 8, height = 8, scale = 2)
+  ggsave("Myndir/Eftir aldri/sjukrahus_alvarleg_tilfelli.png", width = 8, height = 8, scale = 1.5)
 ```
 
 ### Samtals
@@ -281,163 +257,34 @@ simulations %>%
        subtitle = "Reiknað út frá 97.5% PI á fjölda og hermt með fjölkostadreifingu",
        y = "Tilfelli") +
   theme(axis.title = element_blank())  +
-  ggsave("Myndir/Heild/sjukrahus_alvarleg_tilfelli.png", width = 8, height = 8, scale = 2)
+  ggsave("Myndir/Heild/sjukrahus_alvarleg_tilfelli.png", width = 8, height = 8, scale = 1.5)
 ```
 
-# Hækkum tíðni meðal eldri
+# Útskýringarmyndir
 
-```{r}
-aldur2 <- tibble(aldur = c("[0 - 9]",
-                           "[10 - 19]", 
-                           "[20 - 29]",
-                           "[30 - 39]",
-                           "[40 - 49]",
-                           "[50 - 59]", 
-                           "[60 - 69]", 
-                           "[70 - 79]",
-                           "80+"),
-                 tilfelli = c(2, 12, 28, 34, 61, 50, 45, 9, 4) + 1) %>% 
-  mutate(p_tilfelli = tilfelli / sum(tilfelli),
-         p_spitali = c(0.001, 0.003, 0.012, 0.032, 0.049, 0.102, 0.166, 0.243, 0.273),
-         p_alvarlegt = c(0.05, 0.05, 0.05, 0.05, 0.063, 0.122, 0.274, 0.432, 0.709))
-```
-
-```{r}
-aldur %>% 
-  mutate(type = "Alvöru") %>% 
-  bind_rows(
-    aldur2 %>% 
-      mutate(type = "Ímyndað")
-  ) %>% 
-  select(aldur, p_tilfelli, type) %>% 
-  mutate(p_tilfelli = percent(p_tilfelli)) %>% 
-  pivot_wider(names_from = type, values_from = p_tilfelli) %>% 
-  kable %>% 
-  kable_styling
+```{r, eval = F}
+rmultinom(n = 20, size = 600, prob = aldur$p_tilfelli) %>% 
+  as_tibble %>% 
+  mutate(aldur = aldur$aldur) %>% 
+  pivot_longer(-aldur,
+               names_to = "iter", names_prefix = "V", names_ptypes = list(iter = numeric()),
+               values_to = "fjoldi") %>% 
+  ggplot(aes(aldur, fjoldi)) +
+  geom_col() +
+  scale_y_continuous(breaks = pretty_breaks(8)) +
+  labs(title = "Mögulegar skiptingar smita í aldurshópa",
+       subtitle = "Miðað vð að fjöld (greindra) smita sé 600") +
+  theme(axis.title = element_blank()) +
+  transition_states(iter, state_length = 20, transition_length = 6) +
+  ease_aes()
+anim_save("skipta_i_hopa.gif")
 ```
 
 
-```{r}
-if (!file.exists("simulations.csv")) {
-  simulations2 <- preds %>% 
-    rowwise %>% 
-    mutate(simulation = make_pred(pred, upper,  aldur2, n = 1000)) %>% 
-    unnest(simulation) %>% 
-    mutate(dags = dagar + min(d$dags)) %>% 
-    pivot_longer(c(starts_with("median_"), starts_with("upper_"))) %>% 
-    separate(name, into = c("type", "variable"), sep = "_") %>% 
-    select(dags, aldur, variable, type, value) %>% 
-    pivot_wider(names_from = "type", values_from = "value")
-  
-  write_csv(simulations, "simulations.csv")
-} else {
-  simulations <- read_csv("simulations.csv")
-}
-```
+## Sögulegar forspár
 
-## Aldursskipting
-
-```{r, fig.asp = 1}
-simulations %>% 
-  filter(variable == "cases") %>% 
-  ggplot(aes(dags, median)) +
-  geom_line() +
-  geom_line(aes(y = upper), lty = 2) +
-  facet_wrap("aldur", scales = "free") +
-  scale_y_continuous(breaks = pretty_breaks(5)) +
-  labs(title = "Forspáð tilfelli eftir aldri",
-       subtitle = "Reiknað út frá 97.5% PI á fjölda og hermt með fjölkostadreifingu",
-       y = "Tilfelli") +
-  theme(axis.title = element_blank())  +
-  ggsave("Myndir/Eftir aldri/syktir.png", width = 8, height = 8, scale = 2)
-```
-
-## Sjúkrahúslegur
-
-### Aldursskipt
-
-```{r, fig.asp = 1}
-simulations %>% 
-  filter(variable == "hospital") %>% 
-  ggplot(aes(dags, median)) +
-  geom_line() +
-  geom_line(aes(y = upper), lty = 2) +
-  facet_wrap("aldur", scales = "free") +
-  scale_y_continuous(breaks = pretty_breaks(5)) +
-  labs(title = "Forspáðar sjúkrahúslegur eftir aldri",
-       subtitle = "Reiknað út frá 97.5% PI á fjölda og hermt með fjölkostadreifingu") +
-  theme(axis.title = element_blank())  +
-  ggsave("Myndir/Eftir aldri/sjukrahus_innlagnir.png", width = 8, height = 8, scale = 2)
-```
-
-
-### Samtals
-
-```{r, fig.asp = 0.621}
-simulations %>% 
-  filter(variable == "hospital") %>% 
-  group_by(dags) %>% 
-  summarise(median = sum(median),
-            upper = sum(upper)) %>% 
-  ggplot(aes(dags, median)) +
-  geom_smooth() +
-  geom_line() +
-  geom_smooth(aes(y = upper), lty = 2) +
-  geom_line(aes(y = upper), lty = 2) +
-  scale_y_continuous(breaks = pretty_breaks(5)) +
-  labs(title = "Forspáðar sjúkrahúslegur í heildina",
-       subtitle = "Reiknað út frá 97.5% PI á fjölda og hermt með fjölkostadreifingu",
-       y = "Tilfelli") +
-  theme(axis.title = element_blank())  +
-  ggsave("Myndir/Heild/sjukrahus_innlagnir.png", width = 8, height = 8, scale = 2)
-```
-
-
-## Alvarleg tilfelli á sjúkrahúsi
-
-### Aldursskipt
-
-```{r, fig.asp = 1}
-simulations %>% 
-  filter(variable == "serious") %>% 
-  ggplot(aes(dags, median)) +
-  geom_line() +
-  geom_line(aes(y = upper), lty = 2) +
-  facet_wrap("aldur", scales = "free") +
-  scale_y_continuous(breaks = pretty_breaks(5)) +
-  labs(title = "Forspáð alvarleg tilfelli á sjúkrahúsi eftir aldri",
-       subtitle = "Reiknað út frá 97.5% PI á fjölda og hermt með fjölkostadreifingu",
-       y = "Tilfelli") +
-  theme(axis.title = element_blank())  +
-  ggsave("Myndir/Eftir aldri/sjukrahus_alvarleg_tilfelli.png", width = 8, height = 8, scale = 2)
-```
-
-### Samtals
-
-```{r, fig.asp = 0.621}
-simulations %>% 
-  filter(variable == "serious") %>% 
-  group_by(dags) %>% 
-  summarise(median = sum(median),
-            upper = sum(upper)) %>% 
-  ggplot(aes(dags, median)) +
-  geom_smooth() +
-  geom_line() +
-  geom_smooth(aes(y = upper), lty = 2) +
-  geom_line(aes(y = upper), lty = 2) +
-  scale_y_continuous(breaks = pretty_breaks(5)) +
-  labs(title = "Forspáð alvarleg tilfelli á sjúkrahúsi í heildina",
-       subtitle = "Reiknað út frá 97.5% PI á fjölda og hermt með fjölkostadreifingu",
-       y = "Tilfelli") +
-  theme(axis.title = element_blank())  +
-  ggsave("Myndir/Heild/sjukrahus_alvarleg_tilfelli.png", width = 8, height = 8, scale = 2)
-```
-
-# Sögulegar forspár
-
-```{r}
+```{r, eval = F}
 read_csv("historical_preds.csv") %>% 
-  # filter(last_day >= ymd("2020-03-15")) %>% 
   ggplot(aes(dagar, pred)) +
   geom_line() +
   geom_line(aes(y = upper), lty = 2) +
@@ -449,9 +296,8 @@ read_csv("historical_preds.csv") %>%
 anim_save("forspa_gif.gif")
 ```
 
-```{r}
+```{r, eval = F}
 read_csv("historical_preds.csv") %>% 
-  # filter(last_day >= ymd("2020-03-15")) %>% 
   ggplot(aes(dagar, pred)) +
   geom_line() +
   geom_line(aes(y = upper), lty = 2) +
@@ -462,9 +308,8 @@ read_csv("historical_preds.csv") %>%
 anim_save("forspa_gif_fastir_asar.gif")
 ```
 
-```{r}
+```{r, eval = F}
 read_csv("historical_preds.csv") %>% 
-  # filter(last_day >= ymd("2020-03-15")) %>% 
   ggplot(aes(dagar, pred)) +
   geom_line() +
   geom_line(aes(y = upper), lty = 2) +
