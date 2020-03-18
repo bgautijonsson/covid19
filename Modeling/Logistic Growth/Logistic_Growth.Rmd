@@ -1,14 +1,14 @@
 ---
-title: "Herma framtíðar aldursgögn"
-author: "Brynjólfur Gauti Jónsson"
+title: "Fyrsta forspá um fjölda tilfella og álag á Landspítali"
 date: "`r Sys.Date()`"
 output:
   html_document:
+    theme: flatly
     code_folding: hide
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = F, message = F, fig.asp = 0.621, out.width = "100%", fig.width = 6)
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = F, fig.asp = 0.621, out.width = "100%", fig.width = 7)
 ```
 
 
@@ -117,7 +117,8 @@ preds  %>%
   geom_line() +
   geom_line(aes(y = upper), lty = 2) +
   geom_point(data = d, aes(dags, fjoldi)) +
-  labs(title = "Forspáð þróun í uppsöfnuðum smitum og 97.5% efri mörk") +
+  labs(title = "Forspáð þróun í uppsöfnuðum smitafjölda",
+       subtitle = "Besta mat (llína) auk efri marka (brotin lína)") +
   theme(axis.title = element_blank()) +
   ggsave("Myndir/Heild/syktir.png", width = 8, height = 0.621 * 8, scale = 1.5)
 ```
@@ -141,7 +142,7 @@ preds  %>%
   geom_line() +
   geom_line(aes(y = upper), lty = 2) +
   geom_point(data = d, aes(dags, fjoldi)) +
-  labs(title = "Forspáð þróun í smitum á hverjum tímapunkti og 97.5% efri mörk",
+  labs(title = "Forspáð þróun fjölda smita hverju sinni",
        subtitle = "Miðað við að einstaklingur hefur jafnað sig þremur vikum eftir greiningu") +
   theme(axis.title = element_blank()) +
   ggsave("Myndir/Heild/syktir.png", width = 8, height = 0.621 * 8, scale = 1.5)
@@ -171,8 +172,13 @@ aldur <- tibble(aldur = c("[0 - 9]",
          p_spitali = c(0.001, 0.003, 0.012, 0.032, 0.049, 0.102, 0.166, 0.243, 0.273),
          p_alvarlegt = c(0.05, 0.05, 0.05, 0.05, 0.063, 0.122, 0.274, 0.432, 0.709))
 aldur %>% 
-  kable %>% 
-  kable_styling()
+  mutate_at(vars(starts_with("p_")), percent) %>% 
+  set_names(c("Aldur", "Tilfelli á Íslandi", "% Tilfella", "% Spítali", "% Alvaregt")) %>% 
+  kable(align = c("l", rep("c", 4)),
+        caption = "Tafla 1. Aldursdreifing tilfella á Íslandi og vænt hlutföll fyrir spítala") %>% 
+  kable_styling(bootstrap_options = c("striped", "hover")) %>% 
+  add_header_above(c("Íslenskar upplýsingar" = 3, "Úr rannsóknum" = 2)) %>% 
+  footnote(general = c("Einu tilviki bætt við alla aldurshópa til að jafna út dreifingu og leyfa smit í 80+"))
 ```
 
 
@@ -186,7 +192,7 @@ Skref í hermun:
 
 #### Skipta í aldurshópa
 
-```{r, out.width = "70%", fig.align="center"}
+```{r, out.width = "60%", fig.align="center"}
 knitr::include_graphics("skipta_i_hopa.gif")
 ```
 
@@ -206,7 +212,7 @@ plot_d %>%
   column_spec(1:2, width = "5cm")
 ```
 
-```{r, out.width = "70%", fig.align='center'}
+```{r, out.width = "60%", fig.align='center'}
 knitr::include_graphics("mogulegar_innlagnir.gif")
 ```
 
@@ -284,7 +290,11 @@ if (!file.exists("simulations.csv")) {
 ```
 
 
-## Aldursskipting
+## Greind smit
+
+### Aldursskipt
+
+[Stærri mynd](https://raw.githubusercontent.com/bgautijonsson/covid19/master/Modeling/Logistic%20Growth/Myndir/Eftir%20aldri/syktir.png)
 
 ```{r, fig.asp = 1}
 simulations %>% 
@@ -300,9 +310,27 @@ simulations %>%
   ggsave("Myndir/Eftir aldri/syktir.png", width = 8, height = 8, scale = 1.5)
 ```
 
+### Samtals
+
+[Stærri mynd](https://raw.githubusercontent.com/bgautijonsson/covid19/master/Modeling/Logistic%20Growth/Myndir/Heild/syktir.png)
+
+```{r}
+preds  %>% 
+  mutate(dags = min(d$dags) + dagar -1) %>% 
+  ggplot(aes(dags, pred)) +
+  geom_line() +
+  geom_line(aes(y = upper), lty = 2) +
+  geom_point(data = d, aes(dags, fjoldi)) +
+  labs(title = "Forspáð þróun í uppsöfnuðum smitum og 97.5% efri mörk") +
+  theme(axis.title = element_blank()) +
+  ggsave("Myndir/Heild/syktir.png", width = 8, height = 0.621 * 8, scale = 1.5)
+```
+
 ## Sjúkrahúslegur
 
 ### Aldursskipt
+
+[Stærri mynd](https://raw.githubusercontent.com/bgautijonsson/covid19/master/Modeling/Logistic%20Growth/Myndir/Eftir%20aldri/sjukrahus_innlagnir.png)
 
 ```{r, fig.asp = 1}
 simulations %>% 
@@ -319,6 +347,8 @@ simulations %>%
 
 
 ### Samtals
+
+[Stærri mynd](https://raw.githubusercontent.com/bgautijonsson/covid19/master/Modeling/Logistic%20Growth/Myndir/Heild/sjukrahus_innlagnir.png)
 
 ```{r, fig.asp = 0.621}
 simulations %>% 
@@ -339,9 +369,12 @@ simulations %>%
 ```
 
 
+
 ## Alvarleg tilfelli á sjúkrahúsi
 
 ### Aldursskipt
+
+[Stærri mynd](https://raw.githubusercontent.com/bgautijonsson/covid19/master/Modeling/Logistic%20Growth/Myndir/Eftir%20aldri/sjukrahus_alvarleg_tilfelli.png)
 
 ```{r, fig.asp = 1}
 simulations %>% 
@@ -358,6 +391,8 @@ simulations %>%
 ```
 
 ### Samtals
+
+[Stærri mynd](https://raw.githubusercontent.com/bgautijonsson/covid19/master/Modeling/Logistic%20Growth/Myndir/Heild/sjukrahus_alvarleg_tilfelli.png)
 
 ```{r, fig.asp = 0.621}
 simulations %>% 
@@ -390,7 +425,7 @@ rmultinom(n = 20, size = 600, prob = aldur$p_tilfelli) %>%
   geom_col() +
   scale_y_continuous(breaks = pretty_breaks(8)) +
   labs(title = "Mögulegar skiptingar smita í aldurshópa",
-       subtitle = "Miðað við að fjöld (greindra) smita sé 600") +
+       subtitle = "Miðað við að fjöldi (greindra) smita sé 600") +
   theme(axis.title = element_blank()) +
   transition_states(iter, state_length = 20, transition_length = 6) +
   ease_aes()
