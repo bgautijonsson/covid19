@@ -1,12 +1,10 @@
 ---
 title: "Herma framtíðar aldursgögn"
 author: "Brynjólfur Gauti Jónsson"
-date: "3/17/2020"
+date: "`r Sys.Date()`"
 output:
   html_document:
     code_folding: hide
-    theme: flatly
-  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -32,7 +30,66 @@ d <- read_csv("smit.csv") %>%
          fjoldi > 0)
 ```
 
-# Logistic growth
+## Lógístískur vöxturs {.tabset}
+
+### Kína
+
+```{r}
+world_d <- read_csv("../../Data/ECDC_Data.csv") %>% 
+  filter(case_rate > 0.0001) 
+```
+
+```{r}
+model_d <- world_d %>% filter(country == "China")
+m <- nls(cum_cases ~ SSlogis(days, phi1, phi2, phi3), data = model_d)
+pred_d <- predict(m, newdata = tibble(days = seq(min(model_d$days), pmax(90, max(model_d$days))))) %>% 
+  as_tibble %>% 
+  mutate(days = row_number() - 1 + min(model_d$days)) %>% 
+  mutate(date = days + min(model_d$date) - min(days))
+model_d %>% 
+  ggplot() +
+  geom_line(data = pred_d, aes(x = date, y = value)) +
+  geom_point(aes(date, cum_cases)) +
+  labs(title = "Líkanið fellur vel að gögnum Í Kína",
+       x = "Dagsetning", y = "Fjöldi tilfella")
+```
+
+
+### Ítalía
+
+```{r}
+model_d <- world_d %>% filter(country == "Italy")
+m <- nls(cum_cases ~ SSlogis(days, phi1, phi2, phi3), data = model_d)
+pred_d <- predict(m, newdata = tibble(days = seq(min(model_d$days), pmax(80, max(model_d$days))))) %>% 
+  as_tibble %>% 
+  mutate(days = row_number() - 1 + min(model_d$days)) %>% 
+  mutate(date = days + min(model_d$date) - min(days))
+model_d %>% 
+  ggplot() +
+  geom_line(data = pred_d, aes(x = date, y = value)) +
+  geom_point(aes(date, cum_cases)) +
+  labs(title = "Líkanið fellur vel að gögnum á Ítalíu",
+       x = "Dagsetning", y = "Fjöldi tilfella")
+```
+
+### Suður Kórea
+
+```{r}
+model_d <- world_d %>% filter(country == "South Korea")
+m <- nls(cum_cases ~ SSlogis(days, phi1, phi2, phi3), data = model_d)
+pred_d <- predict(m, newdata = tibble(days = seq(min(model_d$days), pmax(80, max(model_d$days))))) %>% 
+  as_tibble %>% 
+  mutate(days = row_number() - 1 + min(model_d$days)) %>% 
+  mutate(date = days + min(model_d$date) - min(days))
+model_d %>% 
+  ggplot() +
+  geom_line(data = pred_d, aes(x = date, y = value)) +
+  geom_point(aes(date, cum_cases)) +
+  labs(title = "Líkanið fellur vel að gögnum Í Suður Kóreu en vanmetur smá toppinn",
+       x = "Dagsetning", y = "Fjöldi tilfella")
+```
+
+### Ísland
 
 ```{r}
 ice.g <- nls(fjoldi ~ SSlogis(dagar, phi1, phi2, phi3), data = d)
@@ -55,22 +112,49 @@ if (!file.exists("preds.csv")) {
 
 ```{r}
 preds  %>% 
-  mutate(dags = min(d$dags) + dagar) %>% 
+  mutate(dags = min(d$dags) + dagar -1) %>% 
   ggplot(aes(dags, pred)) +
   geom_line() +
   geom_line(aes(y = upper), lty = 2) +
-  labs(title = "Forspáð þróun og 95% PI") +
+  geom_point(data = d, aes(dags, fjoldi)) +
+  labs(title = "Forspáð þróun í uppsöfnuðum smitum og 97.5% efri mörk") +
   theme(axis.title = element_blank()) +
   ggsave("Myndir/Heild/syktir.png", width = 8, height = 0.621 * 8, scale = 1.5)
 ```
+
+```{r}
+preds <- preds %>% 
+  pivot_longer(-dagar) %>% 
+  arrange(dagar, name) %>% 
+  group_by(name) %>% 
+  mutate(lag_value = lag(value, n = 21, default = 0)) %>% 
+  ungroup %>% 
+  mutate(value = value - lag_value) %>% 
+  select(-lag_value) %>% 
+  pivot_wider() 
+```
+
+```{r}
+preds  %>% 
+  mutate(dags = min(d$dags) + dagar -1) %>% 
+  ggplot(aes(dags, pred)) +
+  geom_line() +
+  geom_line(aes(y = upper), lty = 2) +
+  geom_point(data = d, aes(dags, fjoldi)) +
+  labs(title = "Forspáð þróun í smitum á hverjum tímapunkti og 97.5% efri mörk",
+       subtitle = "Miðað við að einstaklingur hefur jafnað sig þremur vikum eftir greiningu") +
+  theme(axis.title = element_blank()) +
+  ggsave("Myndir/Heild/syktir.png", width = 8, height = 0.621 * 8, scale = 1.5)
+```
+
 
 # Herma
 
 Gagnataflan að neðan er sett saman með
 
-`p_tilfelli`: aldursdreifing smita skv [covid.is](covid.is). Bæti við einu tilfelli í alla aldurshópa til að leyfa smit í 80+
+`p_tilfelli`: aldursdreifing smita skv [covid.is](covid.is). Bæti við einu tilfelli í alla aldurshópa til að leyfa smit í 80+ og jafna aðeins út drefinguna.
 
-`p_spitali` og `p_alvarlegt`: [tafla 1 héðan]
+`p_spitali` og `p_alvarlegt`: [table 1 héðan](https://www.imperial.ac.uk/media/imperial-college/medicine/sph/ide/gida-fellowships/Imperial-College-COVID19-NPI-modelling-16-03-2020.pdf?fbclid=IwAR2jkFkpT583W2vFnbYNzHE539Gj6dzKvAVVfT0Tkyg8TEilNuUkW7V0yzk)
 
 ```{r}
 aldur <- tibble(aldur = c("[0 - 9]",
@@ -100,6 +184,32 @@ Skref í hermun:
 4) Nota sömu töflu til að spá fyrir um bráð tilfelli meðal ofangreinda sjúkrahúsinnlagna
 5) Sæki miðgildi og valið quantile úr öllum ofangreindum hermunum og skila í gagnatöflu.
 
+#### Skipta í aldurshópa
+
+```{r, out.width = "70%", fig.align="center"}
+knitr::include_graphics("skipta_i_hopa.gif")
+```
+
+#### Herma fjölda innlagna
+
+```{r}
+set.seed(1)
+cases <- rmultinom(n = 1, size = 600, prob = aldur$p_tilfelli) %>% as.vector
+plot_d <- aldur %>% 
+  select(aldur, p_spitali) %>% 
+  mutate(cases = cases)
+plot_d %>% 
+  select(Aldur = aldur, Smit = cases) %>% 
+  kable(caption = "Möguleg skipting í aldurshópa miðað við 600 heildarsmit",
+        align = c("l", "c")) %>% 
+  kable_styling(full_width = F, bootstrap_options = c("striped", "hover")) %>% 
+  column_spec(1:2, width = "5cm")
+```
+
+```{r, out.width = "70%", fig.align='center'}
+knitr::include_graphics("mogulegar_innlagnir.gif")
+```
+
 
 ```{r}
 make_pred <- function(estimate, upper, aldur, n = 1000, q = 0.95) {
@@ -120,6 +230,7 @@ make_pred <- function(estimate, upper, aldur, n = 1000, q = 0.95) {
     
     hospital_upper[, i] <- rbinom(rows, size = cases_upper[, i], prob = aldur$p_spitali)
     serious_upper[, i] <- rbinom(rows, size = hospital_upper[, i], prob = aldur$p_alvarlegt)
+    
   }
   
   
@@ -143,6 +254,7 @@ make_pred <- function(estimate, upper, aldur, n = 1000, q = 0.95) {
 }
 ```
 
+
 ```{r}
 if (!file.exists("simulations.csv")) {
   simulations <- preds %>% 
@@ -153,7 +265,17 @@ if (!file.exists("simulations.csv")) {
     pivot_longer(c(starts_with("median_"), starts_with("upper_"))) %>% 
     separate(name, into = c("type", "variable"), sep = "_") %>% 
     select(dags, aldur, variable, type, value) %>% 
-    pivot_wider(names_from = "type", values_from = "value")
+    pivot_wider(names_from = "type", values_from = "value") %>% 
+    pivot_longer(c(median, upper)) %>% 
+    arrange(dags, variable, aldur) %>% 
+    group_by(dags, variable, name, aldur)  %>% 
+    mutate(lag_value = case_when(variable == "hospital" ~ lag(value, n = 14, default = 0),
+                                 TRUE ~ lag(value, n = 14, default = 0)),
+           value = case_when(variable == "hospital" ~ pmax(0, value - lag_value),
+                             TRUE ~ value)) %>% 
+    ungroup %>% 
+    select(-lag_value) %>% 
+    pivot_wider()
   
   write_csv(simulations, "simulations.csv")
 } else {
@@ -173,7 +295,6 @@ simulations %>%
   facet_wrap("aldur", scales = "free") +
   scale_y_continuous(breaks = pretty_breaks(5)) +
   labs(title = "Forspáð tilfelli eftir aldri",
-       subtitle = "Reiknað út frá 97.5% PI á fjölda og hermt með fjölkostadreifingu",
        y = "Tilfelli") +
   theme(axis.title = element_blank())  +
   ggsave("Myndir/Eftir aldri/syktir.png", width = 8, height = 8, scale = 1.5)
@@ -191,8 +312,7 @@ simulations %>%
   geom_line(aes(y = upper), lty = 2) +
   facet_wrap("aldur", scales = "free") +
   scale_y_continuous(breaks = pretty_breaks(5)) +
-  labs(title = "Forspáðar sjúkrahúslegur eftir aldri",
-       subtitle = "Reiknað út frá 97.5% PI á fjölda og hermt með fjölkostadreifingu") +
+  labs(title = "Forspáðar sjúkrahúslegur eftir aldri") +
   theme(axis.title = element_blank())  +
   ggsave("Myndir/Eftir aldri/sjukrahus_innlagnir.png", width = 8, height = 8, scale = 1.5)
 ```
@@ -213,7 +333,6 @@ simulations %>%
   geom_line(aes(y = upper), lty = 2) +
   scale_y_continuous(breaks = pretty_breaks(5)) +
   labs(title = "Forspáðar sjúkrahúslegur í heildina",
-       subtitle = "Reiknað út frá 97.5% PI á fjölda og hermt með fjölkostadreifingu",
        y = "Tilfelli") +
   theme(axis.title = element_blank())  +
   ggsave("Myndir/Heild/sjukrahus_innlagnir.png", width = 8, height = 8, scale = 1.5)
@@ -233,7 +352,6 @@ simulations %>%
   facet_wrap("aldur", scales = "free") +
   scale_y_continuous(breaks = pretty_breaks(5)) +
   labs(title = "Forspáð alvarleg tilfelli á sjúkrahúsi eftir aldri",
-       subtitle = "Reiknað út frá 97.5% PI á fjölda og hermt með fjölkostadreifingu",
        y = "Tilfelli") +
   theme(axis.title = element_blank())  +
   ggsave("Myndir/Eftir aldri/sjukrahus_alvarleg_tilfelli.png", width = 8, height = 8, scale = 1.5)
@@ -254,7 +372,6 @@ simulations %>%
   geom_line(aes(y = upper), lty = 2) +
   scale_y_continuous(breaks = pretty_breaks(5)) +
   labs(title = "Forspáð alvarleg tilfelli á sjúkrahúsi í heildina",
-       subtitle = "Reiknað út frá 97.5% PI á fjölda og hermt með fjölkostadreifingu",
        y = "Tilfelli") +
   theme(axis.title = element_blank())  +
   ggsave("Myndir/Heild/sjukrahus_alvarleg_tilfelli.png", width = 8, height = 8, scale = 1.5)
@@ -273,12 +390,44 @@ rmultinom(n = 20, size = 600, prob = aldur$p_tilfelli) %>%
   geom_col() +
   scale_y_continuous(breaks = pretty_breaks(8)) +
   labs(title = "Mögulegar skiptingar smita í aldurshópa",
-       subtitle = "Miðað vð að fjöld (greindra) smita sé 600") +
+       subtitle = "Miðað við að fjöld (greindra) smita sé 600") +
   theme(axis.title = element_blank()) +
   transition_states(iter, state_length = 20, transition_length = 6) +
   ease_aes()
 anim_save("skipta_i_hopa.gif")
 ```
+
+```{r, eval = F}
+set.seed(1)
+cases <- rmultinom(n = 1, size = 600, prob = aldur$p_tilfelli) %>% as.vector
+plot_d <- aldur %>% 
+  select(aldur, p_spitali) %>% 
+  mutate(cases = cases)
+plot_d %>% 
+  select(Aldur = aldur, Smit = cases) %>% 
+  kable(caption = "Möguleg skipting í aldurshópa miðað við 600 heildarsmit",
+        align = c("l", "c")) %>% 
+  kable_styling(full_width = F, bootstrap_options = c("striped", "hover")) %>% 
+  column_spec(1:2, width = "5cm")
+```
+
+
+```{r, eval = F}
+plot_d %>% 
+  rowwise %>% 
+  mutate(hosp = list(tibble(iter = 1:20,
+                            hosp = rbinom(n = 20, size = cases, prob = p_spitali)))) %>% 
+  unnest(hosp) %>% 
+  ggplot(aes(aldur, hosp)) +
+  geom_col() +
+  scale_y_continuous(breaks = pretty_breaks(8)) +
+  labs(title = "Mögulegur fjöldi sjúkrahúsinnlagna",
+       subtitle = "Miðað við aldursskiptingu að ofan") +
+  theme(axis.title = element_blank()) +
+  transition_states(iter, state_length = 20, transition_length = 6) +
+  ease_aes()
+anim_save("mogulegar_innlagnir.gif")
+``` 
 
 
 ## Sögulegar forspár
