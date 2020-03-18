@@ -1,0 +1,42 @@
+---
+title: "Logistic"
+author: "Brynjólfur Gauti Jónsson"
+date: "3/17/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = F, fig.asp = 0.621, out.width = "100%", fig.width = 8)
+```
+
+
+
+```{r}
+library(tidyverse); library(cowplot); library(kableExtra); library(scales); library(gganimate)
+library(lubridate); library(emmeans); library(broom)
+theme_set(theme_classic(base_size = 12) + 
+              background_grid(color.major = "grey90", 
+                              color.minor = "grey95", 
+                              minor = "xy", major = "xy") +
+              theme(legend.position = "none"))
+```
+
+```{r}
+d <- read_csv("../Data/smit.csv") %>% 
+    filter(tegund == "Samtals", fjoldi > 0)
+```
+
+```{r}
+d %>% 
+    expand_grid(maximum = c(300, 400, 700, 1000)) %>% 
+    mutate(logit = log(fjoldi / (maximum - fjoldi))) %>% 
+    group_by(maximum) %>% 
+    group_modify(~ lm(logit ~ dagar, data = .) %>% 
+                     emmeans(~ dagar, at = list(dagar = seq(0, 40))) %>% 
+                     tidy) %>% 
+    mutate(cases = maximum * exp(estimate) / (1 + exp(estimate))) %>% 
+    ggplot(aes(dagar, cases, group = maximum)) +
+    geom_line() +
+    geom_point(data = d, aes(x = dagar, y = fjoldi), inherit.aes = F)
+```
+

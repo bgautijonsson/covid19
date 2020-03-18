@@ -31,12 +31,19 @@ d_sottkvi <- sheets_read("https://docs.google.com/spreadsheets/d/1xgDhtejTtcyy6E
 d_spitali <- sheets_read("https://docs.google.com/spreadsheets/d/1xgDhtejTtcyy6EN5dbDp5W3TeJhKFRRgm6Xk0s0YFeA", 
                          sheet = "Spitali")  %>% 
     mutate(Dagsetning = ymd(Dagsetning) %>% as.Date) %>% 
-    select(dags = Dagsetning, fjoldi = Fjöldi)
+    dplyr::select(dags = Dagsetning, fjoldi = Fjöldi)
 
 d_syni <- sheets_read("https://docs.google.com/spreadsheets/d/1xgDhtejTtcyy6EN5dbDp5W3TeJhKFRRgm6Xk0s0YFeA", 
                       sheet = "Syni") %>% 
     mutate(Dagsetning = ymd(Dagsetning) %>% as.Date) %>% 
-    select(dags = Dagsetning, fjoldi = Fjöldi, cum_fjoldi = Samtals)
+    dplyr::select(dags = Dagsetning, fjoldi = Fjöldi, cum_fjoldi = Samtals)
+
+d_aldur <- sheets_read("https://docs.google.com/spreadsheets/d/1xgDhtejTtcyy6EN5dbDp5W3TeJhKFRRgm6Xk0s0YFeA", 
+                       sheet = "Aldur") %>% 
+    mutate(tilfelli = tilfelli + 1,
+           p_tilfelli = tilfelli / sum(tilfelli),
+           p_spitali = c(0.001, 0.003, 0.012, 0.032, 0.049, 0.102, 0.166, 0.243, 0.273),
+           p_alvarlegt = c(0.05, 0.05, 0.05, 0.05, 0.063, 0.122, 0.274, 0.432, 0.709))
 
 
 d_smit %>% 
@@ -47,6 +54,13 @@ d_spitali %>%
     write_csv("Data/spitali.csv")
 d_syni %>% 
     write_csv("Data/syni.csv")
+d_aldur %>% 
+    write_csv("Data/aldur.csv")
+
+d_smit %>% 
+    write_csv("Modeling/Logistic Growth/smit.csv")
+d_aldur %>% 
+    write_csv("Modeling/Logistic Growth/aldur.csv")
 
 
 d_smit %>% 
@@ -57,29 +71,8 @@ d_spitali %>%
     write_csv("COVID_Dashboard/Data/spitali.csv")
 d_syni %>% 
     write_csv("COVID_Dashboard/Data/syni.csv")
-
-
-
-d_tot <- d_smit %>% 
-    filter(tegund == "Samtals") %>% 
-    select(dags, smit = fjoldi) %>% 
-    inner_join(
-        d_syni %>% 
-            select(dags, syni = cum_fjoldi)
-    ) %>% 
-    inner_join(
-        d_spitali %>% 
-            select(dags, spitali = fjoldi)
-    ) %>% 
-    mutate(dagar = as.numeric(dags - min(dags)))
-
-d_tot %>% 
-    write_csv("Data/total.csv")
-d_tot %>% 
-    write_csv("COVID_Dashboard/Data/total.csv")
-
-
-rm(list = ls())
+d_aldur %>% 
+    write_csv("COVID_Dashboard/Data/aldur.csv")
 
 
 

@@ -76,4 +76,5 @@ p <- d %>%
                       transition_length = 2,
                       state_length = 1) +
     shadow_wake(wake_length = 0.5)
+anim_save("pop_growth.gif", p)
 ```

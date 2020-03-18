@@ -17,6 +17,7 @@ dags,tegund,fjoldi,dagar
 2020-03-14,Annad,0,16
 2020-03-15,Annad,0,17
 2020-03-16,Annad,0,18
+2020-03-17,Annad,NA,19
 2020-02-27,Erlendis,0,0
 2020-02-28,Erlendis,1,1
 2020-02-29,Erlendis,3,2
@@ -35,6 +36,7 @@ dags,tegund,fjoldi,dagar
 2020-03-14,Erlendis,112,16
 2020-03-15,Erlendis,121,17
 2020-03-16,Erlendis,128,18
+2020-03-17,Erlendis,NA,19
 2020-02-27,Innanlands,0,0
 2020-02-28,Innanlands,0,1
 2020-02-29,Innanlands,0,2
@@ -53,6 +55,7 @@ dags,tegund,fjoldi,dagar
 2020-03-14,Innanlands,49,16
 2020-03-15,Innanlands,60,17
 2020-03-16,Innanlands,70,18
+2020-03-17,Innanlands,NA,19
 2020-02-27,Samtals,0,0
 2020-02-28,Samtals,1,1
 2020-02-29,Samtals,3,2
@@ -71,3 +74,4 @@ dags,tegund,fjoldi,dagar
 2020-03-14,Samtals,161,16
 2020-03-15,Samtals,181,17
 2020-03-16,Samtals,198,18
+2020-03-17,Samtals,247,19

@@ -40,17 +40,21 @@ world_d <- read_csv("../../Data/ECDC_Data.csv") %>%
 ```
 
 ```{r}
-model_d <- world_d %>% filter(country == "China")
+model_d <- read_csv("../../Data/Hubei_JHU_data.csv")
 m <- nls(cum_cases ~ SSlogis(days, phi1, phi2, phi3), data = model_d)
-pred_d <- predict(m, newdata = tibble(days = seq(min(model_d$days), pmax(90, max(model_d$days))))) %>% 
+pred_d <- predict(m, newdata = tibble(days = seq(min(model_d$days), pmax(70, max(model_d$days))))) %>% 
   as_tibble %>% 
   mutate(days = row_number() - 1 + min(model_d$days)) %>% 
-  mutate(date = days + min(model_d$date) - min(days))
+  mutate(date = days + min(model_d$date) - min(days),
+         active = value - lag(value, 21, default = 0))
+
+hubei_pred <- pred_d
+hubei_dat <- model_d
 model_d %>% 
   ggplot() +
   geom_line(data = pred_d, aes(x = date, y = value)) +
   geom_point(aes(date, cum_cases)) +
-  labs(title = "Líkanið fellur vel að gögnum Í Kína",
+  labs(title = "Líkanið fellur vel að gögnum Í Hubei héraði í Kína",
        x = "Dagsetning", y = "Fjöldi tilfella")
 ```
 
@@ -145,9 +149,20 @@ preds  %>%
   labs(title = "Forspáð þróun fjölda smita hverju sinni",
        subtitle = "Miðað við að einstaklingur hefur jafnað sig þremur vikum eftir greiningu") +
   theme(axis.title = element_blank()) +
-  ggsave("Myndir/Heild/syktir.png", width = 8, height = 0.621 * 8, scale = 1.5)
+  ggsave("Myndir/Heild/active_syktir.png", width = 8, height = 0.621 * 8, scale = 1.5)
 ```
 
+```{r}
+hubei_dat %>% 
+  mutate(active_cases = cum_cases - cum_recovered - cum_deaths) %>% 
+  ggplot(aes(date, active_cases)) +
+  geom_point() +
+  geom_line(data = hubei_pred, aes(date, active)) +
+  labs(title = "Forspáð þróun fjölda smita hverju sinni í Hubei",
+       subtitle = "Miðað við að einstaklingur hefur jafnað sig þremur vikum eftir greiningu") +
+  theme(axis.title = element_blank()) +
+  ggsave("Myndir/Heild/hubei_active_syktir.png", width = 8, height = 0.621 * 8, scale = 1.5)
+```
 
 # Herma
 
@@ -292,7 +307,9 @@ if (!file.exists("simulations.csv")) {
 
 ## Greind smit
 
-### Aldursskipt
+### Myndir
+
+#### Aldursskipt
 
 [Stærri mynd](https://raw.githubusercontent.com/bgautijonsson/covid19/master/Modeling/Logistic%20Growth/Myndir/Eftir%20aldri/syktir.png)
 
@@ -310,7 +327,7 @@ simulations %>%
   ggsave("Myndir/Eftir aldri/syktir.png", width = 8, height = 8, scale = 1.5)
 ```
 
-### Samtals
+#### Samtals
 
 [Stærri mynd](https://raw.githubusercontent.com/bgautijonsson/covid19/master/Modeling/Logistic%20Growth/Myndir/Heild/syktir.png)
 
@@ -328,14 +345,43 @@ preds  %>%
 
 ## Sjúkrahúslegur
 
-### Aldursskipt
+### Tafla
+
+```{r}
+simulations %>% 
+  filter(variable == "hospital") %>% 
+  pivot_longer(c(median, upper)) %>% 
+  group_by(dags, name) %>% 
+  summarise(value = sum(value)) %>% 
+  filter(dags >= ymd("2020-03-16")) %>% 
+  ungroup %>% 
+  mutate(dags = floor_date(dags, "week")) %>% 
+  group_by(dags, name) %>% 
+  summarise(value = max(value)) %>% 
+  ungroup %>% 
+  mutate(dags = str_c(format(dags, "%d/%m"), " - ",format(dags + 6, "%d/%m")),
+         name = fct_recode(name, 
+                           "Miðgildi" = "median",
+                           "Efri spá" = "upper") %>% 
+           fct_relevel("Miðgildi", "Efri spá")) %>% 
+  arrange(name) %>% 
+  pivot_wider(names_from = "dags", values_from = "value") %>% 
+  rename(" " = name) %>% 
+  kable(align = c("l", rep("c", ncol(.) - 1))) %>% 
+  kable_styling(bootstrap_options = c("striped", "hover"))
+```
+
+
+### Myndir
+
+#### Aldursskipt
 
 [Stærri mynd](https://raw.githubusercontent.com/bgautijonsson/covid19/master/Modeling/Logistic%20Growth/Myndir/Eftir%20aldri/sjukrahus_innlagnir.png)
 
 ```{r, fig.asp = 1}
 simulations %>% 
   filter(variable == "hospital") %>% 
-  ggplot(aes(dags, median)) +
+  ggplot(aes(dags + 6, median)) +
   geom_line() +
   geom_line(aes(y = upper), lty = 2) +
   facet_wrap("aldur", scales = "free") +
@@ -346,7 +392,7 @@ simulations %>%
 ```
 
 
-### Samtals
+#### Samtals
 
 [Stærri mynd](https://raw.githubusercontent.com/bgautijonsson/covid19/master/Modeling/Logistic%20Growth/Myndir/Heild/sjukrahus_innlagnir.png)
 
@@ -356,7 +402,7 @@ simulations %>%
   group_by(dags) %>% 
   summarise(median = sum(median),
             upper = sum(upper)) %>% 
-  ggplot(aes(dags, median)) +
+  ggplot(aes(dags + 6, median)) +
   geom_smooth() +
   geom_line() +
   geom_smooth(aes(y = upper), lty = 2) +
@@ -372,14 +418,42 @@ simulations %>%
 
 ## Alvarleg tilfelli á sjúkrahúsi
 
-### Aldursskipt
+### Tafla
+
+```{r}
+simulations %>% 
+  filter(variable == "serious") %>% 
+  pivot_longer(c(median, upper)) %>% 
+  group_by(dags, name) %>% 
+  summarise(value = sum(value)) %>% 
+  filter(dags >= ymd("2020-03-16")) %>% 
+  ungroup %>% 
+  mutate(dags = floor_date(dags, "week")) %>% 
+  group_by(dags, name) %>% 
+  summarise(value = max(value)) %>% 
+  ungroup %>% 
+  mutate(dags = str_c(format(dags, "%d/%m"), " - ",format(dags + 6, "%d/%m")),
+         name = fct_recode(name, 
+                           "Miðgildi" = "median",
+                           "Efri spá" = "upper") %>% 
+           fct_relevel("Miðgildi", "Efri spá")) %>% 
+  arrange(name) %>% 
+  pivot_wider(names_from = "dags", values_from = "value") %>% 
+  rename(" " = name) %>% 
+  kable(align = c("l", rep("c", ncol(.) - 1))) %>% 
+  kable_styling(bootstrap_options = c("striped", "hover"))
+```
+
+### Myndir
+
+#### Aldursskipt
 
 [Stærri mynd](https://raw.githubusercontent.com/bgautijonsson/covid19/master/Modeling/Logistic%20Growth/Myndir/Eftir%20aldri/sjukrahus_alvarleg_tilfelli.png)
 
 ```{r, fig.asp = 1}
 simulations %>% 
   filter(variable == "serious") %>% 
-  ggplot(aes(dags, median)) +
+  ggplot(aes(dags + 10, median)) +
   geom_line() +
   geom_line(aes(y = upper), lty = 2) +
   facet_wrap("aldur", scales = "free") +
@@ -390,7 +464,7 @@ simulations %>%
   ggsave("Myndir/Eftir aldri/sjukrahus_alvarleg_tilfelli.png", width = 8, height = 8, scale = 1.5)
 ```
 
-### Samtals
+#### Samtals
 
 [Stærri mynd](https://raw.githubusercontent.com/bgautijonsson/covid19/master/Modeling/Logistic%20Growth/Myndir/Heild/sjukrahus_alvarleg_tilfelli.png)
 
@@ -400,7 +474,7 @@ simulations %>%
   group_by(dags) %>% 
   summarise(median = sum(median),
             upper = sum(upper)) %>% 
-  ggplot(aes(dags, median)) +
+  ggplot(aes(dags + 10, median)) +
   geom_smooth() +
   geom_line() +
   geom_smooth(aes(y = upper), lty = 2) +
@@ -411,6 +485,12 @@ simulations %>%
   theme(axis.title = element_blank())  +
   ggsave("Myndir/Heild/sjukrahus_alvarleg_tilfelli.png", width = 8, height = 8, scale = 1.5)
 ```
+
+# Athuganir
+
+1. Erum á viðkvæmum stað í vaxtarferlinu. Forspár geta breyst frá degi til dags þegar ný gögn koma inn
+2. Tökum niðurstöðum rannsóknar Imperial College sem gefnum
+3. Erum svo fá að samanburður smitahraða erlendis frá og innlendis er erfiður. 
 
 # Útskýringarmyndir
 

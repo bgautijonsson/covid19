@@ -26,7 +26,7 @@ sidast_uppfaert <- "Síðast uppfært 16. mars 2020 klukkan 19:00"
 Sys.setlocale("LC_TIME", "is_IS")
 
 ui <- navbarPage(
-    title = "Iceland og COVID19", 
+    title = "Ísland og COVID19", 
     theme = shinytheme(theme = "flatly"),
     ##### Smitaþróun #####
     tabPanel(title = "Smitaþróun",
@@ -56,6 +56,10 @@ ui <- navbarPage(
                                      numericInput(inputId = "filtervalue",
                                                   label = "Er hærri en", 
                                                   min = 0, max = 100, value = 50))),
+                     selectInput(inputId = "scale",
+                                 label = "Kvarði",
+                                 choices = c("Upprunalegur", "Logra"),
+                                 multiple = F, selected = "Logra"),
                      div(actionButton(inputId = "gobutton1", label = "Birta", width = "120px"), 
                          class = "center", align = "middle"),
                      h6("Höfundur:"),
@@ -229,7 +233,6 @@ server <- function(input, output, session) {
                            alpha = chosen,
                            group = country)) +
                 geom_line(show.legend = F) +
-                scale_y_log10() +
                 scale_colour_manual(values = c("Blue", "Black")) +
                 scale_size_manual(values = c(1.2, 0.8)) + 
                 scale_alpha_manual(values = c(1, 0.3)) +
@@ -237,6 +240,8 @@ server <- function(input, output, session) {
                      subtitle = "Sýnd eftir dögum frá öðru smiti hvers lands",
                      x = "Dagar",
                      y = "Fjöldi smitaðra") 
+            
+            if (input$scale == "Logra") p <- p + scale_y_log10()
             ggplotly(p, tooltip = c("x", "y", "country"))
         } else {
             p <- euro_smit %>% 
@@ -251,7 +256,7 @@ server <- function(input, output, session) {
                            group = country)) +
                 geom_line(show.legend = F) +
                 scale_x_date(date_labels = "%d. %B", breaks = pretty_breaks(8)) +
-                scale_y_log10() +
+                
                 scale_colour_manual(values = c("Blue", "Black")) +
                 scale_size_manual(values = c(1.2, 0.8)) + 
                 scale_alpha_manual(values = c(1, 0.3)) +
@@ -259,6 +264,7 @@ server <- function(input, output, session) {
                      subtitle = "Sýnd eftir dagsetningu",
                      y = "Fjöldi smitaðra") +
                 theme(axis.title.x = element_blank())
+            if (input$scale == "Logra") p <- p + scale_y_log10()
             ggplotly(p, tooltip = c("x", "y", "country"))
         }})
     
@@ -307,7 +313,6 @@ server <- function(input, output, session) {
                            alpha = chosen,
                            group = country)) +
                 geom_line(show.legend = F) +
-                scale_y_log10() +
                 scale_colour_manual(values = c("Blue", "Black")) +
                 scale_size_manual(values = c(1.2, 0.8)) + 
                 scale_alpha_manual(values = c(1, 0.3)) +
@@ -315,6 +320,7 @@ server <- function(input, output, session) {
                      subtitle = "Sýnd sem fjöldi per 1000 íbúar eftir dögum frá öðru smiti hvers lands",
                      x = "Dagar",
                      y = "Fjöldi smitaðra (per 1000 íbúar)")
+            if (input$scale == "Logra") p <- p + scale_y_log10()
             ggplotly(p, tooltip = c("x", "y", "country"))
         } else {
             p <- euro_smit %>% 
@@ -327,7 +333,6 @@ server <- function(input, output, session) {
                            alpha = chosen,
                            group = country)) +
                 geom_line(show.legend = F) +
-                scale_y_log10() +
                 scale_x_date(date_labels = "%d. %B", breaks = pretty_breaks(8)) +
                 scale_colour_manual(values = c("Blue", "Black")) +
                 scale_size_manual(values = c(1.2, 0.8)) + 
@@ -336,6 +341,7 @@ server <- function(input, output, session) {
                      subtitle = "Sýnd sem fjöldi per 1000 íbúar eftir dögum frá öðru smiti hvers lands",
                      y = "Fjöldi smitaðra (per 1000 íbúar)") +
                 theme(axis.title.x = element_blank())
+            if (input$scale == "Logra") p <- p + scale_y_log10()
             ggplotly(p, tooltip = c("x", "y", "country"))
         }
     })
