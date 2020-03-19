@@ -5,48 +5,55 @@ data {
   vector[N_obs] cases;
   vector[N_obs] days;
   int country[N_obs];
-  vector[N_countries] pop;
   vector[N_countries] country_max;
-  vector[N_countries] country_max_cases;
-  vector[N_countries] country_min_case_rate;
-  vector[N_countries] country_n_days;
+  vector[N_countries] country_min;
   int<lower = 0> max_case_rate;
-  real<lower = 0> beta_scale[N_countries];
-}
-
-transformed data {
-  real<lower = 0> scale[N_countries];
-  for (i in 1:N_countries) scale[i] = inv(beta_scale[i]);
+  // real<lower = 0> beta_a;
+  // real<lower = 0> beta_b;
 }
 
 parameters {
   vector[N_countries] beta;
+  vector[N_countries] alpha;
   vector<lower = 0, upper = 1>[N_countries] maximum_pre;
   
   real mu_beta;
   real<lower = 0> sigma_sq_beta;
   
+  real mu_alpha;
+  real<lower = 0> sigma_sq_alpha;
+  
   vector<lower = 0>[N_countries] sigma_sq_obs;
+  real<lower = 0> a_sigma_obs;
+  real<lower = 0> b_sigma_obs;
+  
+  real<lower = 0> beta_a;
+  real<lower = 0> beta_b;
 }
 
 transformed parameters {
   vector[N_countries] maximum = maximum_pre .* (max_case_rate - country_max) + country_max;
+  vector[N_obs] linear = log(case_rate ./ (maximum[country] - case_rate));
 }
 
 model {
-  vector[N_obs] linear = log(case_rate ./ (maximum[country] - case_rate));
-  vector[N_obs] intercept = log(country_min_case_rate[country] ./ (maximum[country] - country_min_case_rate[country]));
-  
-
+  // vector[N_countries] minimum;
+  // for (i in 1:N_countries) minimum[i] = log(country_min[i] ./ (maximum[i] - country_min[i]));
   sigma_sq_beta ~ inv_chi_square(1);
-  sigma_sq_obs ~ inv_chi_square(1);
+  sigma_sq_alpha ~ inv_chi_square(1);
+  sigma_sq_obs ~ inv_gamma(a_sigma_obs, b_sigma_obs);
   
-  for (i in 1:N_countries) maximum_pre[i] ~ beta(country_max_cases[i] * scale[i], pop[i] * scale[i]);
+  maximum_pre ~ beta(beta_a, beta_b);
   
   beta ~ normal(mu_beta, sigma_sq_beta);
+  alpha ~ normal(mu_alpha, sigma_sq_alpha);
   
   
-  linear ~ normal(intercept + beta[country] .* days, sigma_sq_obs[country]);
+  linear ~ normal(alpha[country] + beta[country] .* days, sigma_sq_obs[country]);
+  
+  for (i in 1:N_obs) {
+    target += log(maximum[country[i]]) - log((maximum[country[i]] * case_rate[i] - case_rate[i]^2));
+  }
   
 }
 

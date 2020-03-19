@@ -35,42 +35,50 @@ d
 ```
 
 ```{r}
+a_beta <- 1
+b_beta <- 3
+curve(dbeta(x, shape1 = a_beta, shape2 = b_beta))
+```
+
+
+```{r}
 N_obs <- nrow(d)
-N_preds <- 40
+N_preds <- 60
 
 
 days <- d$dagar
-cases <- d$fjoldi
+cases <- c(1, diff(d$fjoldi))
 pred_days <- seq_len(N_preds)
+Upper_Limit <- 20000
+Max_Cases <- max(d$fjoldi)
 
 
-stan_data <- list(N_obs = N_obs, N_preds = N_preds, pred_days = pred_days,
+stan_data <- list(N_obs = N_obs, N_preds = N_preds, a_beta = a_beta, b_beta = b_beta,
+                  Max_Cases = Max_Cases, Upper_Limit = Upper_Limit,
+                  pred_days = pred_days,
                   days = days, cases = cases)
 ```
 
-Höfum $I$ lönd, $i = 1, \dots, I$ og athuganir á $T$ tímapunktum, $t = 0, \dots, T$. Skilgreinum 
+```{r}
+sim_max_pre <- rbeta(20000, a_beta, b_beta)
+sim_max <- sim_max_pre * (Upper_Limit - Max_Cases) + Max_Cases
 
-$$
-Rate_{i,t}  = \frac{Cases_{i,t}}{Pop_i} \cdot 1000
-$$
-
-Vilju færa $Rate_{i,t}$ á logit skala til að módelera línulega. Fáum
-
-$$
-z_{i,t} = \log \left( \frac{Rate_{i,t}}{1000 - Rate_{i,t}}\right)
-$$
-
-Skilgreinum svo módelið
-
-$$
-z_{i,t} \sim Normal(Rate_{i,0} + \beta_i \cdot t, \sigma^2)
-$$
+tibble(sim_max) %>% 
+    arrange(sim_max) %>% 
+    mutate(q = row_number() / (n() + 1)) %>% 
+    ggplot(aes(q, sim_max)) +
+    geom_line() +
+    scale_y_continuous(breaks = pretty_breaks(10)) +
+    scale_x_continuous(breaks = pretty_breaks(10))
+mean(sim_max > 5000)
+```
 
 
 ```{r}
 if (!file.exists("Logistic_case_rate.rds")) {
-    m <- sampling(stan_model("Logistic_cases_Island.stan"), 
-                  data  = stan_data, chains = 4, iter = 1000, warmup = 500)
+    m <- sampling(stan_model("Logistic_Dist_Island.stan"), 
+                  data  = stan_data, chains = 8, iter = 2000, warmup = 1000,
+                  control = list(adapt_delta = 0.95))
     write_rds(m, "Logistic_case_rate.rds")
 } else {
     m <- read_rds("Logistic_case_rate.rds")
@@ -84,80 +92,37 @@ m_rhat <- tidyMCMC(m, rhat = T, ess = T)$rhat %>% max %>% round(3)
 writeLines(str_c("Maximum Rhat is : ", m_rhat))
 ```
 
+```{r}
+tidyMCMC(m, rhat = T, ess = T, conf.int = T)
+```
+
+```{r}
+tidyMCMC(m, pars = "pred_cases", conf.int = T) %>% 
+    mutate(days = row_number()  -1,
+           dags = min(d$dags) + days)
+```
+
 
 ## Saturation
 
 ```{r}
-tidyMCMC(m, conf.int = T, ess = T, rhat = T)
+tidyMCMC(m, pars = c("alpha", "beta", "sigma_sq_obs", "maximum"), conf.int = T, ess = T, rhat = T)
 ```
 
 ```{r}
-tidyMCMC(m, pars = "pred_cases", conf.int = T, rhat = T, ess = T)
-```
-
-
-## Predictions
-
-```{r, fig.asp = 0.8}
-countries = c("Iceland", "Denmark", "Austria",
-              "Switzerland", "New Zealand")
-tidyMCMC(m, pars = c("beta", "maximum"), conf.int = T) %>% 
-    mutate(par = str_replace(term, "\\[.*\\]$", "")) %>% 
-    group_by(par) %>% 
-    mutate(country_id = row_number()) %>% 
-    ungroup %>% 
-    inner_join(d %>% group_by(country, country_id) %>% 
-                   summarise(date = min(date),
-                             min_case_rate = min(case_rate))) %>% 
-    filter(country %in% countries) %>% 
-    select(country, par, estimate, lower = conf.low, upper = conf.high, min_case_rate, date) %>% 
-    pivot_longer(c(estimate, lower, upper)) %>% 
-    pivot_wider(names_from = "par", values_from = "value") %>% 
-    expand_grid(days = seq(0, 50)) %>% 
-    mutate(intercept = log(min_case_rate / (maximum - min_case_rate)),
-           linear = intercept + beta * days,
-           case_rate = maximum * exp(linear) / (1 + exp(linear)),
-           date = date + days) %>% 
-    select(-intercept, -linear, -beta, -maximum) %>% 
-    pivot_wider(names_from = "name", values_from = "case_rate") %>% 
-    ggplot(aes(date, estimate, ymin = lower, ymax = upper,
-               group = country, col = country == "Iceland", fill = country == "Iceland")) +
-    geom_ribbon(alpha = 0.2, colour = NA) +
-    geom_line() +
-    geom_point(data = d %>% filter(country %in% countries),
-               aes(x = date, y = case_rate,
-                   col = country == "Iceland", fill = country == "Iceland"), inherit.aes = F) +
-    scale_colour_manual(values = c("grey", "blue")) +
-    scale_fill_manual(values = c("grey", "blue")) +
-    labs(title = "Mat á mettunarfjölda tilfella á <i style='color:blue'>Íslandi</i> og annars staðar",
-         subtitle = "Sýnt sem tilfelli per 1000 íbúa auk 95% öryggisbila") +
-    theme(plot.title = element_markdown(),
-          axis.title = element_blank()) +
-    ggsave("saturation.png", width = 8, height = 0.612 * 8, scale = 2)
+tidyMCMC(m, pars = "pred_cum_cases", conf.int = T, rhat = T, ess = T) %>% 
+    mutate(days = row_number() - 1,
+           date = min(d$dags) + days) %>% 
+    ggplot(aes(date, estimate, ymin = conf.low, ymax = conf.high)) +
+    geom_ribbon(alpha = 0.2) + 
+    geom_line()
 ```
 
 ```{r}
-countries = c("China")
-tidyMCMC(m, pars = c("beta", "maximum"), ess = T, rhat = T) %>% 
-    mutate(par = str_replace(term, "\\[.*\\]$", "")) %>% 
-    group_by(par) %>% 
-    mutate(country_id = row_number()) %>% 
-    ungroup %>% 
-    inner_join(d %>% group_by(country, country_id) %>% 
-                   summarise(date = min(date),
-                             min_case_rate = min(case_rate))) %>% 
-    filter(country %in% countries) %>% 
-    select(country, par, estimate, min_case_rate, date) %>% 
-    spread(par, estimate) %>% 
-    expand_grid(days = seq(0, 50)) %>% 
-    mutate(intercept = log(min_case_rate / (maximum - min_case_rate)),
-           linear = intercept + beta * days,
-           case_rate = maximum * exp(linear) / (1 + exp(linear)),
-           date = date + days) %>% 
-    ggplot(aes(date, case_rate, group = country, col = country == "Iceland")) +
-    geom_line() +
-    geom_point(data = d %>% filter(country %in% countries),
-               aes(x = date, y = case_rate)) +
-    scale_colour_manual(values = c("grey", "blue"))
+tidyMCMC(m, pars = "pred_active_cases", conf.int = T, rhat = T, ess = T, estimate.method = "mean") %>% 
+    mutate(days = row_number() - 1,
+           date = min(d$dags) + days) %>% 
+    ggplot(aes(date, estimate, ymin = conf.low, ymax = conf.high)) +
+    geom_ribbon(alpha = 0.2) + 
+    geom_line()
 ```
-
