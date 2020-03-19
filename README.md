@@ -12,11 +12,15 @@ Hér eru skrár og kóði á bak við vefsíðuna [bgautijonsson.shinyapps.io/CO
 
 Vefsíðan er öll sett upp í COVID_Dashboard möppunni, nánar tiltekið app.R skránni. Ég hef ekki komið mér í að commenta vel kóðann þar, en ef einhver hefur áhuga á að taka við viðhaldi á appinu hafið endilega samband og við förum yfir þetta.
 
+Todo: Skipta út gömlu Ísland síðunni fyrir nýjum flipa með betri spám.
+
 # Líkanasmíð
 
-Ég hef verið að skoða líkanasmíð aðalelga í möppunni Stan, en þar nota ég líkindafræðilega forritunarmálið Stan til að skilgreina Bayesísk líkön og kalla svo á kóðann úr R. Endilega notfærið ykkur kóða sem þar er að finna ef þið viljið.
+Forspár okkar byggjast eins og er á Logistic vexti uppsafnaðra smita, getum svo seinna módelað hvað gerist eftir að hápunkti er náð. Spábi fáum við með beitingu delta aðferðarðinnar með tölulegri diffrun og hermun. Ég er líka að vinna í svipuðu stigskiptu Bayesísku líkani sem samnýtir gögn víðs vegar að úr heiminum. Sú úrvinnsla finnst Í Stan/Logistic.
 
-Í möppunni Modeing var ég að leika mér að *Chain Binomial* líkaninu og er sá kóði bara á *fíflast* stigi.
+# Forspá
+
+Skráin `Make_Iceland_Preds.R` reiknar spár og hermir skiptingu í aldurshópa ásamt álagi á spítalann. Skilar niðurstöðum í Data/ möppuna sem preds_cumulative.csv, preds_active.csc, simulations_cumulative.csv og simulations_active.csv. Svo er ég að vinna í að setja upp parametric report í möppunni Simulation_Report/. Líklegast verður það einhvers konar Shiny_Prerendered RMarkdown document með möguleika um að hlaða niður töflum osf.
 
 
 Kær kveðja,
