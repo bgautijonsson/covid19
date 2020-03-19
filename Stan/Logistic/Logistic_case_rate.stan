@@ -2,14 +2,11 @@ data {
   int<lower = 0> N_obs;
   int<lower = 0> N_countries;
   vector[N_obs] case_rate;
-  vector[N_obs] cases;
   vector[N_obs] days;
   int country[N_obs];
   vector[N_countries] country_max;
   vector[N_countries] country_min;
   int<lower = 0> max_case_rate;
-  // real<lower = 0> beta_a;
-  // real<lower = 0> beta_b;
 }
 
 parameters {
@@ -37,8 +34,6 @@ transformed parameters {
 }
 
 model {
-  // vector[N_countries] minimum;
-  // for (i in 1:N_countries) minimum[i] = log(country_min[i] ./ (maximum[i] - country_min[i]));
   sigma_sq_beta ~ inv_chi_square(1);
   sigma_sq_alpha ~ inv_chi_square(1);
   sigma_sq_obs ~ inv_gamma(a_sigma_obs, b_sigma_obs);

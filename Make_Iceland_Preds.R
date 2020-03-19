@@ -1,6 +1,6 @@
 #### Parameters ####
 
-pred_days <- 60 # Hversu langt fram á við á að spá?
+pred_days <- 80 # Hversu langt fram á við á að spá?
 n_simulations <- 2e5 # Hversu margar ítarnir í hermun
 days_until_recovered <- 21 # Hve lengu ertu veik(ur)
 days_in_hospital <- 14 # Hve lengi ertu á spítala
@@ -120,7 +120,7 @@ simulations_active <- preds_active %>%
     arrange(dags, variable, aldur) %>% 
     group_by(dags, variable, name, aldur)  %>% 
     mutate(lag_value = case_when(variable == "hospital" ~ lag(value, n = days_in_hospital, default = 0),
-                                 variable == "serious" ~ lag(value, n = days_in_icu),
+                                 variable == "serious" ~ lag(value, n = days_in_icu, default = 0),
                                  TRUE ~ lag(value, n = 14, default = 0)),
            value = case_when(variable == "hospital" ~ pmax(0, value - lag_value),
                              variable == "serious" ~ pmax(0, value - lag_value),
