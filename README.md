@@ -16,7 +16,7 @@ Todo: Skipta út gömlu Ísland síðunni fyrir nýjum flipa með betri spám.
 
 # Líkanasmíð
 
-Forspár okkar byggjast eins og er á Logistic vexti uppsafnaðra smita, getum svo seinna módelað hvað gerist eftir að hápunkti er náð. Spábi fáum við með beitingu delta aðferðarðinnar með tölulegri diffrun og hermun. Ég er líka að vinna í svipuðu stigskiptu Bayesísku líkani sem samnýtir gögn víðs vegar að úr heiminum. Sú úrvinnsla finnst Í Stan/Logistic.
+Forspár okkar byggjast eins og er á Logistic vexti uppsafnaðra smita, getum svo seinna módelað hvað gerist eftir að hápunkti er náð. Spábil fáum við með beitingu delta aðferðarðinnar með tölulegri diffrun og hermun. Ég er líka að vinna í svipuðu stigskiptu Bayesísku líkani sem samnýtir gögn víðs vegar að úr heiminum. Sú úrvinnsla finnst Í Stan/Logistic.
 
 # Forspá
 
