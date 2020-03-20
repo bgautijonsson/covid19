@@ -1,0 +1,128 @@
+---
+title: "Logistic"
+author: "Brynjólfur Gauti Jónsson"
+date: "3/17/2020"
+output: 
+    html_document:
+        theme: flatly
+        code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = F, fig.asp = 0.621, out.width = "100%", fig.width = 8)
+```
+
+```{r}
+packages <- c("tidyverse", "knitr", "kableExtra", "broom", "cowplot", "rstan", "tidybayes", "scales", "ggridges", "lubridate", "ggtext")
+installed <- sapply(packages, require, character.only = TRUE, quietly = TRUE)
+theme_set(theme_classic(base_size = 12) + 
+              background_grid(color.major = "grey90", 
+                              color.minor = "grey95", 
+                              minor = "xy", major = "xy") +
+              theme(legend.position = "none"))
+rm(packages, installed)
+options(mc.cores = parallel::detectCores())
+```
+
+
+# Case rate
+
+```{r}
+d <- read_csv("../../Data/Smit.csv") %>% 
+    filter(tegund == "Samtals") %>% 
+    filter(fjoldi > 0)
+d
+```
+
+```{r}
+a_beta <- 1
+b_beta <- 3
+curve(dbeta(x, shape1 = a_beta, shape2 = b_beta))
+```
+
+
+```{r}
+N_obs <- nrow(d)
+N_preds <- 60
+
+
+days <- d$dagar
+cases <- c(1, diff(d$fjoldi))
+pred_days <- seq_len(N_preds)
+Upper_Limit <- 20000
+Max_Cases <- max(d$fjoldi)
+
+
+stan_data <- list(N_obs = N_obs, N_preds = N_preds, a_beta = a_beta, b_beta = b_beta,
+                  Max_Cases = Max_Cases, Upper_Limit = Upper_Limit,
+                  pred_days = pred_days,
+                  days = days, cases = cases)
+```
+
+```{r}
+sim_max_pre <- rbeta(20000, a_beta, b_beta)
+sim_max <- sim_max_pre * (Upper_Limit - Max_Cases) + Max_Cases
+
+tibble(sim_max) %>% 
+    arrange(sim_max) %>% 
+    mutate(q = row_number() / (n() + 1)) %>% 
+    ggplot(aes(q, sim_max)) +
+    geom_line() +
+    scale_y_continuous(breaks = pretty_breaks(10)) +
+    scale_x_continuous(breaks = pretty_breaks(10))
+mean(sim_max > 5000)
+```
+
+
+```{r}
+if (!file.exists("Logistic_case_rate.rds")) {
+    m <- sampling(stan_model("Logistic_Dist_Island.stan"), 
+                  data  = stan_data, chains = 8, iter = 2000, warmup = 1000,
+                  control = list(adapt_delta = 0.95))
+    write_rds(m, "Logistic_case_rate.rds")
+} else {
+    m <- read_rds("Logistic_case_rate.rds")
+}
+```
+
+## Convergence
+
+```{r}
+m_rhat <- tidyMCMC(m, rhat = T, ess = T)$rhat %>% max %>% round(3)
+writeLines(str_c("Maximum Rhat is : ", m_rhat))
+```
+
+```{r}
+tidyMCMC(m, rhat = T, ess = T, conf.int = T)
+```
+
+```{r}
+tidyMCMC(m, pars = "pred_cases", conf.int = T) %>% 
+    mutate(days = row_number()  -1,
+           dags = min(d$dags) + days)
+```
+
+
+## Saturation
+
+```{r}
+tidyMCMC(m, pars = c("alpha", "beta", "sigma_sq_obs", "maximum"), conf.int = T, ess = T, rhat = T)
+```
+
+```{r}
+tidyMCMC(m, pars = "pred_cum_cases", conf.int = T, rhat = T, ess = T) %>% 
+    mutate(days = row_number() - 1,
+           date = min(d$dags) + days) %>% 
+    ggplot(aes(date, estimate, ymin = conf.low, ymax = conf.high)) +
+    geom_ribbon(alpha = 0.2) + 
+    geom_line()
+```
+
+```{r}
+tidyMCMC(m, pars = "pred_active_cases", conf.int = T, rhat = T, ess = T, estimate.method = "mean") %>% 
+    mutate(days = row_number() - 1,
+           date = min(d$dags) + days) %>% 
+    ggplot(aes(date, estimate, ymin = conf.low, ymax = conf.high)) +
+    geom_ribbon(alpha = 0.2) + 
+    geom_line()
+```
