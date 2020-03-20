@@ -1,0 +1,13 @@
+name: Simulation_Report_Shiny
+title: Simulation_Report_Shiny
+username:
+account: bgautijonsson
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 1966275
+bundleId: 2898177
+url: https://bgautijonsson.shinyapps.io/Simulation_Report_Shiny/
+when: 1584629083.12801
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: Simulation_Report_Shiny.html|Simulation_Report.html|Simulation_Report.Rmd|Simulation_Slideshow.html|Simulation_Slideshow.Rmd|Data|Myndir|Simulation_Slideshow_files

@@ -1,0 +1,13 @@
+name: Simulation_Report_Shiny
+title:
+username:
+account: bgautijonsson
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 1966275
+bundleId: 2898845
+url: https://bgautijonsson.shinyapps.io/Simulation_Report_Shiny/
+when: 1584639807.9568
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: aldur.csv|ECDC_Data.csv|Hubei_JHU_Data.csv|mogulegar_innlagnir.gif|preds_active.csv|preds_cumulative.csv|Simulation_Report_Shiny.html|simulations_active.csv|simulations_cumulative.csv|skipta_i_hopa.gif|smit.csv|Simulation_Report_Shiny_data/data_chunks_index.txt|Simulation_Report_Shiny_data/data.cached.RData

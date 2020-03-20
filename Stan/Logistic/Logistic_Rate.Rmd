@@ -6,40 +6,61 @@ output:
     html_document:
         theme: flatly
         code_folding: hide
+runtime: shiny_prerendered
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = F, message = F, fig.asp = 0.621, out.width = "100%", fig.width = 8)
-```
+```{r setup, context = "setup", include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = F, 
+                      fig.asp = 0.621, out.width = "100%", fig.width = 8)
 
-```{r}
-packages <- c("tidyverse", "knitr", "kableExtra", "broom", "cowplot", "rstan", "tidybayes", "scales", "ggridges", "lubridate", "ggtext")
-installed <- sapply(packages, require, character.only = TRUE, quietly = TRUE)
+library(tidyverse); library(knitr); library(kableExtra); library(broom); library(cowplot); 
+library(rstan); library(tidybayes); library(scales)
+
 theme_set(theme_classic(base_size = 12) + 
               background_grid(color.major = "grey90", 
                               color.minor = "grey95", 
                               minor = "xy", major = "xy") +
               theme(legend.position = "none"))
-rm(packages, installed)
 options(mc.cores = parallel::detectCores())
 ```
 
 
-# Case rate
+# Gögn
 
+## Lönd
 
-```{r}
-d <- read_csv("../../Data/ECDC_Data.csv") %>% 
-    filter(case_rate > 0.0001, 
-           !country %in% c("China")) %>% 
+```{r, context = "data"}
+d <- read_csv("https://www.dropbox.com/s/br9kjy0pbrzscq3/ECDC_Data.csv?dl=1") %>% 
+    filter(case_rate > 0.01, 
+           !country %in% c("China", "Hubei")) %>% 
     select(country, pop, date, days, cases = cum_cases, case_rate) %>% 
     group_by(country) %>% 
     mutate(days = row_number() - 1) %>% 
     filter(any(days > 10)) %>% 
     ungroup %>% 
     mutate(country_id = as.numeric(as.factor(country)))
-count(d, country)
+m <- read_rds("Logistic_case_rate.rds")
 ```
+
+
+Hvaða lönd eru notuð?
+
+* Ef meri en 10 dagar eru síðan tíðni per 1000 fór yfir 0.01
+* Ekki Kína í heild og heldur ekki Hubei
+
+```{r}
+d %>% 
+    group_by(country) %>% 
+    summarise(First = min(date),
+              Days_In_Data = n(),
+              Start_Rate = min(case_rate),
+              End_Rate = max(case_rate)) %>% 
+    kable %>% 
+    kable_styling(bootstrap_options = c("striped", "hover"))
+```
+
+
+## Breytur
 
 ```{r}
 N_obs <- nrow(d)
@@ -49,194 +70,140 @@ max_case_rate <- 1000
 
 days <- d$days
 case_rate <- d$case_rate
-cases <- d$cases
 country <- d$country_id %>% as.integer
 
 
-pop <- d %>% distinct(country_id, pop) %>% .$pop
+pop <- d %>% distinct(country_id, pop) %>% .$pop / 1000
+
 country_max <- d %>% 
     group_by(country_id) %>% 
     summarise(maximum = max(case_rate)) %>% 
     arrange(country_id) %>% 
     .$maximum
 
-country_min <- d %>% 
-    group_by(country_id) %>% 
-    summarise(minimum = min(case_rate)) %>% 
-    arrange(country_id) %>% 
-    .$minimum
 
 stan_data <- list(N_obs = N_obs, N_countries = N_countries, max_case_rate = max_case_rate,
-                  days = days, case_rate = case_rate, cases = cases, country = country,
-                  country_max = country_max, country_min = country_min)
+                  days = days, case_rate = case_rate, country = country,
+                  pop = pop, country_max = country_max)
+```
+
+```{r}
 str(stan_data)
 ```
 
-```{r}
-if (!file.exists("Logistic_case_rate.rds")) {
-    m <- sampling(stan_model("Logistic_case_rate.stan"), 
-                  data  = stan_data, chains = 4, iter = 4000, warmup = 2000)
-            write_rds(m, "Logistic_case_rate.rds")
-} else {
-    m <- read_rds("Logistic_case_rate.rds")
+
+
+```{r, eval = F}
+m <- sampling(stan_model("Logistic_case_rate_reverse.stan"), 
+                  data  = stan_data, chains = 4, iter = 2000, warmup = 1000)
+```
+
+```{r, context = "render"}
+selectInput(inputId = "country",
+            label = "Land",
+            choices = unique(d$country), selected = "Iceland")
+
+plotOutput("pred_plot")
+```
+
+
+```{r, context = "server"}
+
+output$pred_plot <- renderPlot({
+    
+    req(input$country)
+    
+    plot_dat <- d %>% filter(country == input$country)
+    country_id = unique(plot_dat$country_id)
+    chosen_country <- country_id
+    results <- spread_draws(m, 
+                            alpha[country_id],
+                            beta[country_id], 
+                            maximum[country_id]) %>% 
+        filter(country_id == chosen_country) %>% 
+        distinct(alpha, beta, maximum) %>% 
+        mutate(iter = row_number()) %>% 
+        expand_grid(days = seq(-10, 100)) %>% 
+        mutate(linear = alpha + beta * days,
+               rate = maximum / (1 + exp(-linear)))
+    plot_lab <- str_c("Tíðni smita á höfðatölu í ", 
+                      input$country, 
+                      "Spá og raun")
+    results %>% 
+        mutate(date = days + min(plot_dat$date)) %>% 
+        group_by(date) %>% 
+        summarise(median = median(rate),
+                  lower = quantile(rate, 0.025),
+                  upper = quantile(rate, 0.975)) %>% 
+        ggplot(aes(date, median, ymin = lower, ymax = upper)) +
+        geom_line(aes(y = lower), lty = 2) +
+        geom_line(aes(y = upper), lty = 2) +
+        geom_line() +
+        geom_point(data = plot_dat,
+                   aes(date, case_rate), inherit.aes = F) +
+        labs(y = "Forspáð tíðni smita (per 1000 íbúar)",
+             title = plot_lab,
+             subtitle = "Forspáð miðgildi ásamt 95% PI") +
+        theme(axis.title.x = element_blank())
+})
+```
+
+# Líkan (Stan kóði)
+
+```{r, eval = FALSE}
+data {
+  int<lower = 0> N_obs;
+  vector[N_obs] case_rate;
+  vector[N_obs] days;
+  int country[N_obs];
+  int cases[N_obs];
+  
+  
+  int<lower = 0> N_countries;
+  vector[N_countries] pop;
+  vector[N_countries] country_max;
+  int<lower = 0> max_case_rate;
 }
-```
 
-## Convergence
+parameters {
+  vector[N_countries] beta;
+  vector[N_countries] alpha;
+  vector<lower = 0, upper = 1>[N_countries] maximum_pre;
+  
+  real mu_beta;
+  real<lower = 0> sigma_sq_beta;
+  
+  real mu_alpha;
+  real<lower = 0> sigma_sq_alpha;
+  
+  vector<lower = 0>[N_countries] sigma_sq_obs;
+  real<lower = 0> a_sigma_obs;
+  real<lower = 0> b_sigma_obs;
+  
+  real<lower = 0> beta_a;
+  real<lower = 0> beta_b;
+}
 
-```{r}
-m_rhat <- tidyMCMC(m, rhat = T, ess = T)$rhat %>% max %>% round(3)
-writeLines(str_c("Maximum Rhat is : ", m_rhat))
-```
+transformed parameters {
+  vector[N_countries] maximum = maximum_pre * max_case_rate;
+  vector[N_obs] linear = alpha[country] + beta[country] .* days;
+  vector<lower = 0, upper = 1000>[N_obs] true_rate;
+  for (i in 1:N_obs) true_rate[i] = maximum[country[i]] .* 1 / (1 + exp(-linear[i]));
+}
 
-```{r}
-tidyMCMC(m, rhat = T, ess = T)
-```
-
-```{r}
-tidyMCMC(m, pars = c("mu_alpha", "sigma_sq_alpha", "mu_beta", "sigma_sq_beta", "a_sigma_obs", "b_sigma_obs", "sigma_sq_obs"))
-```
-
-
-## Beta
-
-
-```{r}
-tidyMCMC(m, pars = "beta", conf.int = T, ess = T, rhat = T, estimate.method = "mean") %>% 
-    mutate(country_id = row_number()) %>% 
-    inner_join(d %>% distinct(country, country_id)) %>% 
-    mutate(country = fct_reorder(country, estimate)) %>% 
-    ggplot(aes(country, estimate, ymin = conf.low, ymax = conf.high, col = country == "Iceland")) +
-    geom_point(size = 3) +
-    geom_linerange() +
-    coord_flip() +
-    scale_colour_manual(values = c("grey30", "blue")) +
-    labs(title = "Daily increase on logit scale",
-         subtitle = "Shown as cases per 1000") +
-    scale_y_log10() +
-    ggsave("hradi.png", width = 8, height = 0.621 * 8, scale = 1.5)
-```
-
-## Saturation
-
-```{r}
-tidyMCMC(m, pars = c("beta_a", "beta_b","maximum"), conf.int = T, ess = T, rhat = T, estimate.method = "mean")
-```
-
-
-```{r}
-tidyMCMC(m, pars = "maximum", conf.int = T, ess = T, rhat = T, estimate.method = "mean") %>% 
-    mutate(country_id = row_number()) %>% 
-    inner_join(d %>% distinct(country, country_id)) %>% 
-    mutate(country = fct_reorder(country, estimate)) %>% 
-    ggplot(aes(country, estimate, ymin = conf.low, ymax = conf.high, col = country == "Iceland")) +
-    geom_point(size = 3) +
-    geom_linerange() +
-    coord_flip() +
-    scale_colour_manual(values = c("grey30", "blue")) +
-    labs(title = "Saturation amount",
-         subtitle = "Shown as cases per 1000") +
-    scale_y_log10()
-```
-
-## Predictions
-
-```{r, fig.asp = 0.8}
-countries = c("Iceland", "Denmark", "Austria",
-              "Switzerland", "New Zealand")
-tidyMCMC(m, pars = c("alpha", "beta", "maximum"), conf.int = T) %>% 
-    mutate(par = str_replace(term, "\\[.*\\]$", "")) %>% 
-    group_by(par) %>% 
-    mutate(country_id = row_number()) %>% 
-    ungroup %>% 
-    inner_join(d %>% group_by(country, country_id) %>% 
-                   summarise(date = min(date),
-                             min_case_rate = min(case_rate))) %>% 
-    filter(country %in% countries) %>% 
-    select(country, par, estimate, lower = conf.low, upper = conf.high, min_case_rate, date) %>% 
-    pivot_longer(c(estimate, lower, upper)) %>% 
-    pivot_wider(names_from = "par", values_from = "value") %>% 
-    expand_grid(days = seq(-5, 50)) %>% 
-    mutate(intercept = log(min_case_rate / (maximum - min_case_rate)),
-           linear = intercept + beta * days,
-           case_rate = maximum * exp(linear) / (1 + exp(linear)),
-           date = date + days) %>% 
-    select(-intercept, -linear, -beta, -maximum, -min_case_rate, -alpha) %>% 
-    pivot_wider(names_from = "name", values_from = "case_rate") %>% 
-    ggplot(aes(date, estimate, ymin = lower, ymax = upper,
-               group = country, col = country == "Iceland", fill = country == "Iceland")) +
-    geom_ribbon(alpha = 0.2, colour = NA) +
-    geom_line() +
-    geom_point(data = d %>% filter(country %in% countries),
-               aes(x = date, y = case_rate,
-                   col = country == "Iceland", fill = country == "Iceland"), inherit.aes = F) +
-    scale_colour_manual(values = c("grey", "blue")) +
-    scale_fill_manual(values = c("grey", "blue")) +
-    labs(title = "Mat á mettunarfjölda tilfella á <i style='color:blue'>Íslandi</i> og annars staðar",
-         subtitle = "Sýnt sem tilfelli per 1000 íbúa auk 95% öryggisbila") +
-    theme(plot.title = element_markdown(),
-          axis.title = element_blank()) +
-    ggsave("saturation.png", width = 8, height = 0.612 * 8, scale = 2)
-```
-
-```{r}
-countries = c("Italy")
-tidyMCMC(m, pars = c("beta", "maximum"), ess = T, rhat = T) %>% 
-    mutate(par = str_replace(term, "\\[.*\\]$", "")) %>% 
-    group_by(par) %>% 
-    mutate(country_id = row_number()) %>% 
-    ungroup %>% 
-    inner_join(d %>% group_by(country, country_id) %>% 
-                   summarise(date = min(date),
-                             min_case_rate = min(case_rate))) %>% 
-    filter(country %in% countries) %>% 
-    select(country, par, estimate, min_case_rate, date) %>% 
-    spread(par, estimate) %>% 
-    expand_grid(days = seq(0, 50)) %>% 
-    mutate(intercept = log(min_case_rate / (maximum - min_case_rate)),
-           linear = intercept + beta * days,
-           case_rate = maximum * exp(linear) / (1 + exp(linear)),
-           date = date + days) %>% 
-    ggplot(aes(date, case_rate, group = country, col = country == "Iceland")) +
-    geom_line() +
-    geom_point(data = d %>% filter(country %in% countries),
-               aes(x = date, y = case_rate)) +
-    scale_colour_manual(values = c("grey", "blue"))
-```
-
-```{r}
-country_id = c(10, 11)
-results <- spread_draws(m, beta[country_id], maximum[country_id]) %>% 
-    filter(country_id == 1)
-
-min_rate <- d %>% filter(country == "Iceland") %>% .$case_rate %>% min
-results %>% 
-    sample_n(1000) %>% 
-    mutate(min_rate = min_rate,
-           intercept = log(min_rate / (maximum - min_rate))) %>% 
-    expand_grid(days = seq(0, 40)) %>% 
-    mutate(linear = intercept + beta * days,
-           rate = maximum * 1 / (1 + exp(-linear))) %>% 
-    group_by(days) %>% 
-    summarise(estimate = mean(rate),
-              upper = quantile(rate, .8)) %>% 
-    ggplot(aes(days, estimate)) +
-    geom_line() +
-    geom_point(data = d %>% filter(country == "Iceland"), aes(days, case_rate), inherit.aes = F) +
-    geom_line(aes(y = upper), lty = 2)
-```
-
-```{r}
-results %>% 
-    ungroup %>% 
-    distinct(alpha, beta, maximum) %>% 
-    mutate(iter = row_number()) %>% 
-    sample_n(2000) %>% 
-    expand_grid(days = seq(0, 40)) %>% 
-    mutate(linear = alpha + beta * days,
-           rate = maximum * 1 / (1 + exp(-linear))) %>% 
-    ggplot(aes(days, rate, group = iter)) +
-    geom_line(alpha = 0.1) +
-    scale_y_log10()
+model {
+  sigma_sq_beta ~ inv_chi_square(1);
+  sigma_sq_alpha ~ inv_chi_square(1);
+  sigma_sq_obs ~ inv_gamma(a_sigma_obs, b_sigma_obs);
+  
+  maximum_pre ~ beta(beta_a, beta_b);
+  
+  beta ~ normal(mu_beta, sigma_sq_beta);
+  alpha ~ normal(mu_alpha, sigma_sq_alpha);
+  
+  
+  case_rate ~ normal(true_rate, sigma_sq_obs[country]);
+  
+}
 ```
 

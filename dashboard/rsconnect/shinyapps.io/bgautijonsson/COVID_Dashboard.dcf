@@ -1,0 +1,12 @@
+name: COVID_Dashboard
+title: COVID_Dashboard
+username:
+account: bgautijonsson
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 1945536
+bundleId: 2898812
+url: https://bgautijonsson.shinyapps.io/COVID_Dashboard/
+when: 1584639261.5792
+asMultiple: FALSE
+asStatic: FALSE

@@ -49,6 +49,6 @@ out %>%
     write_csv("Data/ECDC_Data.csv")
 
 out %>% 
-    write_csv("COVID_Dashboard/Data/ECDC_Data.csv")
+    write_csv("dashboard/Data/ECDC_Data.csv")
 rm(list = ls())
 

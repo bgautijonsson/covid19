@@ -1,0 +1,13 @@
+name: Simulation_Report
+title: Simulation_Report
+username:
+account: bgautijonsson
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 1965988
+bundleId: 2897999
+url: https://bgautijonsson.shinyapps.io/Simulation_Report/
+when: 1584625029.87565
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: Myndir

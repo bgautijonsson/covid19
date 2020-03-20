@@ -1,0 +1,12 @@
+name: dashboard
+title: dashboard
+username:
+account: bgautijonsson
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 1967148
+bundleId: 2898772
+url: https://bgautijonsson.shinyapps.io/dashboard/
+when: 1584638521.98246
+asMultiple: FALSE
+asStatic: FALSE

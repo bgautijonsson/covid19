@@ -4,7 +4,7 @@ pred_days <- 80 # Hversu langt fram á við á að spá?
 n_simulations <- 2e5 # Hversu margar ítarnir í hermun
 days_until_recovered <- 21 # Hve lengu ertu veik(ur)
 days_in_hospital <- 14 # Hve lengi ertu á spítala
-days_in_icu <- 100 # Hve lengi ertu í gjörgæslu
+days_in_icu <- 10 # Hve lengi ertu í gjörgæslu
 
 #### Setup ####
 library(tidyverse) 
