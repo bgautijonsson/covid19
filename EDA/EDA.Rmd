@@ -51,7 +51,7 @@ d %>%
     scale_y_log10() +
     scale_colour_manual(values = c("grey", "blue")) +
     labs(x = "Höfðatala", y = "Tíðni smita per 1000 íbúa",
-         title = "<i style='color:blue'>Ísland</i> byrjar með háa tíðni eingöngu vegna íbúafjöda",
+         title = "<i style='color:blue'>Ísland</i> byrjar með háa tíðni vegna lágs íbúafjölda",
          subtitle = "Dagsetning: {closest_state}") +
     theme(legend.position = "none",
           plot.title = element_markdown())
@@ -68,7 +68,7 @@ p <- d %>%
     scale_y_log10() +
     scale_colour_manual(values = c("grey", "blue")) +
     labs(x = "Höfðatala", y = "Tíðni smita per 1000 íbúa",
-         title = "<i style='color:blue'><strong>Ísland</strong></i> byrjar með háa tíðni eingöngu vegna íbúafjölda",
+         title = "<i style='color:blue'>Ísland</i> byrjar með háa tíðni vegna lágs íbúafjölda",
          subtitle = "Dagsetning: {closest_state}") +
     theme(legend.position = "none",
           plot.title = element_markdown()) +
