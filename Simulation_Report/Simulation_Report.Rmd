@@ -27,6 +27,8 @@ Sys.setlocale("LC_TIME", "is_IS")
 ```{r data}
 data_path <- str_c("../Output/Iceland_Predictions_", Sys.Date(), ".csv")
 d <- read_csv(data_path)
+fig_out_path <- str_c(as.character(Sys.Date()), "/Figures/")
+make_fig_path <- function(name) str_c(fig_out_path, name)
 ```
 
 # Niðurstöður
@@ -46,7 +48,8 @@ d %>%
   scale_y_continuous(breaks = pretty_breaks(8)) +
   scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
   labs(title = "Virk smit í heildina") +
-  theme(axis.title = element_blank())
+  theme(axis.title = element_blank()) +
+  ggsave(make_fig_path("cases_total.png"), width = 8, height = 0.621 * 8, scale = 1.5)
 ```
 
 #### Aldursskipt
@@ -62,7 +65,8 @@ d %>%
   scale_x_date(date_breaks = "2 week", date_labels = "%d/%m") +
   labs(title = "Virk smit eftir aldri",
        y = "Tilfelli") +
-  theme(axis.title = element_blank())
+  theme(axis.title = element_blank()) +
+  ggsave(make_fig_path("cases_age.png"), width = 8, height = 8, scale = 1.5)
 ```
 
 ### Sjúkrahúslegur
@@ -79,7 +83,8 @@ d %>%
   scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
   labs(title = "Virkar sjúkrahúslegur í heildina",
        y = "Tilfelli") +
-  theme(axis.title = element_blank()) 
+  theme(axis.title = element_blank())  +
+  ggsave(make_fig_path("hospital_total.png"), width = 8, height = 0.621 * 8, scale = 1.5)
 ```
 
 #### Aldursskipt
@@ -94,7 +99,8 @@ d %>%
   scale_y_continuous(breaks = pretty_breaks(8)) +
   scale_x_date(date_breaks = "2 week", date_labels = "%d/%m") +
   labs(title = "Virkar sjúkrahúslegur eftir aldri") +
-  theme(axis.title = element_blank()) 
+  theme(axis.title = element_blank()) +
+  ggsave(make_fig_path("hospital_age.png"), width = 8, height = 8, scale = 1.5)
 ```
 
 
@@ -113,7 +119,8 @@ d %>%
   scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
   labs(title = "Virk alvarleg tilfelli á sjúkrahúsi í heildina",
        y = "Tilfelli") +
-  theme(axis.title = element_blank()) 
+  theme(axis.title = element_blank()) +
+  ggsave(make_fig_path("icu_total.png"), width = 8, height = 0.621 * 8, scale = 1.5)
 ```
 
 #### Aldursskipt
@@ -129,6 +136,7 @@ d %>%
   scale_x_date(date_breaks = "2 week", date_labels = "%d/%m") +
   labs(title = "Virk alvarleg tilfelli á sjúkrahúsi eftir aldri",
        y = "Tilfelli") +
-  theme(axis.title = element_blank())
+  theme(axis.title = element_blank()) +
+  ggsave(make_fig_path("icu_age.png"), width = 8, height = 0.621 * 8, scale = 1.5)
 ```
 
