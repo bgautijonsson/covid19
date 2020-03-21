@@ -1,7 +1,7 @@
 #### Parameters ####
 
 pred_days <- 80 # Hversu langt fram á við á að spá?
-n_simulations <- 2e5 # Hversu margar ítarnir í hermun
+n_simulations <- 1e5 # Hversu margar ítarnir í hermun
 days_until_recovered <- 21 # Hve lengu ertu veik(ur)
 days_in_hospital <- 14 # Hve lengi ertu á spítala
 days_in_icu <- 10 # Hve lengi ertu í gjörgæslu
@@ -15,9 +15,16 @@ select <- dplyr::select
 #### Make data and read in ####
 source("Make_Landlaeknir_Data.R")
 
-d <- read_csv("Data/smit.csv") %>% 
-    filter(tegund == "Samtals", fjoldi > 0)
-aldur <- read_csv("Data/aldur.csv")
+d <- sheets_read("https://docs.google.com/spreadsheets/d/1xgDhtejTtcyy6EN5dbDp5W3TeJhKFRRgm6Xk0s0YFeA", sheet = "Smit") %>% 
+    mutate(fjoldi = Smit_Samtals + cumsum(IE_Smit)) %>% 
+    select(dags = Dagsetning, fjoldi) %>% 
+    mutate(dags = as_date(dags),
+           dagar = row_number() - 1) %>% 
+    filter(fjoldi > 0)
+
+aldur <- read_csv("../../Data/aldur.csv")
+
+
 
 #### Fit Model ####
 
@@ -102,10 +109,9 @@ simulations_cumulative <- preds_cumulative %>%
     pivot_wider(names_from = "type", values_from = "value") %>% 
     pivot_longer(c(median, upper)) %>% 
     arrange(dags, variable, aldur) %>% 
-    group_by(dags, variable, name, aldur) %>% 
     pivot_wider()
 
-simulations_cumulative %>% write_csv("Data/simulations_cumulative.csv")
+simulations_cumulative %>% write_csv("../../Data/simulations_cumulative.csv")
 
 simulations_active <- preds_active %>% 
     rowwise %>% 
@@ -129,4 +135,4 @@ simulations_active <- preds_active %>%
     select(-lag_value) %>% 
     pivot_wider()
 
-simulations_active %>% write_csv("Data/simulations_active.csv")
+simulations_active %>% write_csv("../../Data/simulations_active.csv")

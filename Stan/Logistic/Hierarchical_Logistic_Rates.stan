@@ -39,8 +39,8 @@ transformed parameters {
 
 model {
   
-  sigma_sq_beta ~ inv_chi_square(1);
-  sigma_sq_alpha ~ inv_chi_square(1);
+  sigma_sq_beta ~ inv_chi_square(2);
+  sigma_sq_alpha ~ inv_chi_square(2);
   sigma_sq_obs ~ inv_gamma(a_sigma_obs, b_sigma_obs);
   
   maximum_pre ~ beta(beta_a, beta_b);
