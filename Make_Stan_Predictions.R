@@ -55,8 +55,12 @@ all_results <- age_results %>%
            icu = rbinom(n(), size = hospital, prob = aldur$p_spitali))  %>% 
     ungroup %>% 
     pivot_longer(c(cases, hospital, icu)) %>% 
+    group_by(iter, days, name) %>% 
+    mutate(total = case_when(name == "cases" ~ as.integer(active_cases),
+                             name %in% c("hospital", "icu") ~ sum(value))) %>% 
+    ungroup %>% 
+    select(-active_cases) %>% 
     pivot_wider(names_from = "age", values_from = "value") %>% 
-    rename(Total = active_cases) %>% 
     pivot_longer(c(-iter, -days, -name), names_to = "age", values_to = "value") %>% 
     group_by(date = days + start_date, name, age) %>% 
     summarise(median = median(value),

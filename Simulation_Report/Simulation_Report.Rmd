@@ -9,25 +9,26 @@ output:
     toc_float: true
     toc_depth: 4
 ---
-  
+
 ```{r setup, context = "setup", include=FALSE, results = "hide"}
 knitr::opts_chunk$set(echo = FALSE, warning = F, message = F, fig.asp = 0.621, out.width = "100%", fig.width = 8)
 
 library(tidyverse); library(cowplot); library(kableExtra); library(scales); 
 library(lubridate); library(broom); library(ggtext)
 theme_set(theme_classic(base_size = 12) + 
-              background_grid(color.major = "grey90", 
-                              color.minor = "grey95", 
-                              minor = "xy", major = "xy") +
-              theme(legend.position = "none"))
+            background_grid(color.major = "grey90", 
+                            color.minor = "grey95", 
+                            minor = "xy", major = "xy") +
+            theme(legend.position = "none"))
 select <- dplyr::select
 Sys.setlocale("LC_TIME", "is_IS")
 ```
 
-```{r data, context = "data"}
-
+```{r data}
+data_path <- str_c("../Output/Iceland_Predictions_", Sys.Date(), ".csv")
+d <- read_csv(data_path)
 ```
-    
+
 # Niðurstöður
 
 ## Virkt
@@ -37,46 +38,31 @@ Sys.setlocale("LC_TIME", "is_IS")
 #### Samtals
 
 ```{r}
-preds_active  %>% 
-    mutate(dags = min(d$dags) + dagar) %>% 
-    ggplot(aes(dags, pred)) +
-    geom_line() +
-    geom_line(aes(y = upper), lty = 2, col = "grey50") +
-    geom_point(data = d, aes(dags, fjoldi)) +
-    geom_text(data = tibble(x = ymd("2020-03-25"), 
-                            y = 1100, 
-                            label = "Svartsýn spá"),
-              aes(x = x, 
-                  y = y, 
-                  label = label), 
-              inherit.aes = F, col = "grey50") +
-    geom_text(data = tibble(x = ymd("2020-04-09"), 
-                            y = 300, 
-                            label = "Líklegasta spá"),
-              aes(x = x, 
-                  y = y, 
-                  label = label), 
-              inherit.aes = F) +
-    scale_y_continuous(breaks = pretty_breaks(8)) +
-    scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
-    labs(title = "Virk smit í heildina") +
-    theme(axis.title = element_blank())
+d %>% 
+  filter(name == "cases", age == "total") %>% 
+  ggplot(aes(date, median)) +
+  geom_line() +
+  geom_line(aes(y = upper), lty = 2, col = "grey50") +
+  scale_y_continuous(breaks = pretty_breaks(8)) +
+  scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
+  labs(title = "Virk smit í heildina") +
+  theme(axis.title = element_blank())
 ```
 
 #### Aldursskipt
 
 ```{r, fig.asp = 1}
-simulations_active %>% 
-    filter(variable == "cases") %>% 
-    ggplot(aes(dags, median)) +
-    geom_line() +
-    geom_line(aes(y = upper), lty = 2, col  = "grey50") +
-    facet_wrap("aldur", scales = "free") +
-    scale_y_continuous(breaks = pretty_breaks(8)) +
-    scale_x_date(date_breaks = "2 week", date_labels = "%d/%m") +
-    labs(title = "Virk smit eftir aldri",
-         y = "Tilfelli") +
-    theme(axis.title = element_blank())
+d %>% 
+  filter(name == "cases", age != "total") %>% 
+  ggplot(aes(date, median)) +
+  geom_line() +
+  geom_line(aes(y = upper), lty = 2, col  = "grey50") +
+  facet_wrap("age", scales = "free") +
+  scale_y_continuous(breaks = pretty_breaks(8)) +
+  scale_x_date(date_breaks = "2 week", date_labels = "%d/%m") +
+  labs(title = "Virk smit eftir aldri",
+       y = "Tilfelli") +
+  theme(axis.title = element_blank())
 ```
 
 ### Sjúkrahúslegur
@@ -84,50 +70,31 @@ simulations_active %>%
 #### Samtals
 
 ```{r, fig.asp = 0.621}
-simulations_active %>% 
-    filter(variable == "hospital") %>% 
-    group_by(dags) %>% 
-    summarise(median = sum(median),
-              upper = sum(upper)) %>% 
-    ggplot(aes(dags + 6, median)) +
-    # geom_smooth(se = 0, alpha = 0.1, size = 0.5) +
-    geom_line() +
-    # geom_smooth(aes(y = upper), lty = 2, se = 0, size = 0.5) +
-    geom_line(aes(y = upper), lty = 2, col = "grey50") +
-    geom_text(data = tibble(x = ymd("2020-03-30"), 
-                            y = 100, 
-                            label = "Svartsýn spá"),
-              aes(x = x, 
-                  y = y, 
-                  label = label), 
-              inherit.aes = F, col = "grey50") +
-    geom_text(data = tibble(x = ymd("2020-04-18"), 
-                            y = 20, 
-                            label = "Líklegasta spá"),
-              aes(x = x, 
-                  y = y, 
-                  label = label), 
-              inherit.aes = F) +
-    scale_y_continuous(breaks = pretty_breaks(5)) +
-    scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
-    labs(title = "Virkar sjúkrahúslegur í heildina",
-         y = "Tilfelli") +
-    theme(axis.title = element_blank()) 
+d %>% 
+  filter(name == "hospital", age == "total")  %>% 
+  ggplot(aes(date, median)) +
+  geom_line() +
+  geom_line(aes(y = upper), lty = 2, col = "grey50") +
+  scale_y_continuous(breaks = pretty_breaks(5)) +
+  scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
+  labs(title = "Virkar sjúkrahúslegur í heildina",
+       y = "Tilfelli") +
+  theme(axis.title = element_blank()) 
 ```
 
 #### Aldursskipt
 
 ```{r, fig.asp = 1}
-simulations_active %>% 
-    filter(variable == "hospital") %>% 
-    ggplot(aes(dags + 6, median)) +
-    geom_line() +
-    geom_line(aes(y = upper), lty = 2, col = "grey60") +
-    facet_wrap("aldur", scales = "free") +
-    scale_y_continuous(breaks = pretty_breaks(8)) +
-    scale_x_date(date_breaks = "2 week", date_labels = "%d/%m") +
-    labs(title = "Virkar sjúkrahúslegur eftir aldri") +
-    theme(axis.title = element_blank()) 
+d %>% 
+  filter(name == "hospital", age != "total") %>% 
+  ggplot(aes(date, median)) +
+  geom_line() +
+  geom_line(aes(y = upper), lty = 2, col = "grey60") +
+  facet_wrap("age", scales = "free") +
+  scale_y_continuous(breaks = pretty_breaks(8)) +
+  scale_x_date(date_breaks = "2 week", date_labels = "%d/%m") +
+  labs(title = "Virkar sjúkrahúslegur eftir aldri") +
+  theme(axis.title = element_blank()) 
 ```
 
 
@@ -137,163 +104,31 @@ simulations_active %>%
 #### Samtals
 
 ```{r, fig.asp = 0.621}
-simulations_active %>% 
-    filter(variable == "serious") %>% 
-    group_by(dags) %>% 
-    summarise(median = sum(median),
-              upper = sum(upper)) %>% 
-    ggplot(aes(dags + 10, median)) +
-    # geom_smooth(se = 0) +
-    geom_line() +
-    # geom_smooth(aes(y = upper), lty = 2, se = 0) +
-    geom_line(aes(y = upper), lty = 2,  col = "grey50") +
-    geom_text(data = tibble(x = ymd("2020-04-05"), 
-                            y = 30, 
-                            label = "Svartsýn spá"),
-              aes(x = x, 
-                  y = y, 
-                  label = label), 
-              inherit.aes = F, col = "grey50") +
-    geom_text(data = tibble(x = ymd("2020-04-19"), 
-                            y = 4, 
-                            label = "Líklegasta spá"),
-              aes(x = x, 
-                  y = y, 
-                  label = label), 
-              inherit.aes = F) +
-    scale_y_continuous(breaks = pretty_breaks(5)) +
-    scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
-    labs(title = "Virk alvarleg tilfelli á sjúkrahúsi í heildina",
-         y = "Tilfelli") +
-    theme(axis.title = element_blank()) 
+d %>% 
+  filter(name == "icu", age == "total") %>% 
+  ggplot(aes(date, median)) +
+  geom_line() +
+  geom_line(aes(y = upper), lty = 2,  col = "grey50") +
+  scale_y_continuous(breaks = pretty_breaks(5)) +
+  scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
+  labs(title = "Virk alvarleg tilfelli á sjúkrahúsi í heildina",
+       y = "Tilfelli") +
+  theme(axis.title = element_blank()) 
 ```
 
 #### Aldursskipt
 
 ```{r, fig.asp = 1}
-simulations_active %>% 
-    filter(variable == "serious") %>% 
-    ggplot(aes(dags + 10, median)) +
-    geom_line() +
-    geom_line(aes(y = upper), lty = 2, col = "grey50") +
-    facet_wrap("aldur", scales = "free") +
-    scale_y_continuous(breaks = pretty_breaks(5)) +
-    scale_x_date(date_breaks = "2 week", date_labels = "%d/%m") +
-    labs(title = "Virk alvarleg tilfelli á sjúkrahúsi eftir aldri",
-         y = "Tilfelli") +
-    theme(axis.title = element_blank())
+d %>% 
+  filter(name == "icu", age != "total") %>% 
+  ggplot(aes(date, median)) +
+  geom_line() +
+  geom_line(aes(y = upper), lty = 2, col = "grey50") +
+  facet_wrap("age", scales = "free") +
+  scale_y_continuous(breaks = pretty_breaks(5)) +
+  scale_x_date(date_breaks = "2 week", date_labels = "%d/%m") +
+  labs(title = "Virk alvarleg tilfelli á sjúkrahúsi eftir aldri",
+       y = "Tilfelli") +
+  theme(axis.title = element_blank())
 ```
-
-## Uppsafnað
-
-### Greind smit
-
-#### Samtals
-
-```{r}
-preds_cumulative  %>% 
-    mutate(dags = min(d$dags) + dagar) %>% 
-    ggplot(aes(dags, pred)) +
-    geom_line() +
-    geom_line(aes(y = upper), lty = 2, col = "grey50") +
-    geom_point(data = d, aes(dags, fjoldi)) +
-    scale_y_continuous(breaks = pretty_breaks(8)) +
-    scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
-    labs(title = "Uppsöfnuð smit í heildina") +
-    theme(axis.title = element_blank())
-```
-
-#### Aldursskipt
-
-```{r, fig.asp = 1}
-simulations_cumulative %>% 
-    filter(variable == "cases") %>% 
-    ggplot(aes(dags, median)) +
-    geom_line() +
-    geom_line(aes(y = upper), lty = 2, col = "grey50") +
-    facet_wrap("aldur", scales = "free") +
-    scale_y_continuous(breaks = pretty_breaks(8)) +
-    scale_x_date(date_breaks = "2 week", date_labels = "%d/%m") +
-    labs(title = "Uppsöfnuð tilfelli eftir aldri",
-         y = "Tilfelli") +
-    theme(axis.title = element_blank())
-```
-
-### Sjúkrahúslegur
-
-#### Samtals
-
-```{r, fig.asp = 0.621}
-simulations_cumulative %>% 
-    filter(variable == "hospital") %>% 
-    group_by(dags) %>% 
-    summarise(median = sum(median),
-              upper = sum(upper)) %>% 
-    ggplot(aes(dags + 6, median)) +
-    # geom_smooth(se = 0) +
-    geom_line() +
-    # geom_smooth(aes(y = upper), lty = 2, se = 0) +
-    geom_line(aes(y = upper), lty = 2, col = "grey50") +
-    scale_y_continuous(breaks = pretty_breaks(5)) +
-    scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
-    labs(title = "Uppsafnaðar sjúkrahúslegur í heildina",
-         y = "Tilfelli") +
-    theme(axis.title = element_blank()) 
-```
-
-#### Aldursskipt
-
-```{r, fig.asp = 1}
-simulations_cumulative %>% 
-    filter(variable == "hospital") %>% 
-    ggplot(aes(dags + 6, median)) +
-    geom_line() +
-    geom_line(aes(y = upper), lty = 2, col = "grey50") +
-    facet_wrap("aldur", scales = "free") +
-    scale_y_continuous(breaks = pretty_breaks(8)) +
-    scale_x_date(date_breaks = "2 week", date_labels = "%d/%m") +
-    labs(title = "Uppsafnaðar sjúkrahúslegur eftir aldri") +
-    theme(axis.title = element_blank()) 
-```
-
-
-
-### Alvarleg tilfelli á sjúkrahúsi
-
-#### Samtals
-
-```{r, fig.asp = 0.621}
-simulations_cumulative %>% 
-    filter(variable == "serious") %>% 
-    group_by(dags) %>% 
-    summarise(median = sum(median),
-              upper = sum(upper)) %>% 
-    ggplot(aes(dags + 10, median)) +
-    # geom_smooth(se = 0) +
-    geom_line() +
-    # geom_smooth(aes(y = upper), lty = 2, se = 0) +
-    geom_line(aes(y = upper), lty = 2, col = "grey50") +
-    scale_y_continuous(breaks = pretty_breaks(5)) +
-    scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
-    labs(title = "Uppsöfnuð alvarleg tilfelli á sjúkrahúsi í heildina",
-         y = "Tilfelli") +
-    theme(axis.title = element_blank())
-```
-
-#### Aldursskipt
-
-```{r, fig.asp = 1}
-simulations_cumulative %>% 
-    filter(variable == "serious") %>% 
-    ggplot(aes(dags + 10, median)) +
-    geom_line() +
-    geom_line(aes(y = upper), lty = 2, col = "grey50") +
-    facet_wrap("aldur", scales = "free") +
-    scale_y_continuous(breaks = pretty_breaks(5)) +
-    scale_x_date(date_breaks = "2 week", date_labels = "%d/%m") +
-    labs(title = "Uppsöfnuð alvarleg tilfelli á sjúkrahúsi eftir aldri",
-         y = "Tilfelli") +
-    theme(axis.title = element_blank())
-```
-
 
