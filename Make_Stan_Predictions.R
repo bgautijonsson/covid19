@@ -48,16 +48,20 @@ age_results <- results %>%
     unnest(age_cases) %>% 
     ungroup
 
-
 all_results <- age_results %>% 
     group_by(iter, days) %>% 
-    mutate(hospital = rbinom(n(), size = cases, prob = aldur$p_spitali),
-           icu = rbinom(n(), size = hospital, prob = aldur$p_spitali))  %>% 
+    mutate(hospital = rbinom(n(), size = cases, prob = aldur$p_spitali)) %>% 
+    group_by(iter, age) %>% 
+    mutate(hospital = pmax(hospital - lag(hospital, 14, default = 0), 0)) %>% 
+    group_by(iter, days) %>% 
+    mutate(icu = rbinom(n(), size = hospital, prob = aldur$p_spitali))  %>% 
+    group_by(iter, age) %>% 
+    mutate(icu = pmax(icu - lag(icu, n = 10, default = 0), 0)) %>% 
     ungroup %>% 
     pivot_longer(c(cases, hospital, icu)) %>% 
     group_by(iter, days, name) %>% 
     mutate(total = case_when(name == "cases" ~ as.integer(active_cases),
-                             name %in% c("hospital", "icu") ~ sum(value))) %>% 
+                             name %in% c("hospital", "icu") ~ sum(as.integer(value)))) %>% 
     ungroup %>% 
     select(-active_cases) %>% 
     pivot_wider(names_from = "age", values_from = "value") %>% 

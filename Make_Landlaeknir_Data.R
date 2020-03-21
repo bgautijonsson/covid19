@@ -18,7 +18,7 @@ Make_Landlaeknir_Data <- function(email = "bgautijonsson@gmail.com") {
 
 
 
-
+    
 
 
 

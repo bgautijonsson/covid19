@@ -79,7 +79,7 @@ d %>%
   ggplot(aes(date, median)) +
   geom_line() +
   geom_line(aes(y = upper), lty = 2, col = "grey50") +
-  scale_y_continuous(breaks = pretty_breaks(5)) +
+  scale_y_continuous(breaks = pretty_breaks(8)) +
   scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
   labs(title = "Virkar sjúkrahúslegur í heildina",
        y = "Tilfelli") +
@@ -115,7 +115,7 @@ d %>%
   ggplot(aes(date, median)) +
   geom_line() +
   geom_line(aes(y = upper), lty = 2,  col = "grey50") +
-  scale_y_continuous(breaks = pretty_breaks(5)) +
+  scale_y_continuous(breaks = pretty_breaks(8)) +
   scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
   labs(title = "Virk alvarleg tilfelli á sjúkrahúsi í heildina",
        y = "Tilfelli") +
