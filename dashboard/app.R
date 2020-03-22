@@ -10,31 +10,22 @@ theme_set(theme_classic(base_size = 12) +
                               color.minor = "grey95", 
                               minor = "xy", major = "xy") +
               theme(legend.position = "none"))
-d_smit <- read_csv("Data/smit.csv") %>% 
-    filter(tegund != "Annad") %>% 
-    mutate(tegund = fct_recode(tegund, "Erlend" = "Erlendis", "Innlend" = "Innanlands"))
-d_sottkvi <- read_csv("Data/sottkvi.csv")
-d_spitali <- read_csv("Data/spitali.csv") 
-d_syni <- read_csv("Data/syni.csv")
 
-d_samtals <- d_smit %>% 
-    filter(tegund == "Samtals")
-
-euro_smit <- read_csv("Data/ECDC_Data.csv")
-sidast_uppfaert <- "Síðast uppfært 19. mars 2020 klukkan 17:00"
+d <- read_csv("Input/ECDC_Data.csv")
+sidast_uppfaert <- "Síðast uppfært 21. mars 2020 klukkan 23:00"
 
 Sys.setlocale("LC_TIME", "is_IS")
 
 ui <- navbarPage(
     title = "Ísland og COVID19", 
     theme = shinytheme(theme = "flatly"),
-    ##### Smitaþróun #####
-    tabPanel(title = "Smitaþróun",
+    ##### Smitafjöldi #####
+    tabPanel(title = "Þróun",
              sidebarLayout(
                  sidebarPanel(
                      selectInput(inputId = "continent",
                                  label = "Heimsálfa",
-                                 choices = unique(euro_smit$continent),
+                                 choices = unique(d$continent),
                                  multiple = T, selectize = T,
                                  selected = "Europe"),
                      uiOutput("countries"),
@@ -78,21 +69,62 @@ ui <- navbarPage(
                                  tabPanel("Fjöldi",
                                           plotlyOutput("euro_plot_n", height = "600px")),
                                  tabPanel("Tíðni",
-                                          #textOutput("euro_plot_p_priortext"), br(),
-                                          plotlyOutput("euro_plot_p", height = "600px")),
-                                 tabPanel("Samanburður",
-                                          plotlyOutput("lmer_plot", height = "600px"))
+                                          plotlyOutput("euro_plot_p", height = "600px"))
                      )
                  )
              )
     ),
+    ##### Aukning #####
+    tabPanel(title = "Aukning",
+             sidebarLayout(
+                 sidebarPanel(
+                     selectInput(inputId = "continent_samanburdur",
+                                 label = "Heimsálfa",
+                                 choices = unique(d$continent),
+                                 multiple = T, selectize = T,
+                                 selected = "Europe"),
+                     uiOutput("countries_to_choose_samanburdur"),
+                     h4("Veldu tímabil til að bera saman aukningu í tíðni smita"),
+                     fluidRow(
+                         column(6,
+                                dateInput("date_from_samanburdur", 
+                                          label = "Frá",
+                                          value = "2020-03-04", 
+                                          min = "2020-03-02", 
+                                          max = "2020-03-15")),
+                         column(6,
+                                dateInput("date_to_samanburdur", 
+                                          label = "Til",
+                                          value = "2020-03-21", 
+                                          min = "2020-03-16", 
+                                          max = "2020-03-21"))),
+                     div(actionButton(inputId = "gobutton_samanburdur", label = "Birta", width = "120px"), 
+                         class = "center", align = "middle"),
+                     h6("Höfundur:"),
+                     h6("Brynjófur Gauti Jónsson,"),
+                     h6("Tölfræðiráðgjöf Heilbrigðisvísindasviðs Háskóla Íslands"),
+                     div(img(src = "hi_hvs_horiz.png", width = "80%"), align = "middle", class = "center"),
+                     h6("Byggt á daglega uppfærðum gögnum ECDC sem fást í hlekki að neðan"),
+                     a("Hlekkur á gögn", href = "https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-distribution-covid-19-cases-worldwide"),
+                     h6(sidast_uppfaert),
+                     a("Allan kóða má nálgast hér", href = "https://github.com/bgautijonsson/covid19")
+                     
+                 ),
+                 
+                 mainPanel(
+                     tabsetPanel(type = "tabs",
+                                 tabPanel("Höfðatala",
+                                          plotlyOutput("lmer_plot", height = "600px"))
+                     )
+                 )
+             )),
     ##### Töfluyfirlit #####
     tabPanel(title = "Töfluyfirlit",
              sidebarLayout(
                  sidebarPanel(
                      selectInput(inputId = "countries_table", 
                                  label = "Lönd", 
-                                 choices = unique(euro_smit$country),
+                                 choices = unique(d$country),
                                  multiple = T, selectize = T,
                                  selected = c("Denmark", "Norway", "Finnland", "Sweden", "Iceland")),
                      uiOutput("countries_to_table"),
@@ -113,7 +145,34 @@ ui <- navbarPage(
                  mainPanel(
                      tableOutput("summary_table")
                  )
-             ))
+             )
+    ),
+    ##### Fróðleikur #####
+    tabPanel(title = "Fróðleikur", 
+             sidebarLayout(
+                 sidebarPanel(
+                     h6("Höfundur:"),
+                     h6("Brynjófur Gauti Jónsson,"),
+                     h6("Tölfræðiráðgjöf Heilbrigðisvísindasviðs Háskóla Íslands"),
+                     div(img(src = "hi_hvs_horiz.png", width = "80%"), align = "middle", class = "center"),
+                     h6("Byggt á daglega uppfærðum gögnum ECDC sem fást í hlekk að neðan"),
+                     a("Hlekkur á gögn", href = "https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-distribution-covid-19-cases-worldwide"),
+                     h6(sidast_uppfaert),
+                     a("Allan kóða má nálgast hér", href = "https://github.com/bgautijonsson/covid19")
+                     
+                 ),
+                 mainPanel(
+                     tabsetPanel(type = "tabs",
+                                 tabPanel("Lögmál smárra talna",
+                                          includeHTML("www/LawOfSmallNumbers.html")
+                                 ),
+                                 tabPanel("Danir loka landamærum",
+                                          includeHTML("www/DanirLokaLandamærum.html"))
+                     )
+                 )
+             )
+    )
+    
 )
 
 server <- function(input, output, session) {
@@ -122,7 +181,7 @@ server <- function(input, output, session) {
         if (input$selectall > 0) {
             if (input$selectall %% 2 == 1){
                 updateCheckboxGroupInput(session=session, inputId="countries",
-                                         selected = euro_smit %>% 
+                                         selected = d %>% 
                                              filter(continent %in% input$continent) %>% 
                                              .$country)
                 
@@ -143,13 +202,13 @@ server <- function(input, output, session) {
         if ("Europe" %in% input$continent) {
             selectInput(inputId = "countries", 
                         label = "Lönd", 
-                        choices = euro_smit %>% filter(continent %in% input$continent) %>% .$country %>% unique,
+                        choices = d %>% filter(continent %in% input$continent) %>% .$country %>% unique,
                         multiple = T, selectize = T,
                         selected = c("Denmark", "Norway", "Finnland", "Sweden", "Iceland"))
         } else {
             selectInput(inputId = "countries", 
                         label = "Lönd", 
-                        choices = euro_smit %>% filter(continent %in% input$continent) %>% .$country %>% unique,
+                        choices = d %>% filter(continent %in% input$continent) %>% .$country %>% unique,
                         multiple = T, selectize = T)
         }
     })
@@ -174,7 +233,7 @@ server <- function(input, output, session) {
     euro_plot_n <- eventReactive(input$gobutton1, {
         req(input$countries, input$chosen)
         if (input$filtervar == "Fjöldi tilvika") {
-            filtervar <- "cum_cases"
+            filtervar <- "total_cases"
             filtervalue <- input$filtervalue 
         }
         else {
@@ -182,14 +241,14 @@ server <- function(input, output, session) {
             filtervalue <- input$filtervalue / 1000
         }
         if (input$x_var == "Dögum síðan skilyrði að neðan var náð") {
-            p <- euro_smit %>% 
+            p <- d %>% 
                 filter(country %in% input$countries, continent %in% input$continent,
                        !!sym(filtervar) > filtervalue) %>% 
                 group_by(country) %>% 
                 mutate(days = row_number(),
                        chosen = ifelse(country == input$chosen, "chosen", "other")) %>% 
                 ungroup %>% 
-                ggplot(aes(days, cum_cases, 
+                ggplot(aes(days, total_cases, 
                            col = chosen, 
                            size = chosen,
                            alpha = chosen,
@@ -206,12 +265,12 @@ server <- function(input, output, session) {
             if (input$scale == "Logra") p <- p + scale_y_log10()
             ggplotly(p, tooltip = c("x", "y", "country"))
         } else {
-            p <- euro_smit %>% 
+            p <- d %>% 
                 filter(country %in% input$countries, continent %in% input$continent,
                        !!sym(filtervar) > filtervalue) %>% 
                 mutate(days_from_first = as.numeric(date - min(date)),
                        chosen = ifelse(country == input$chosen, "chosen", "other")) %>% 
-                ggplot(aes(date, cum_cases, 
+                ggplot(aes(date, total_cases, 
                            col = chosen, 
                            size = chosen,
                            alpha = chosen,
@@ -236,14 +295,14 @@ server <- function(input, output, session) {
     })
     
     output$euro_plot_n_info <- renderText({
-        data <- nearPoints(euro_smit %>% filter(country %in% c(input$countries)), 
+        data <- nearPoints(d %>% filter(country %in% c(input$countries)), 
                            input$euro_plot_n_click, threshold = 40, addDist = T,
-                           xvar = "days", yvar = "cum_cases")
+                           xvar = "days", yvar = "total_cases")
         data <- data[which.min(data$dist_), ]
         if (length(data$country) == 0) return ("Smelltu á línu til að sjá hvaða landi hún tilheyrir")
         today <- Sys.Date() %>% ymd
         timi <- as.numeric(today - data$date)
-        out <- paste0(data$country, ": Fjöldi var ", round(data$cum_cases, 3), " fyrir ", timi, " dögum")
+        out <- paste0(data$country, ": Fjöldi var ", round(data$total_cases, 3), " fyrir ", timi, " dögum")
         return(out)
     })
     
@@ -252,7 +311,7 @@ server <- function(input, output, session) {
     euro_plot_p <- eventReactive(input$gobutton1, {
         req(input$countries, input$chosen)
         if (input$filtervar == "Fjöldi tilvika") {
-            filtervar <- "cum_cases"
+            filtervar <- "total_cases"
             filtervalue <- input$filtervalue 
         }
         else { 
@@ -261,7 +320,7 @@ server <- function(input, output, session) {
         }
         
         if (input$x_var == "Dögum síðan skilyrði að neðan var náð") {
-            p <- euro_smit %>% 
+            p <- d %>% 
                 filter(country %in% input$countries, 
                        continent %in% input$continent,
                        !!sym(filtervar) > filtervalue) %>% 
@@ -285,7 +344,7 @@ server <- function(input, output, session) {
             if (input$scale == "Logra") p <- p + scale_y_log10()
             ggplotly(p, tooltip = c("x", "y", "country"))
         } else {
-            p <- euro_smit %>% 
+            p <- d %>% 
                 filter(country %in% input$countries, continent %in% input$continent,
                        !!sym(filtervar) > filtervalue) %>% 
                 mutate(chosen = ifelse(country == input$chosen, "chosen", "other")) %>% 
@@ -313,7 +372,7 @@ server <- function(input, output, session) {
     })
     
     output$euro_plot_p_info <- renderText({
-        data <- nearPoints(euro_smit %>% filter(country %in% c(input$countries)), 
+        data <- nearPoints(d %>% filter(country %in% c(input$countries)), 
                            input$euro_plot_p_click, threshold = 40, addDist = T,
                            xvar = "days", yvar = "case_rate")
         data <- data[which.min(data$dist_), ]
@@ -327,11 +386,34 @@ server <- function(input, output, session) {
     
     ##### Europe LMER #####
     
-    lmer_plot <- eventReactive(input$gobutton1, {
-        req(input$continent)
-        d <- euro_smit %>% 
-            filter(date >= ymd("2020-03-02"),
-                   continent %in% input$continent) %>% 
+    output$countries_to_choose_samanburdur <- renderUI({
+        req(input$continent_samanburdur)
+        if ("Europe" %in% input$continent_samanburdur) {
+            selectInput(inputId = "chosen_samanburdur", 
+                        label = "Samanburðarland", 
+                        choices = d %>% 
+                            filter(continent == input$continent_samanburdur) %>% 
+                            .$country %>% 
+                            unique,
+                        selectize = T,
+                        selected =  "Iceland")
+        } else {
+            selectInput(inputId = "chosen_samanburdur", 
+                        label = "Samanburðarland", 
+                        choices = d %>% 
+                            filter(continent == input$continent_samanburdur) %>% 
+                            .$country %>% 
+                            unique,
+                        selectize = T)
+        }
+    })
+    
+    lmer_plot <- eventReactive(input$gobutton_samanburdur, {
+        req(input$continent_samanburdur)
+        d <- d %>% 
+            filter(date >= ymd(input$date_from_samanburdur),
+                   date <= ymd(input$date_to_samanburdur),
+                   continent %in% input$continent_samanburdur) %>% 
             mutate(days = as.numeric(date - min(date)))
         
         n_obs <- length(unique(d$country))
@@ -343,7 +425,7 @@ server <- function(input, output, session) {
         evo <- coef(m)[[1]][, 2, drop = F] %>%  exp
         evo <- evo[order(evo), , drop = F]
         
-        which_chosen <- which(rownames(evo) == input$chosen)
+        which_chosen <- which(rownames(evo) == input$chosen_samanburdur)
         evo_chosen <- evo[which_chosen, ]
         evo_chosen <- round(evo_chosen - 1, 3)
         mean_evo <- exp(fixef(m)[2]) - 1
@@ -351,8 +433,7 @@ server <- function(input, output, session) {
         p <- tibble(country = rownames(evo),
                     change = evo[, 1]) %>% 
             mutate(country = fct_reorder(country, change),
-                   col = case_when(country == input$chosen ~ "blue",
-                                   country == "Denmark" ~ "red",
+                   col = case_when(country == input$chosen_samanburdur ~ "blue",
                                    TRUE ~ "grey")) %>% 
             ggplot(aes(country, change - 1)) +
             geom_point(aes(col = col), show.legend = F) +
@@ -363,7 +444,7 @@ server <- function(input, output, session) {
                       aes(label = "Meðalaukning", 
                           x = 2, y = mean_evo + 0.05),
                       size = 4) +
-            # Label Iceland
+            # Label Chosen
             geom_text(data = tibble(),
                       aes(label = percent(evo_chosen),
                           x = which_chosen,
@@ -375,7 +456,7 @@ server <- function(input, output, session) {
             scale_x_discrete(guide = guide_axis(n.dodge = 2)) +
             scale_colour_manual(values = c("blue", "grey", "red")) +
             coord_flip() +
-            labs(title = "Dagleg aukning á tíðni tilfella (per 1000 íbúa) eftir 2. mars") +
+            labs(title = "Dagleg aukning á tíðni tilfella (per 1000 íbúa) á völdu tímabili") +
             theme(axis.title = element_blank(),
                   text = element_text(size = 12)) +
             background_grid(major = "none", minor = "none")
@@ -416,12 +497,12 @@ server <- function(input, output, session) {
                      "Tilfellum" = "cases", 
                      "Tíðni" = "incidence", 
                      "Fyrsta smiti" = "days")
-        out <- euro_smit %>% 
+        out <- d %>% 
             filter(country %in% input$countries_table) %>% 
             group_by(country) %>% 
-            summarise(cases = max(cum_cases),
+            summarise(cases = max(total_cases),
                       incidence = round(cases / max(pop) * 1000, 4),
-                      days = max(days),
+                      days = as.numeric(max(date) - min(date)),
                       first = min(date)) %>% 
             arrange(desc(!!sym(cols[[input$sort_col]])))
         
@@ -432,7 +513,7 @@ server <- function(input, output, session) {
             out <- out %>% 
                 arrange(desc(!!sym(cols[[input$sort_col]])))
         }
-        names(out) <- c("Land", "Tilfelli", "Tíðni (per 1000)", "Dagar frá öðru smiti", "Dagsetning annars smits")
+        names(out) <- c("Land", "Tilfelli", "Tíðni (per 1000)", "Dagar frá fyrsta smiti", "Dagsetning fyrsta smits")
         
         icel <- which(out$Land == input$chosen_table)
         
