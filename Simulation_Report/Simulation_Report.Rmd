@@ -1,7 +1,7 @@
 ---
 title: "COVID19 á Íslandi"
 subtitle: "Spálíkan fyrir fjölda tilfella og álag á heilbrigðisþjónustu"
-date: " 2020-03-20"
+date: "`r Sys.Date()`"
 output:
   html_document:
     theme: flatly

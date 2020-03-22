@@ -33,3 +33,6 @@ Skýrsla og myndir koma svo með því að keyra `Simulation_Report/Make_Simulat
 
 Vefsíðan bgautijonsson.shinyapps.io/COVID_Dashboard er öll sett upp í `dashboard` möppunni, nánar tiltekið `dashboard/app.R` skránni. Ég hef ekki komið mér í að commenta vel kóðann þar, en ef einhver hefur áhuga á að taka við viðhaldi á appinu hafið endilega samband og við förum yfir þetta.
 
+**Todo**
+
+* Koma yfir á HÍ shiny server
