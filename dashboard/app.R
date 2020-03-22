@@ -165,9 +165,7 @@ ui <- navbarPage(
                      tabsetPanel(type = "tabs",
                                  tabPanel("Lögmál smárra talna",
                                           includeHTML("www/LawOfSmallNumbers.html")
-                                 ),
-                                 tabPanel("Danir loka landamærum",
-                                          includeHTML("www/DanirLokaLandamærum.html"))
+                                 )
                      )
                  )
              )
