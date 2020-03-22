@@ -83,20 +83,12 @@ ui <- navbarPage(
                                  multiple = T, selectize = T,
                                  selected = "Europe"),
                      uiOutput("countries_to_choose_samanburdur"),
-                     h4("Veldu tímabil til að bera saman aukningu í tíðni smita"),
-                     fluidRow(
-                         column(6,
-                                dateInput("date_from_samanburdur", 
-                                          label = "Frá",
-                                          value = "2020-03-04", 
-                                          min = "2020-03-02", 
-                                          max = "2020-03-15")),
-                         column(6,
-                                dateInput("date_to_samanburdur", 
-                                          label = "Til",
-                                          value = "2020-03-21", 
-                                          min = "2020-03-16", 
-                                          max = "2020-03-21"))),
+                     selectInput(inputId = "tegund_samanburdur",
+                                 label = "Hvernig er tími valinn í reikninga?",
+                                 choices = c("Dagsetning", "Dagar síðan skylirði var náð"),
+                                 multiple = F, selectize = F,
+                                 selected = "Dagsetning"),
+                     uiOutput("param_selection_samanburdur"),
                      div(actionButton(inputId = "gobutton_samanburdur", label = "Birta", width = "120px"), 
                          class = "center", align = "middle"),
                      h6("Höfundur:"),
@@ -409,15 +401,65 @@ server <- function(input, output, session) {
         }
     })
     
+    output$param_selection_samanburdur <- renderUI({
+        req(input$tegund_samanburdur)
+        if (input$tegund_samanburdur == "Dagsetning") {
+            h4("Veldu tímabil til að bera saman aukningu í tíðni smita")
+            fluidRow(
+                column(6,
+                       dateInput("date_from_samanburdur", 
+                                 label = "Frá",
+                                 value = "2020-03-04", 
+                                 min = "2020-03-02", 
+                                 max = "2020-03-15")),
+                column(6,
+                       dateInput("date_to_samanburdur", 
+                                 label = "Til",
+                                 value = "2020-03-21", 
+                                 min = "2020-03-16", 
+                                 max = "2020-03-21")))
+        } else {
+            fluidRow(column(6,
+                            selectInput(inputId = "type_filt_samanburdur",
+                                        label = "Sýna gögn þar sem",
+                                        choices = c("Fjöldi tilvika", "Tíðni tilvika per milljón"),
+                                        multiple = F,
+                                        selected = "Fjöldi tilvika")),
+                     column(6,
+                            numericInput(inputId = "filtervalue_samanburdur",
+                                         label = "Er hærri en", 
+                                         min = 0, max = 100, value = 50)))
+        }
+    })
+    
     lmer_plot <- eventReactive(input$gobutton_samanburdur, {
         req(input$continent_samanburdur)
-        d <- d %>% 
-            filter(date >= ymd(input$date_from_samanburdur),
-                   date <= ymd(input$date_to_samanburdur),
-                   continent %in% input$continent_samanburdur) %>% 
-            mutate(days = as.numeric(date - min(date)))
         
-        n_obs <- length(unique(d$country))
+        if (input$tegund_samanburdur == "Dagsetning") {
+            d <- d %>% 
+                filter(date >= ymd(input$date_from_samanburdur),
+                       date <= ymd(input$date_to_samanburdur),
+                       continent %in% input$continent_samanburdur) %>% 
+                mutate(days = as.numeric(date - min(date)))
+            
+            n_obs <- length(unique(d$country))
+        } else {
+            if (input$type_filt_samanburdur == "Fjöldi tilvika") {
+                filter_var <- "total_cases"
+                filter_value <- input$filtervalue_samanburdur
+            }
+            else {
+                filter_var <- "case_rate"
+                filter_value <- input$filtervalue_samanburdur / 1000
+            }
+            
+            d <- d %>% 
+                filter(continent %in% input$continent_samanburdur,
+                       !!sym(filter_var) >= filter_value) %>% 
+                mutate(days = as.numeric(date - min(date)))
+            
+            n_obs <- length(unique(d$country))
+        }
         
         
         m <- lmer(log(case_rate) ~ days + (days | country), data = d,

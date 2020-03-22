@@ -53,7 +53,6 @@ model {
 
 generated quantities {
   
-  
   vector[N_preds] cumul_linear;
   vector<lower = 0, upper = 1>[N_preds] cumul_rate;
   
