@@ -8,6 +8,11 @@ Hér eru skrár og kóði á bak við vefsíðuna [bgautijonsson.shinyapps.io/CO
 
 * Íslandsgögn frá Landlækni og Almannavörnum, sem ég hef sjálfur sótt og geymi í google drive í slóð: https://docs.google.com/spreadsheets/d/1xgDhtejTtcyy6EN5dbDp5W3TeJhKFRRgm6Xk0s0YFeA sæki svo gögnin með googlesheets4 pakkanum og skrifa út þær skrár sem ég tel mig munu vilja nota.
 
+**Todo**
+
+* Vinna með gögn skipt niður á svæði á Íslandi
+* [John Snow cholera-esque data product](https://blogs.cdc.gov/publichealthmatters/2017/03/a-legacy-of-disease-detectives/)
+
 # Forspárlíkan
 
 Forspárlíkanið eins og það er nú er staðsett í Stan/Logistic/Hierarchical_Logistic_Cases.stan. Ferlið til að meta líkan og fá forspár er:
@@ -18,12 +23,13 @@ Forspárlíkanið eins og það er nú er staðsett í Stan/Logistic/Hierarchica
 
 Skýrsla og myndir koma svo með því að keyra `Simulation_Report/Make_Simulation_Report.R`.
 
-# dashboard
-
-Vefsíðan bgautijonsson.shinyapps.io/COVID_Dashboard er öll sett upp í `dashboard` möppunni, nánar tiltekið `dashboard/app.R` skránni. Ég hef ekki komið mér í að commenta vel kóðann þar, en ef einhver hefur áhuga á að taka við viðhaldi á appinu hafið endilega samband og við förum yfir þetta.
-
 **Todo** 
 
 * Auðvelda að hlaða niður töflum með gögnum og forspám
 * Bæta við Íslensk gögn um spítalalegur og smitatíðni eftir aldurshópum
 * Vantar spatial hluta í líkanið
+
+# dashboard
+
+Vefsíðan bgautijonsson.shinyapps.io/COVID_Dashboard er öll sett upp í `dashboard` möppunni, nánar tiltekið `dashboard/app.R` skránni. Ég hef ekki komið mér í að commenta vel kóðann þar, en ef einhver hefur áhuga á að taka við viðhaldi á appinu hafið endilega samband og við förum yfir þetta.
+

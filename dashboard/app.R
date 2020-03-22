@@ -1,10 +1,9 @@
 library(shiny); library(dplyr); library(tidyr);
 library(ggplot2); library(readr); library(cowplot); 
-library(googlesheets4); library(shinythemes);
-library(lubridate); library(kableExtra); library(scales)
-library(emmeans); library(broom); library(forcats);
+library(shinythemes);library(lubridate); library(kableExtra)
+library(scales); library(broom); library(forcats);
 library(lme4); library(stringr); library(plotly);
-library(mgcv)
+library(writexl)
 theme_set(theme_classic(base_size = 12) + 
               background_grid(color.major = "grey90", 
                               color.minor = "grey95", 
@@ -143,7 +142,11 @@ ui <- navbarPage(
                      a("Allan kóða má nálgast hér", href = "https://github.com/bgautijonsson/covid19")
                  ),
                  mainPanel(
-                     tableOutput("summary_table")
+                     tableOutput("summary_table"),
+                     conditionalPanel(
+                         condition = "input.gobutton2>0",
+                         downloadButton(outputId = "table_download", label = "Sækja gögn")
+                     )
                  )
              )
     ),
@@ -515,15 +518,30 @@ server <- function(input, output, session) {
         
         icel <- which(out$Land == input$chosen_table)
         
-        out %>% 
-            kable(format = "html", align = c("l", rep("c", ncol(.) - 1))) %>% 
-            kable_styling(bootstrap_options = c("striped", "hover")) %>% 
-            row_spec(icel, bold = T, background = "#b3cde3")
+        out 
     })
     
     output$summary_table <- function() {
-        summary_table()
+        out <- summary_table()
+        
+        icel <- which(out$Land == input$chosen_table)
+        
+        out %>% 
+            kable(format = "html", align = c("l", rep("c", ncol(.) - 1))) %>% 
+            kable_styling(bootstrap_options = c("striped", "hover")) %>% 
+            row_spec(icel, bold = TRUE, background = "#b3cde3")
     }
+    
+    output$table_download <- downloadHandler(
+        filename = function() {
+            str_c("tafla_", Sys.Date(), ".xlsx")
+        },
+        content = function(file) {
+            write_xlsx(summary_table(), file)
+        }
+    )
+    
+    
 }
 
 shinyApp(ui = ui, server = server)
