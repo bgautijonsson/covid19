@@ -8,8 +8,6 @@ source("Make_Stan_Data.R")
 
 d <- Make_Stan_Data()
 
-
-
 N_obs <- nrow(d)
 N_countries <- max(d$country_id)
 
@@ -33,7 +31,7 @@ m <- sampling(stan_model("Stan/Logistic/Hierarchical_Logistic_Cases_NegBin.stan"
               control = list(max_treedepth = 15, adapt_delta = 0.9))
 
 write_rds(m, "Stan/Logistic/Hierarchical_Model.rds")
-write_rds(m, str_c("Stan/Logistic/Saved_Models/Hierarchical_Model", Sys.Date(), ".rsd"))
+write_rds(m, str_c("Stan/Logistic/Saved_Models/Hierarchical_Model", Sys.Date(), ".rds"))
 write_rds(m, "Stan/Logistic/Interactive Model Checking/Hierarchical_Model.rds")
 write_csv(d, "Stan/Logistic/Interactive Model Checking/stan_data.csv")
 write_csv(d, str_c("Input/Stan_Data/Stan_Data_", Sys.Date(), ".csv"))
