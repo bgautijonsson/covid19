@@ -29,7 +29,7 @@ d_spa <- read_csv(
 ) %>% 
     mutate_at(vars(median, upper), round)
 
-d <- read_csv("Input/ECDC_Data.csv")
+d <- read_csv("https://raw.githubusercontent.com/bgautijonsson/covid19/master/Input/ECDC_Data.csv")
 sidast_uppfaert <- "Síðast uppfært 23. mars 2020 klukkan 13:30"
 
 Sys.setlocale("LC_TIME", "is_IS")

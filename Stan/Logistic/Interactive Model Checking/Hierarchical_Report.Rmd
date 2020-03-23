@@ -64,12 +64,14 @@ pred_plot <-  eventReactive(input$gobutton, {
   pop <- unique(plot_dat$pop)
   alph <- 1 - input$conf
   
+  days_in_data <- max(plot_dat$days) + 1
+  
   results <- spread_draws(m, alpha[country], beta[country], maximum[country]) %>% 
     ungroup %>% 
     filter(country == id) %>% 
     mutate(iter = row_number()) %>% 
     select(iter, alpha, beta, maximum) %>% 
-    expand_grid(days = seq(-30, 60)) %>% 
+    expand_grid(days = seq(-30, days_in_data + 25)) %>% 
     mutate(linear = alpha + beta * days,
            rate = maximum / (1 + exp(-linear)),
            cases = rate * pop) %>% 

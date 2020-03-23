@@ -13,7 +13,8 @@ Make_Stan_Data <- function(min_case_rate = 0.04, min_days = 7) {
         inner_join(world_pop) %>% 
         select(continent, region, country, pop, date, everything()) %>% 
         mutate(case_rate = total_cases / pop * 1000,
-               death_rate = ifelse(total_cases == 0, 0, total_deaths / total_cases))
+               death_rate = ifelse(total_cases == 0, 0, total_deaths / total_cases)) %>% 
+        filter(!country %in% c("Andorra", "Finland"), date < ymd("2020-03-23"))
     
     
     stan_data %>% 

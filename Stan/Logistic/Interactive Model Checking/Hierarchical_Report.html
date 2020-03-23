@@ -181,14 +181,12 @@ summary {
 <div class="form-group shiny-input-container">
 <label class="control-label" for="country">Land</label>
 <div>
-<select id="country"><option value="Andorra">Andorra</option>
-<option value="Austria">Austria</option>
+<select id="country"><option value="Austria">Austria</option>
 <option value="Bahrain">Bahrain</option>
 <option value="Belgium">Belgium</option>
 <option value="Brunei">Brunei</option>
 <option value="Denmark">Denmark</option>
 <option value="Estonia">Estonia</option>
-<option value="Finland">Finland</option>
 <option value="France">France</option>
 <option value="Germany">Germany</option>
 <option value="Iran">Iran</option>
@@ -266,12 +264,14 @@ pred_plot <-  eventReactive(input$gobutton, {
   pop <- unique(plot_dat$pop)
   alph <- 1 - input$conf
   
+  days_in_data <- max(plot_dat$days) + 1
+  
   results <- spread_draws(m, alpha[country], beta[country], maximum[country]) %>% 
     ungroup %>% 
     filter(country == id) %>% 
     mutate(iter = row_number()) %>% 
     select(iter, alpha, beta, maximum) %>% 
-    expand_grid(days = seq(-30, 60)) %>% 
+    expand_grid(days = seq(-30, days_in_data + 25)) %>% 
     mutate(linear = alpha + beta * days,
            rate = maximum / (1 + exp(-linear)),
            cases = rate * pop) %>% 

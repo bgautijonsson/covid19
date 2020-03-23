@@ -31,9 +31,10 @@ d %>%
     write_csv("Output/stan_data_info.csv")
 
 aldur <- sheets_read("https://docs.google.com/spreadsheets/d/1xgDhtejTtcyy6EN5dbDp5W3TeJhKFRRgm6Xk0s0YFeA", sheet = "Aldur") %>% 
-    mutate(p_tilfelli = c(dreifing_aldur_data[1:3], flat_dreifing_aldur_iceland[-(1:3)]),
-           p_tilfelli = p_tilfelli / sum(p_tilfelli)) %>% 
-    select(aldur, tilfelli, p_tilfelli, everything())
+    mutate(p_tilfelli_unnormalized = c(dreifing_aldur_data[1:4], flat_dreifing_aldur_iceland[-(1:4)]),
+           p_tilfelli = p_tilfelli_unnormalized / sum(p_tilfelli_unnormalized),
+           fake_tilfelli = p_tilfelli * sum(tilfelli)) %>% 
+    select(aldur, tilfelli, fake_tilfelli, p_tilfelli, everything())
 
 m <- read_rds("Stan/Logistic/Hierarchical_Model.rds")
 
@@ -61,7 +62,7 @@ results <- spread_draws(m, alpha[country], beta[country], maximum[country]) %>%
 
 
 age_results <- results %>% 
-    filter(iter >= max(iter) - 1000) %>% 
+    filter(iter >= max(iter) - 2000) %>% 
     rowwise %>% 
     mutate(age_cases = list(tibble(age = aldur$aldur, 
                                    cases_active = as.vector(rmultinom(1, 
