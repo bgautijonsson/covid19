@@ -1,6 +1,6 @@
 library(rmarkdown)
 library(stringr)
-cur_date <- as.character(Sys.Date() - 1)
+cur_date <- as.character(Sys.Date())
 
 if (!file.exists(cur_date)) {
     dir.create(cur_date)

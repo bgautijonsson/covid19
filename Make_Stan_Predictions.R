@@ -23,20 +23,14 @@ source("Make_Stan_Data.R")
 
 d <- Make_Stan_Data()
 
-d %>% 
-    group_by(country) %>% 
-    summarise(First = min(date),
-              Days_In_Data = n(),
-              Start_Rate = min(case_rate),
-              End_Rate = max(case_rate)) %>% 
-    write_csv("Output/stan_data_info.csv")
+
 
 aldur <- sheets_read("https://docs.google.com/spreadsheets/d/1xgDhtejTtcyy6EN5dbDp5W3TeJhKFRRgm6Xk0s0YFeA", sheet = "Aldur") %>% 
     mutate(tilfelli = tilfelli + 1,
            p_tilfelli = tilfelli / sum(tilfelli)) %>% 
     select(aldur, tilfelli, p_tilfelli, everything())
 
-m <- read_rds("Stan/Logistic/Hirearchical_Model.rds")
+m <- read_rds("Stan/Logistic/Hierarchical_Model.rds")
 
 iceland_d <- d %>% filter(country == "Iceland")
 
@@ -107,6 +101,6 @@ all_results <- age_results %>%
     summarise(median = median(value),
               upper = quantile(value, .975))
 
-out_path <- str_c("Output/Iceland_Predictions_", Sys.Date(), ".csv")
+out_path <- str_c("Output/Iceland_Predictions/Iceland_Predictions_", Sys.Date(), ".csv")
 
 write_csv(all_results, out_path)

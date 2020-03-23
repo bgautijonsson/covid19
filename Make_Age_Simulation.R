@@ -10,7 +10,6 @@
 # Fjöldi fólks á sjúkrahúsi
 # Við höfum tölur frá 
 
-
 library(tidyverse)
 library(rstan)
 library(tidybayes)
@@ -32,11 +31,11 @@ d %>%
     write_csv("Output/stan_data_info.csv")
 
 aldur <- sheets_read("https://docs.google.com/spreadsheets/d/1xgDhtejTtcyy6EN5dbDp5W3TeJhKFRRgm6Xk0s0YFeA", sheet = "Aldur") %>% 
-    mutate(tilfelli = tilfelli + 1,
-           p_tilfelli = tilfelli / sum(tilfelli)) %>% 
+    mutate(p_tilfelli = c(dreifing_aldur_data[1:3], flat_dreifing_aldur_iceland[-(1:3)]),
+           p_tilfelli = p_tilfelli / sum(p_tilfelli)) %>% 
     select(aldur, tilfelli, p_tilfelli, everything())
 
-m <- read_rds("Stan/Logistic/Hirearchical_Model.rds")
+m <- read_rds("Stan/Logistic/Hierarchical_Model.rds")
 
 iceland_d <- d %>% filter(country == "Iceland")
 
@@ -107,6 +106,6 @@ all_results <- age_results %>%
     summarise(median = median(value),
               upper = quantile(value, .975))
 
-out_path <- str_c("Output/Iceland_Predictions_", Sys.Date(), ".csv")
+out_path <- str_c("Output/Iceland_Flat_Age_Distribution_Simulation_", Sys.Date(), ".csv")
 
 write_csv(all_results, out_path)

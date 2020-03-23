@@ -4,10 +4,11 @@ library(rstan)
 library(magrittr)
 
 options(mc.cores = parallel::detectCores())
-rstan_options(auto_write = TRUE)
 source("Make_Stan_Data.R")
 
-d <- Make_Stan_Data(min_case_rate = 0.2, min_days = 4)
+d <- Make_Stan_Data()
+
+
 
 
 N_obs <- nrow(d)
@@ -43,3 +44,12 @@ m <- sampling(stan_model("Stan/Logistic/Hierarchical_Logistic_Cases.stan"),
               control = list(max_treedepth = 15, adapt_delta = 0.9))
 
 write_rds(m, "Stan/Logistic/Hierarchical_Model.rds")
+write_rds(m, "Stan/Logistic/Interactive Model Checking/Hierarchical_Model.rds")
+write_csv(d, "Stan/Logistic/Interactive Model Checking/stan_data.csv")
+d %>% 
+    group_by(country) %>% 
+    summarise(First = min(date),
+              Days_In_Data = n(),
+              Start_Rate = min(case_rate),
+              End_Rate = max(case_rate)) %>% 
+    write_csv("Output/stan_data_info_", Sys.Date(), ".csv")

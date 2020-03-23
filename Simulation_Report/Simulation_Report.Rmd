@@ -26,9 +26,9 @@ source("../Make_Stan_Data.R")
 ```
 
 ```{r data}
-data_path <- str_c("../Output/Iceland_Predictions_", Sys.Date() - 1, ".csv")
+data_path <- str_c("../Output/Iceland_Predictions/Iceland_Predictions_", Sys.Date(), ".csv")
 d <- read_csv(data_path)
-fig_out_path <- str_c(as.character(Sys.Date() - 1), "/Figures/")
+fig_out_path <- str_c(as.character(Sys.Date()), "/Figures/")
 make_fig_path <- function(name) str_c(fig_out_path, name)
 
 iceland_d <- read_csv("../Input/ECDC_Data.csv") %>% 

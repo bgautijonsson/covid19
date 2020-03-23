@@ -30,7 +30,7 @@ d_spa <- read_csv(
     mutate_at(vars(median, upper), round)
 
 d <- read_csv("Input/ECDC_Data.csv")
-sidast_uppfaert <- "Síðast uppfært 21. mars 2020 klukkan 23:00"
+sidast_uppfaert <- "Síðast uppfært 23. mars 2020 klukkan 13:30"
 
 Sys.setlocale("LC_TIME", "is_IS")
 
@@ -104,7 +104,7 @@ ui <- navbarPage(
                      uiOutput("countries_to_choose_samanburdur"),
                      selectInput(inputId = "tegund_samanburdur",
                                  label = "Hvernig er tími valinn í reikninga?",
-                                 choices = c("Dagsetning", "Dagar síðan skylirði var náð"),
+                                 choices = c("Dagsetning", "Dagar eftir að skylirði var náð"),
                                  multiple = F, selectize = F,
                                  selected = "Dagsetning"),
                      uiOutput("param_selection_samanburdur"),
@@ -174,7 +174,7 @@ ui <- navbarPage(
                 selectInput(
                     inputId = "breyta_forspa",
                     label = "Sjá spá fyrir fjölda",
-                    choices = c("Tilfella" = "cases", "Á spítala" = "hospital", "Á gjörgæslu" = "icu")
+                    choices = c("Greindra smita" = "cases", "Á spítala" = "hospital", "Á gjörgæslu" = "icu")
                 ),
                 selectInput(inputId = "byage_forspa", label = "Birta eftir aldurs hópum?",
                             choices = c("Aldursskipting", "Heild"), 
@@ -485,13 +485,13 @@ server <- function(input, output, session) {
                                  label = "Frá",
                                  value = "2020-03-04", 
                                  min = "2020-03-02", 
-                                 max = "2020-03-15")),
+                                 max = max(d$date) - 3)),
                 column(6,
                        dateInput("date_to_samanburdur", 
                                  label = "Til",
-                                 value = "2020-03-21", 
-                                 min = "2020-03-16", 
-                                 max = "2020-03-21")))
+                                 value = max(d$date), 
+                                 min = "2020-03-08", 
+                                 max = max(d$date))))
         } else {
             fluidRow(column(6,
                             selectInput(inputId = "type_filt_samanburdur",
