@@ -21,6 +21,7 @@ parameters {
   
   real<lower = 0> beta_a;
   real<lower = 0> beta_b;
+  
 }
 
 transformed parameters {
@@ -34,8 +35,7 @@ model {
   sigma_sq_beta ~ inv_chi_square(2);
   sigma_sq_alpha ~ inv_chi_square(2);
   
-  maximum ~ beta(beta_a, beta_b)
-  ;
+  maximum ~ beta(beta_a, beta_b);
   
   beta ~ normal(mu_beta, sigma_sq_beta);
   alpha ~ normal(mu_alpha, sigma_sq_alpha);

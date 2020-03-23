@@ -13,7 +13,8 @@ Make_Landlaeknir_Data <- function(email = "bgautijonsson@gmail.com") {
                new_deaths = 0,
                total_deaths = 0,
                country = "Iceland") %>% 
-        select(country, date, total_cases = Smit_Samtals, new_cases = ny_smit, new_deaths, total_deaths)
+        select(country, date, total_cases = Smit_Samtals, new_cases = ny_smit, new_deaths, total_deaths) %>% 
+        filter(date >= ymd("2020-03-09"))
 }
 
 

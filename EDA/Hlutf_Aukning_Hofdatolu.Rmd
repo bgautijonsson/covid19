@@ -1,0 +1,135 @@
+---
+title: "EDA"
+author: "Brynjólfur Gauti Jónsson"
+date: "3/16/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = F, fig.asp = 0.621, out.width = "100%", fig.width = 6)
+```
+
+
+
+```{r}
+library(tidyverse); library(cowplot); library(kableExtra); library(scales); library(gganimate)
+library(lubridate); library(lme4); library(googlesheets4)
+theme_set(theme_classic(base_size = 12) + 
+              background_grid(color.major = "grey90", 
+                              color.minor = "grey95", 
+                              minor = "xy", major = "xy") +
+              theme(legend.position = "none"))
+sheets_auth("bgautijonsson@gmail.com")
+```
+
+```{r}
+thyding <- sheets_read("https://docs.google.com/spreadsheets/d/1g70BDSxTotmdY8VgoovxhphBa9tiWVT_FG6kGgNt7TY/edit?fbclid=IwAR3BgRvZSCOU03YQkVa1koEidC3CXbMv4sNmzbEklnM4H4svUfCxtTiRT_A") %>% 
+    select(country = Country, land = Land)
+```
+
+
+```{r, fig.asp = 0.3}
+d <- read_csv("../Input/ECDC_Data.csv") %>% 
+    filter(total_cases >= 50, continent == "Europe") %>% 
+    group_by(country) %>% 
+    mutate(days = row_number() - 1) %>% 
+    filter(n() > 14) %>% 
+    ungroup %>% 
+    mutate(log_case_rate = log(case_rate))
+
+length(unique(d$country))
+
+m <- lmer(log_case_rate ~ days + (days | country), data = d)
+
+country_effects <- ranef(m)$country[, 2, drop = F] + fixef(m)[2]
+country_effects <- country_effects[order(country_effects), , drop = F]
+which_chosen <- which(rownames(country_effects) == "Iceland")
+mean_evo <- exp(summary(m)$coefficients[2, 1]) - 1
+evo_chosen <- exp(country_effects[which_chosen, ]) - 1
+
+tibble(country = rownames(country_effects), increase = exp(country_effects[, 1]) - 1) %>% 
+    mutate(country = fct_reorder(country, increase),
+           col = factor(1 * (country == "Iceland"))) %>% 
+    ggplot(aes(country, increase)) +
+    geom_point(aes(col = col), show.legend = F) +
+    geom_segment(aes(xend = country, yend = 0, col = col), show.legend = F) +
+    geom_hline(yintercept = mean_evo, lty = 2) +
+    # Meðalaukning
+    geom_text(data = tibble(), 
+              aes(label = "Meðalaukning", 
+                  x = 2, y = mean_evo * 1.08),
+              size = 4) +
+    # Label Chosen
+    geom_text(data = tibble(),
+              aes(label = percent(evo_chosen),
+                  x = which_chosen + 0.05,
+                  y = evo_chosen * 1.05),
+              col = "blue", size = 4) +
+    scale_y_continuous(labels = percent, 
+                       breaks = c(0, 0.05, 0.1, 0.15, 0.2, mean_evo, 0.3, 0.35),
+                       expand = expansion(mult = 0.02)) +
+    scale_x_discrete() +
+    scale_colour_manual(values = c( "grey", "blue")) +
+    coord_flip() +
+    labs(title = "Dagleg aukning á tíðni tilfella (per 1000 íbúa)",
+         subtitle = "Þróun reiknuð frá því að 50 tilfelli höfðu greinst") +
+    theme(axis.title = element_blank(),
+          text = element_text(size = 12)) +
+    background_grid(major = "none", minor = "none") +
+    ggsave("throun_14_dagar.png", width = 8, height = 0.3 * 8, scale = 1.5)
+```
+
+```{r, fig.asp = 0.4}
+d <- read_csv("../Input/ECDC_Data.csv") %>% 
+    filter(total_cases >= 50, continent == "Europe") %>% 
+    group_by(country) %>% 
+    mutate(days = row_number() - 1) %>% 
+    filter(n() > 7) %>% 
+    ungroup %>% 
+    mutate(log_case_rate = log(case_rate)) %>% 
+    inner_join(thyding) %>% 
+    mutate(country = land)
+
+length(unique(d$country))
+
+m <- lmer(log_case_rate ~ days + (days | country), data = d)
+
+country_effects <- ranef(m)$country[, 2, drop = F] + fixef(m)[2]
+country_effects <- country_effects[order(country_effects), , drop = F]
+which_chosen <- which(rownames(country_effects) == "Ísland")
+mean_evo <- exp(summary(m)$coefficients[2, 1]) - 1
+evo_chosen <- exp(country_effects[which_chosen, ]) - 1
+
+tibble(country = rownames(country_effects), increase = exp(country_effects[, 1]) - 1) %>% 
+    mutate(country = fct_reorder(country, increase),
+           col = factor(1 * (country == "Ísland"))) %>% 
+    ggplot(aes(country, increase)) +
+    geom_point(aes(col = col), show.legend = F) +
+    geom_segment(aes(xend = country, yend = 0, col = col), show.legend = F) +
+    geom_hline(yintercept = mean_evo, lty = 2) +
+    # Meðalaukning
+    geom_text(data = tibble(), 
+              aes(label = "Meðalaukning", 
+                  x = 2, y = mean_evo * 1.08),
+              size = 4) +
+    # Label Chosen
+    geom_text(data = tibble(),
+              aes(label = percent(evo_chosen),
+                  x = which_chosen + 0.05,
+                  y = evo_chosen * 1.05),
+              col = "blue", size = 4) +
+    scale_y_continuous(labels = percent, 
+                       breaks = c(0, 0.05, 0.1, 0.15, 0.2, mean_evo, 0.3, 0.35),
+                       expand = expansion(mult = 0.02)) +
+    scale_x_discrete() +
+    scale_colour_manual(values = c( "grey", "blue")) +
+    coord_flip() +
+    labs(title = "Mynd 2. Dagleg aukning á tíðni staðfestra COVID-19 tilfella (per 1000 íbúa)",
+         subtitle = "Þróun reiknuð frá því að 50 tilfelli höfðu greinst og fyrir lönd með að minnsta kosti 7 daga eftirfylgd") +
+    theme(axis.title = element_blank(),
+          text = element_text(size = 12)) +
+    background_grid(major = "none", minor = "none") +
+    ggsave("throun_7_dagar.png", width = 8, height = 0.4 * 8, scale = 1.8)
+```
+
+

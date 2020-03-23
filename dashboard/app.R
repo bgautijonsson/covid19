@@ -3,12 +3,31 @@ library(ggplot2); library(readr); library(cowplot);
 library(shinythemes);library(lubridate); library(kableExtra)
 library(scales); library(broom); library(forcats);
 library(lme4); library(stringr); library(plotly);
-library(writexl)
+library(writexl); library(DT)
 theme_set(theme_classic(base_size = 12) + 
               background_grid(color.major = "grey90", 
                               color.minor = "grey95", 
                               minor = "xy", major = "xy") +
               theme(legend.position = "none"))
+
+url.exists <- RCurl::url.exists
+
+fileurl <- local({
+    today <- Sys.Date()
+    baseurl <- "https://raw.githubusercontent.com/bgautijonsson/covid19/master/Output/"
+    url <- paste0(baseurl, today, ".csv")
+    # Ef er komin inn spá fyrir daginn, annars prófa frá í gær
+    if (url.exists(url)) {
+        url
+    } else {
+        paste0(baseurl, "Iceland_Predictions_", today - 1, ".csv")
+    }
+})
+
+d_spa <- read_csv(
+    fileurl
+) %>% 
+    mutate_at(vars(median, upper), round)
 
 d <- read_csv("Input/ECDC_Data.csv")
 sidast_uppfaert <- "Síðast uppfært 21. mars 2020 klukkan 23:00"
@@ -141,6 +160,61 @@ ui <- navbarPage(
                      )
                  )
              )
+    ),
+    ##### Forspá #####
+    tabPanel(
+        title = "Spá",
+        sidebarLayout(
+            sidebarPanel(
+                selectInput(
+                    inputId = "tegund_forspa",
+                    label = "Sjá spá fyrir",
+                    choices = c("Uppsafnaðan fjölda" = "cumulative", "Virkan fjölda" = "active")
+                ),
+                selectInput(
+                    inputId = "breyta_forspa",
+                    label = "Sjá spá fyrir fjölda",
+                    choices = c("Tilfella" = "cases", "Á spítala" = "hospital", "Á gjörgæslu" = "icu")
+                ),
+                selectInput(inputId = "byage_forspa", label = "Birta eftir aldurs hópum?",
+                            choices = c("Aldursskipting", "Heild"), 
+                            selected = "Heild"),
+                fluidRow(
+                    column(6,
+                           dateInput("date_from_forspa", 
+                                     label = "Frá",
+                                     value = "2020-03-04", 
+                                     min = "2020-03-02", 
+                                     max = "2020-05-01")),
+                    column(6,
+                           dateInput("date_to_forspa", 
+                                     label = "Til",
+                                     value = "2020-03-21", 
+                                     min = "2020-03-02", 
+                                     max = "2020-05-01"))),
+                div(actionButton(inputId = "gobutton_forspa", label = "Birta gögn", width = "120px"), 
+                    class = "center", align = "middle"),
+                HTML("<br>"),
+                downloadButton("downloadData_forspa", label = "Sækja töflu"),
+                HTML("<br>"),
+                h6("Höfundar:"),
+                h6("Brynjófur Gauti Jónsson og Sindri Baldur"),
+                h6("Tölfræðiráðgjöf Heilbrigðisvísindasviðs Háskóla Íslands"),
+                div(img(src = "hi_hvs_horiz.png", width = "80%"), align = "middle", class = "center"),
+                h6("Byggt á daglega uppfærðum gögnum ..."),
+                h6(sidast_uppfaert),
+                a("Allan kóða má nálgast hér", href = "https://github.com/bgautijonsson/covid19")
+            ),
+            mainPanel(
+                tabsetPanel(
+                    type = "tabs",
+                    tabPanel(
+                        "Tafla",
+                        dataTableOutput(outputId = "tafla")
+                    )
+                )
+            )
+        )
     ),
     ##### Fróðleikur #####
     tabPanel(title = "Fróðleikur", 
@@ -582,6 +656,52 @@ server <- function(input, output, session) {
             write_xlsx(summary_table(), file)
         }
     )
+    
+    ##### Forspá #####
+    
+    out_gogn <- eventReactive(input$gobutton_forspa, {
+        out <- d_spa %>% 
+            filter(type == input$tegund_forspa,
+                   name == input$breyta_forspa,
+                   date >= ymd(input$date_from_forspa),
+                   date <= ymd(input$date_to_forspa))
+        
+        
+        
+        if (input$byage_forspa == "Heild") {
+            out <- out %>% 
+                filter(age == "total") %>% 
+                select(-type, -age, -name,
+                       Dagsetning = date, "Líklegasta spá" = median, "Svartsýn spá" = upper)
+        } else {
+            out <- out %>% 
+                filter(age != "total") %>% 
+                select(-name, -type,
+                       Dagsetning = date, Aldur = age, "Líklegasta spá" = median, "Svartsýn spá" = upper)
+        }
+        
+        out
+    })
+    output$downloadData_forspa <- downloadHandler(
+        filename = function() {
+            paste0(
+                Sys.Date(),
+                "_covid_",
+                input$tegund_forspa, "_",
+                input$breyta_forspa, "_",
+                if (input$byage_forspa != "Heild") "eftir_aldri" else "",
+                "_spagildi.xlsx"
+            )
+        },
+        content = function(file) {write_xlsx(out_gogn(), file)}
+    )
+    output$tafla <- renderDataTable({
+        datatable(
+            out_gogn(),
+            rownames= FALSE,
+            options = list(dom = 't', pageLength = nrow(out_gogn()))
+        )
+    })
     
     
 }

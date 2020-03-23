@@ -26,9 +26,9 @@ source("../Make_Stan_Data.R")
 ```
 
 ```{r data}
-data_path <- str_c("../Output/Iceland_Predictions_", Sys.Date(), ".csv")
+data_path <- str_c("../Output/Iceland_Predictions_", Sys.Date() - 1, ".csv")
 d <- read_csv(data_path)
-fig_out_path <- str_c(as.character(Sys.Date()), "/Figures/")
+fig_out_path <- str_c(as.character(Sys.Date() - 1), "/Figures/")
 make_fig_path <- function(name) str_c(fig_out_path, name)
 
 iceland_d <- read_csv("../Input/ECDC_Data.csv") %>% 
@@ -37,7 +37,7 @@ iceland_d <- read_csv("../Input/ECDC_Data.csv") %>%
 
 # Samantekt
 
-Spáin hefur breyst verulega frá því 19. mars  þar sem faraldurinn er í veldisvexti og frá þeim tíma hefur fjöldi tilfela allt að því tvöfaldast.
+Spáin hefur breyst verulega frá því 19. mars  þar sem faraldurinn er í veldisvexti og frá þeim tíma hefur fjöldi tilfella allt að því tvöfaldast.
 
 **Helstu niðurstöður spálíkansins með gögnum til og með 22. mars eru eftirfarandi:**
 
@@ -62,13 +62,13 @@ Greiningarvinnan mun halda áfram og spálíkanið verður uppfært reglulega me
 
 * Í samræmi við þekkingu á faraldsfræði smitsjúkdóma, þá gerir spálíkanið ráð fyrir að það hægi á núverandi veldisvexti greindra tilfella þar til að hann stöðvist á einhverjum tímapunkti, þar sem faraldurinn nær hámarki og virkum smitum fækkar þar á eftir.
 
-* Reikniaðferðin sem notuð er til að meta lögun vaxtarferilins á Íslandi tekur mið af upplýsingum um COVID-19 faraldursferla í öðrum löndum *(sjá viðauka)* til að áætla mögulega lögun ferlisins á Ísland. Lönd sem eru komin lengra í ferlinum, t.d. Suður-Kórea, vega meira en þau sem styttra eru komin. 
+* Reikniaðferðin sem notuð er til að meta lögun vaxtarferilsins á Íslandi tekur mið af upplýsingum um COVID-19 faraldursferla í öðrum löndum *(sjá viðauka)* til að áætla mögulega lögun ferlisins á Ísland. Lönd sem eru komin lengra í ferlinum, t.d. Suður-Kórea, vega meira en þau sem styttra eru komin. 
 
 * Þar sem allir smitaðir einstaklingar á Íslandi eru skjólstæðingar íslensks heilbrigðiskerfis, þá byggir spáin á heildarfjölda smitaðra einstaklinga á Íslandi óháð uppruna smita, hvort einstaklingar greinist í sóttkví eða ekki, gegnum skimun Heilsugæslunnar eða ÍE. Hafa skal í huga að smitaðir einstaklingar í sóttkví gætu mögulega bætt minna við veldisvöxtinn en aðrir einstaklingar.
 
 * Við notuðum fyrirliggjandi aldursdreifingu smita á Íslandi til að áætla skiptingu framtíðartilfella í aldurshópa. Síðan notuðum við upplýsingar frá Ferguson og félögum hjá Imperial College [(Tafla 1)](https://www.imperial.ac.uk/media/imperial-college/medicine/sph/ide/gida-fellowships/Imperial-College-COVID19-NPI-modelling-16-03-2020.pdf?fbclid=IwAR17JB7RqzU491sxa8eV1gqHFv-GTl2vh06sOUGaqaQ9RJ5vjWO_jNZbWjo) um aldurstengd hlutföll spítalainnlagna í forspá okkar um fjölda sjúklinga hérlendis sem gætu lagst inn á spítala og/eða gjörgæslu.
 
-* Hafa ber í huga að aldursdreifing smitaðara einstaklinga á Íslandi er hagstæð enn sem komið er. Ef fjöldi smita eykst meðal aldraðra einstaklinga mun það hafa veruleg áhrif á spálíkanið í átt að auknu álagi á heilbrigðiskerfið. 
+* Hafa ber í huga að aldursdreifing smitaðra einstaklinga á Íslandi er hagstæð enn sem komið er. Ef fjöldi smita eykst meðal aldraðra einstaklinga mun það hafa veruleg áhrif á spálíkanið í átt að auknu álagi á heilbrigðiskerfið. 
 
 * Allan kóða á finna á [eftirfarandi vefsíðu](https://www.github.com/bgautijonsson/covid19)
 
@@ -105,7 +105,7 @@ d %>%
   geom_point(data = iceland_d, aes(x = date, y = total_cases), inherit.aes = F) +
   scale_y_continuous(breaks = pretty_breaks(8)) +
   scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
-  labs(title = "Uppsöfnuð smit í heildina", linetype = " ") +
+  labs(title = "Virk smit í heildina", linetype = " ") +
   theme(axis.title = element_blank(),
         legend.position = "top") +
   ggsave(make_fig_path("cases_active_total.png"), width = 8, height = 0.621 * 8, scale = 1.5)

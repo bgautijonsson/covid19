@@ -1,0 +1,138 @@
+---
+title: "Logistic Forspár"
+author: "Brynjólfur Gauti Jónsson"
+date: "`r Sys.Date()`"
+output: 
+    html_document:
+        theme: flatly
+runtime: shiny_prerendered
+---
+
+```{r setup, context = "setup", include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = F, message = F, 
+                      fig.asp = 0.621, out.width = "100%", fig.width = 8)
+
+library(tidyverse); library(knitr); library(kableExtra); library(broom); library(cowplot); 
+library(rstan); library(tidybayes); library(scales)
+
+theme_set(theme_classic(base_size = 12) + 
+            background_grid(color.major = "grey90", 
+                            color.minor = "grey95", 
+                            minor = "xy", major = "xy") +
+            theme(legend.position = "none"))
+```
+
+```{r, context = "data"}
+d <- read_csv("stan_data.csv")
+m <- read_rds("Hierarchical_Model.rds")
+```
+
+```{r, context = "render"}
+fluidRow(
+  column(3,
+         selectInput(inputId = "country",
+                     label = "Land",
+                     choices = unique(d$country), selected = "Iceland")
+  ),
+  column(3,
+         numericInput(inputId = "conf",
+                      label = "Öryggismörk", min = 0.01, max = 0.99, value = 0.95, step = 0.01)
+  ),
+  column(3,
+         numericInput(inputId = "recovered_days",
+                      label = "Lengd veikinda", min = 5, max = 31, value = 21, step = 1)
+  ),
+  column(3,
+         selectInput(inputId = "scale",
+                     label = "Skali", choices = c("Upprunalegur", "Logra"), selected = "Upprunalegur")
+  )
+)
+div(actionButton(inputId = "gobutton", label = "Birta"),
+    class = "center", align = "middle")
+
+plotOutput("pred_plot")
+```
+
+
+```{r, context = "server"}
+pred_plot <-  eventReactive(input$gobutton, {
+  
+  req(input$country, input$conf)
+  
+  plot_dat <- d %>% filter(country == input$country)
+  id <- unique(plot_dat$country_id)
+  pop <- unique(plot_dat$pop)
+  alph <- 1 - input$conf
+  
+  results <- spread_draws(m, alpha[country], beta[country], maximum[country]) %>% 
+    ungroup %>% 
+    filter(country == id) %>% 
+    mutate(iter = row_number()) %>% 
+    select(iter, alpha, beta, maximum) %>% 
+    expand_grid(days = seq(-30, 60)) %>% 
+    mutate(linear = alpha + beta * days,
+           rate = maximum / (1 + exp(-linear)),
+           cases = rate * pop) %>% 
+    group_by(iter) %>% 
+    mutate(recovered = lag(cases, n = input$recovered_days, default = 0),
+           active_cases = pmax(0, cases - recovered)) %>% 
+    ungroup %>% 
+    select(iter, days, cumulative_cases = cases, active_cases)
+  
+  plot_lab1 <- str_c("Uppsöfnuð smit í ", 
+                     input$country, 
+                     ": Spá og raun")
+  
+  p1 <- results %>% 
+    mutate(date = days + min(plot_dat$date)) %>% 
+    group_by(date) %>% 
+    summarise(median = median(cumulative_cases),
+              lower = quantile(cumulative_cases, alph / 2),
+              upper = quantile(cumulative_cases, 1 - alph / 2)) %>% 
+    ggplot(aes(date, median, ymin = lower, ymax = upper)) +
+    geom_line(aes(y = lower), lty = 2) +
+    geom_line(aes(y = upper), lty = 2) +
+    geom_line() +
+    geom_point(data = plot_dat,
+               aes(date, total_cases), inherit.aes = F) +
+    scale_y_continuous(breaks = pretty_breaks(8)) +
+    labs(y = "Fjöldi",
+         title = plot_lab1,
+         subtitle = "Forspáð miðgildi ásamt PI") +
+    theme(axis.title.x = element_blank())
+  
+  
+  plot_lab2 <- str_c("Virk smit í ", 
+                     input$country, 
+                     ": Spá og raun")
+  p2 <- results %>% 
+    mutate(date = days + min(plot_dat$date)) %>% 
+    group_by(date) %>% 
+    summarise(median = median(active_cases),
+              lower = quantile(active_cases, alph / 2),
+              upper = quantile(active_cases, 1 - alph / 2)) %>% 
+    ggplot(aes(date, median, ymin = lower, ymax = upper)) +
+    geom_line(aes(y = lower), lty = 2) +
+    geom_line(aes(y = upper), lty = 2) +
+    geom_line() +
+    geom_point(data = plot_dat,
+               aes(date, total_cases), inherit.aes = F) +
+    scale_y_continuous(breaks = pretty_breaks()) +
+    labs(y = "Fjöldi",
+         title = plot_lab2,
+         subtitle = "Forspáð miðgildi ásamt PI") +
+    theme(axis.title.x = element_blank())
+  
+  if (input$scale == "Logra") {
+    p1 <- p1 + scale_y_log10(breaks = c(1, 3, 10, 30, 100, 300, 1000, 3000, 10000, 30000, 100000, 300000, 1000000, 3000000))
+    p2 <- p2 + scale_y_log10(breaks = c(1, 3, 10, 30, 100, 300, 1000, 3000, 10000, 30000, 100000, 300000, 1000000, 3000000))
+  }
+  
+  plot_grid(p1, p2, align = "v")
+  
+})
+
+output$pred_plot <- renderPlot({
+  pred_plot()
+})
+```

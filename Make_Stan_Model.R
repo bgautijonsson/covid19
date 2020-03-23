@@ -7,7 +7,8 @@ options(mc.cores = parallel::detectCores())
 rstan_options(auto_write = TRUE)
 source("Make_Stan_Data.R")
 
-d <- Make_Stan_Data()
+d <- Make_Stan_Data(min_case_rate = 0.2, min_days = 4)
+
 
 N_obs <- nrow(d)
 N_countries <- max(d$country_id)
@@ -39,6 +40,6 @@ stan_data <- list(N_obs = N_obs,
 
 m <- sampling(stan_model("Stan/Logistic/Hierarchical_Logistic_Cases.stan"), 
               data  = stan_data, chains = 4, iter = 3000, warmup = 1000,
-              control = list(max_treedepth = 15))
+              control = list(max_treedepth = 15, adapt_delta = 0.9))
 
-write_rds(m, "Stan/Logistic/Hirearchical_Model.rds")
+write_rds(m, "Stan/Logistic/Hierarchical_Model.rds")

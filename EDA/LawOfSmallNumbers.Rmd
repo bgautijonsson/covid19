@@ -48,7 +48,7 @@ anim_save("pop_growth.gif", p)
 
 ***
 
-Ein frægasta niðurstaða tölfræðinnar er **lögmál stórra talna**. Samkvæmt því stefnir summa slembinna stærða á normaldreifingu í óendanleikanum *(þegar ákveðnum skilyrðum er uppfyllt)*. Stundum tala tölfræðingar í háði um **lögmál smárra talna**. 
+Ein frægasta niðurstaða tölfræðinnar er **lögmál stórra talna**. Samkvæmt því stefnir úrtaksmeðaltalið *(meðaltal gagnanna sem þú fékkst í hendurnar)* á þýðismeðaltalið *(meðaltalið sem þú ert í raun að reyna að mæla)* því stærra sem úrtakið þitt verður. Stundum tala tölfræðingar í háði um **lögmál smárra talna**. 
 
 Það er í rauninni *ekki lögmál*, heldur útskýring á því af hverju bæði hæstu og lægstu krabbameinstíðnina í Bandaríkjunum er oftast að finna í litlum bæjum. Það er hreinlega vegna þess að ef fáir íbúar eru í bæ þá mun eitt tilfelli hækka tíðnina gífurlega mikið. Sömuleiðis, ef fáir búa á staðnum, getur vel verið að enginn þjáist af krabbameini og því mælist tíðnin mjög lág! 
 
