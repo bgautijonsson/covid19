@@ -25,14 +25,16 @@ Skýrsla og myndir koma svo með því að keyra `Simulation_Report/Make_Simulat
 
 **Todo** 
 
-* Auðvelda að hlaða niður töflum með gögnum og forspám
 * Bæta við Íslensk gögn um spítalalegur og smitatíðni eftir aldurshópum
 * Vantar spatial hluta í líkanið
+* Gera mögulegt að bera saman mismunandi forspár frá mismunandi dögum í appinu (sanity check)
+
+# About the model
+
+A report I wrote about the model can be found at: https://rpubs.com/bgautijonsson/588811
 
 # dashboard
 
 Vefsíðan bgautijonsson.shinyapps.io/COVID_Dashboard er öll sett upp í `dashboard` möppunni, nánar tiltekið `dashboard/app.R` skránni. Ég hef ekki komið mér í að commenta vel kóðann þar, en ef einhver hefur áhuga á að taka við viðhaldi á appinu hafið endilega samband og við förum yfir þetta.
 
-**Todo**
-
-* Koma yfir á HÍ shiny server
+**Update:** Vefsíðan mun núna færa sig yfir á [https://covid.rhi.hi.is/shiny/dashboard/](https://covid.rhi.hi.is/shiny/dashboard/). Ég mun halda áfram með mína eigin hýsingu til vonar og vara.
