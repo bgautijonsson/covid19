@@ -409,7 +409,15 @@ I_i \sim \mathrm{Poisson}(P_i \cdot E_i).
 \alpha_i &amp;\sim \mathrm{Normal}(\mu_\alpha, \sigma^2_\alpha).
 \end{aligned}
 \]</span></p>
-<p>The <span class="math inline">\(\mu\)</span> parameters are given a flat prior distribution, while <span class="math inline">\(\sigma^2_\beta\)</span> and <span class="math inline">\(\sigma^2_\alpha\)</span> are given <span class="math inline">\(\mathrm{Inv-}\chi^2(2)\)</span> prior distributions. This is equal to putting <span class="math inline">\(\mathrm{Exponential}(1)\)</span> prior distributions on the</p>
+<p>The <span class="math inline">\(\mu\)</span> parameters are given a flat prior distribution, while <span class="math inline">\(\sigma^2_\beta\)</span> and <span class="math inline">\(\sigma^2_\alpha\)</span> are given <span class="math inline">\(\mathrm{Inv-}\chi^2(2)\)</span> prior distributions. This is equal to putting <span class="math inline">\(\mathrm{Exponential}(\frac12)\)</span> prior distributions on the precisions <span class="math inline">\(\frac{1}{\sigma^2_\beta}\)</span> and <span class="math inline">\(\frac{1}{\sigma^2_\alpha}\)</span>.</p>
+<p>The <span class="math inline">\(S_i\)</span> parameters take on values in <span class="math inline">\((0, 1)\)</span>, so we thought at might be a good idea to model them with Beta distributions. By putting hierarchical priors on them we could also share information between countries on the estimated saturation points. Thus we write</p>
+<p><span class="math display">\[
+S_i \sim \mathrm{Beta}(a_S, b_S),
+\]</span></p>
+<p>where <span class="math inline">\(a_S\)</span> and <span class="math inline">\(b_S\)</span>, being strictly positive, are given flat distributions on the <span class="math inline">\(\log\)</span> scale, which is equal to <span class="math inline">\(p(a_S) \propto \frac{1}{a_S}\)</span> and <span class="math inline">\(p(b_S) \propto \frac{1}{b_S}\)</span>.</p>
+</div>
+<div id="results" class="section level1">
+<h1>Results</h1>
 </div>
 
 

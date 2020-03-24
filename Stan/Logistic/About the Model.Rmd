@@ -2,57 +2,88 @@
 title: "Hierarchical Logistic Growth Curves"
 author: "Brynjólfur Gauti Jónsson"
 date: "3/24/2020"
-output: html_document
+output: 
+    html_document:
+        theme: flatly
+        toc: true
+        toc_float: true
+        code_folding: hide
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = F, 
+                      fig.asp = 0.621, out.width = "100%", fig.width = 8)
 ```
 
-# Parametrization
+```{r}
+library(tidyverse); library(knitr); library(kableExtra); library(broom); library(cowplot); 
+library(rstan); library(tidybayes); library(scales); library(DT); library(plotly)
 
-Let $E_i$ and $I_i$ be the population and number of infected in country $i$. Then the percent of infected can be calculated as
+theme_set(theme_classic(base_size = 12) + 
+            background_grid(color.major = "grey90", 
+                            color.minor = "grey95", 
+                            minor = "xy", major = "xy") +
+            theme(legend.position = "none"))
+m <- read_rds("Hierarchical_Model.rds")
+d <- read_csv("Interactive Model Checking/stan_data.csv")
+countries <- d %>% distinct(country, country_id)
+which_iceland <- d %>% filter(country == "Iceland") %>% .$country_id %>% unique
+n_countries <- max(d$country_id)
+```
+
+```{r}
+results <- tidyMCMC(m, conf.int = T, rhat = T, ess = T, estimate.method = "median", conf.method = "quantile") %>% 
+    mutate(par = str_match(term, "[a-z_]+")) %>% 
+    group_by(par) %>% 
+    mutate(num = row_number() %>% as.numeric)
+```
+
+# Methods
+
+## Parametrization
+
+Let $E_i$ and $I_{i, t}$ be the population and number of infected in country $i$ at time $t$. Then the percent of infected can be calculated as
 
 $$
-P_i = \frac{I_i}{E_i}.
+P_{i, t} = \frac{I_{i, t}}{E_i}.
 $$
 
-In a normal Logistic Regression GLM we could model the percent of infected, as a function of time *(in days)* as
+In the usual Logistic Regression GLM we could model the percent of infected, as a function of time *(in days)*, with
 
 $$
-\log\left(\frac{P_i}{1 - P_i}\right) = \alpha_i + \beta_i \cdot t,
+\log\left(\frac{P_{i, t}}{1 - P_{i, t}}\right) = \alpha_i + \beta_i \cdot t,
 $$
 
 where $\alpha_i$ is a measure of how many have been infected in country $i$ at time $t = 0$ and $\beta_i$ is a measure of growth. In the case of COVID-19 infections we don't know the maximum percent of populations that will be infected, so we have another unknown parameter, the saturation percent at which a country will reach its maximum number of infected, $S_i$. Thus our model looks like
 
 $$
-\log\left(\frac{P_i}{S_i - P_i}\right) = \alpha_i + \beta_i \cdot t.
+\log\left(\frac{P_{i, t}}{S_i - P_{i, t}}\right) = \alpha_i + \beta_i \cdot t.
 $$
 
-These parameters are hard to estimate when data from only one country are used. However, if we were to pool information about them between countries as in a hierarchical Bayesian model estimation might prove easier. Let
+These parameters are hard to estimate when data from only one country are used. However, if we were to pool information about them between countries, as in a hierarchical Bayesian model, estimation might be possible. Let
 
 $$
-z_i = \alpha_i + \beta_i \cdot t.
+z_{i, t} = \alpha_i + \beta_i \cdot t.
 $$
 
 Then
 
 $$
-P_i = \frac{S_i}{1 + \exp(-z_i)},
+P_{i, t} = \frac{S_i}{1 + \exp(-z_{i, t})},
 $$
 
-and conditional on some sampling distribution, $f$, then
+and conditional on some sampling distribution, $f$, we could write
 
 $$
-I_i \sim \mathrm{f}(P_i \cdot E_i).
+I_i \sim \mathrm{f}(P_i,  E_i).
 $$
 
-# Bayesian Inference
+## Bayesian Inference
 
-Bayesian inference is a great tool when small amounts of data are to be shared from various sourcs. In this case the sources are different countries, and the data are cumulative numbers of cases. If we utilize a Poisson likelihood for the observed cumulative cases, then
+Bayesian inference is a great tool when small amounts of data are to be shared from various sources. In this case the sources are different countries, and the data are cumulative numbers of cases. If we utilize a Poisson likelihood for the observed cumulative cases, then
 
 $$
-I_i \sim \mathrm{Poisson}(P_i \cdot E_i).
+I_{i, t} \sim \mathrm{Poisson}(P_{i, t} \cdot E_i).
 $$
 
 The parameters, $\alpha$ and $\beta$, are treated as in a generalized linear model, and we put a hierarchical prior on them so that for each country, $i$,
@@ -60,9 +91,241 @@ The parameters, $\alpha$ and $\beta$, are treated as in a generalized linear mod
 $$
 \begin{aligned}
 \beta_i &\sim \mathrm{Normal}(\mu_\beta, \sigma^2_\beta) \\
-\alpha_i &\sim \mathrm{Normal}(\mu_\alpha, \sigma^2_\alpha).
+\alpha_i &\sim \mathrm{Normal}(\mu_\alpha, \sigma^2_\alpha)
 \end{aligned}
 $$
 
-The $\mu$ parameters are given a flat prior distribution, while $\sigma^2_\beta$ and $\sigma^2_\alpha$ are given $\mathrm{Inv-}\chi^2(2)$ prior distributions. This is equal to putting $\mathrm{Exponential}(1)$ prior distributions on the 
+The $\mu$ parameters are given a flat prior distribution, while $\sigma^2_\beta$ and $\sigma^2_\alpha$ are given $\mathrm{Inv-}\chi^2(2)$ prior distributions. This is equal to putting $\mathrm{Exponential}(\frac12)$ prior distributions on the precisions $\frac{1}{\sigma^2_\beta}$ and $\frac{1}{\sigma^2_\alpha}$. 
+
+The $S_i$ parameters take on values in $(0, 1)$, so we thought it proper to model them with Beta distributions. By putting hierarchical priors on them we could also share information between countries on the estimated saturation points. Thus the saturation parameter for country $i$ is sampled as
+
+$$
+S_i \sim \mathrm{Beta}(a_S, b_S),
+$$
+
+where $a_S$ and $b_S$, being strictly positive, are given flat prior distributions on the $\log$ scale, which is equal to $p(a_S) \propto \frac{1}{a_S}$ and $p(b_S) \propto \frac{1}{b_S}$.
+
+***
+
+**Putting it all together we get**
+
+$$
+\begin{aligned}
+I_{i, t} &\sim \mathrm{Poisson}(P_{i, t} \cdot E_i) \\
+P_{i, t} &= \frac{S_i}{1 + \exp(-z_{i, t})} \\
+z_{i, t} &= \alpha_i + \beta_i \cdot t \\
+\beta_i &\sim \mathrm{Normal}(\mu_\beta, \sigma^2_\beta) \\
+\alpha_i &\sim \mathrm{Normal}(\mu_\alpha, \sigma^2_\alpha) \\
+S_i &\sim \mathrm{Beta}(a_S, b_S)\\
+p(\mu_\alpha) = p(\mu_\beta)  &\propto 1 \\
+p(\frac{1}{\sigma^2_\alpha}) = p(\frac{1}{\sigma^2_\beta}) &\sim \mathrm{Exponential}(\frac12)  \\
+p(a_S) &\propto \frac{1}{a_S} \\
+p(b_S) &\propto \frac{1}{b_S}
+\end{aligned}
+$$
+
+***
+
+## Data
+
+Data used for modeling were filtered according to
+
+* Only keep data for which cases per 1000 inhabitants $\geq$ 0.04.
+* Only keep data for countries for which the first observation after this filtering is $leq$ 0.08
+    - This reduces instability in estimates. Some very small countries, such as San Marino, tend to have large jumps in case rates. Other reasons for large jumps are governments starting large scale testing.
+* Only keep data for countries with at least 7 days of follow-up after the above steps.
+
+```{r}
+d %>% 
+    group_by(country) %>% 
+    summarise(First = min(date),
+              Days_In_Data = n(),
+              Start_Rate = min(case_rate),
+              End_Rate = max(case_rate)) %>% 
+    set_names(c("Country", "Entry", "Days in data", "Start", "End")) %>% 
+    kable(caption = "Table 1. Summary information about countries used in modeling",
+          align = c("l", rep("c", ncol(.) - 1)),
+          digits = 3) %>% 
+    kable_styling(bootstrap_options = c("striped", "hover")) %>% 
+    row_spec(which_iceland, bold = T) %>% 
+    add_header_above(c("", "", "", "Rate per 1000" = 2)) %>%
+    scroll_box(height = "500px")
+```
+
+
+```{r, fig.asp = 0.8}
+p <- d %>% 
+    ggplot(aes(days, case_rate, group = country, col = country == "Iceland")) +
+    geom_line() +
+    scale_y_log10() +
+    scale_colour_manual(values = c("grey", "blue")) +
+    labs(x = "Days since rate reached 0.04",
+         y = "Cases per 1000",
+         title = "Observed trends for countries used in data",
+         subtitle = "Shown as days since a country entered the modeling data")
+ggplotly(p)
+```
+
+
+# Results
+
+
+## Country Level Effects
+
+```{r}
+ results %>% 
+    ungroup %>% 
+    filter(par %in% c("beta", "alpha", "maximum", "phi_inv")) %>% 
+    inner_join(countries, by = c("num" = "country_id")) %>% 
+    mutate(par = str_to_title(par)) %>% 
+    select(par, country, num, everything(), -num, -term, -std.error) %>% 
+    set_names(c("Parameter", "Country", "Median", "Lower", "Upper", "Rhat", "ESS")) %>% 
+    kable(digits = 4, align = c("l", "l", rep("c", ncol(.) - 2)),
+          caption = "Table 2. Summary of posterior samples of country level effects") %>% 
+    kable_styling(bootstrap_options = c("striped", "hover")) %>% 
+    add_header_above(c("", "", "", "95% PI" = 2, "Convergence" = 2)) %>% 
+    column_spec(1, bold = T) %>% 
+    row_spec(which_iceland + c(0, 1, 2, 3) * n_countries, bold = T) %>% 
+    collapse_rows(1, valign = "top") %>% 
+    scroll_box(height = "600px")
+```
+
+```{r}
+p <- results %>% 
+    ungroup %>% 
+    filter(par %in% c("beta", "alpha", "maximum", "phi_inv")) %>% 
+    inner_join(countries, by = c("num" = "country_id")) %>% 
+    mutate(par = str_to_title(par)) %>% 
+    mutate(plot_var = str_c(par, "_", country)) %>% 
+    mutate(country = fct_reorder(country, estimate)) %>% 
+    ggplot(aes(country, estimate, ymin = conf.low, ymax = conf.high, col = country == "Iceland")) +
+    geom_linerange() +
+    geom_point() +
+    coord_flip() +
+    facet_wrap("par", scales = "free_x") +
+    scale_colour_manual(values = c("grey", "blue")) +
+    labs(y = "Posterior median and 95% PI") +
+    theme(axis.title.y = element_blank())
+
+ggplotly(p)
+```
+
+## Hyperparameters
+
+Our method of filtering the data used in modeling ensured that countries have similar starting percentages of infected, so the $\alpha$ parameters can be more readily pooled. However, some smalelr countries that are used tend to have large jumps in rates dues to their small populations. Thus the variance in the alpha parameters can be rather large. Our way of filtering data could still be improved to increase stability in the $\alpha$ parameters.
+
+```{r}
+results %>% 
+    ungroup %>% 
+    filter(par %in% c("mu_beta", "sigma_sq_beta", "mu_alpha", "sigma_sq_alpha", "beta_a", "beta_b", "mu_phi_inv")) %>% 
+    mutate(par = str_to_title(par)) %>% 
+    select(par, everything(), -num, -term, -std.error) %>% 
+    set_names(c("Parameter",  "Median", "Lower", "Upper", "Rhat", "ESS")) %>% 
+    kable(digits = 4, align = c("l", "l", rep("c", ncol(.) - 2)),
+          caption = "Table 3. Summary of posterior samples of hyperparameters") %>% 
+    kable_styling(bootstrap_options = c("striped", "hover")) %>% 
+    add_header_above(c("", "", "95% PI" = 2, "Convergence" = 2)) %>% 
+    column_spec(1, bold = T)
+```
+
+## Posterior Predictions
+
+```{r}
+knitr::include_app("https://bgautijonsson.shinyapps.io/Hierarchical_Report/", height = "600px")
+```
+
+
+# Next actions
+
+## Modeling the daily counts instead of cumulative counts
+
+Let
+
+$$
+z_{i, t} = \alpha_i + \beta_i \cdot t,
+$$
+
+so that the percent of infected, $P_i$, is
+
+$$
+P_{i, t} = \frac{S_i}{1 + \exp(-z_{i,t})}.
+$$
+
+If we furthermore write
+
+$$
+z^*_{i, t - 1} = \alpha_i + \beta_i \cdot (t - 1),
+$$
+
+and
+
+$$
+P^*_{i, t - 1} = \frac{S_i}{1 + \exp(-z^*_{i, t-1})},
+$$
+
+so that the change in rates between days is
+
+$$
+C_{i, t} = P_{i, t} - P^*_{i, t - 1}.
+$$
+
+Then, conditional on a Poisson likelihood and population $E_i$, the daily number of observed cases, $D_i$, can be written as
+
+$$
+D_i \sim \mathrm{Poisson}(C_{i, t} \cdot E_i)
+$$
+
+## Time-varying growth rates
+
+# Appendix
+
+## Stan Code
+
+```{r, eval = FALSE}
+data {
+  int<lower = 0> N_obs;
+  int country[N_obs];
+  vector[N_obs] days;
+  int obs_cases[N_obs];
+  
+  int<lower = 0> N_countries;
+  vector[N_countries] pop;
+}
+
+parameters {
+  vector[N_countries] beta;
+  vector[N_countries] alpha;
+  vector<lower = 0, upper = 1>[N_countries] maximum;
+  
+  real mu_beta;
+  real<lower = 0> sigma_sq_beta;
+  
+  real mu_alpha;
+  real<lower = 0> sigma_sq_alpha;
+  
+  real<lower = 0> beta_a;
+  real<lower = 0> beta_b;
+  
+}
+
+transformed parameters {
+  vector[N_obs] linear = alpha[country] + beta[country] .* days;
+  vector<lower = 0, upper = 1>[N_obs] rate;
+  for (i in 1:N_obs) rate[i] = maximum[country[i]] .* 1 / (1 + exp(-linear[i]));
+}
+
+model {
+  
+  sigma_sq_beta ~ inv_chi_square(2);
+  sigma_sq_alpha ~ inv_chi_square(2);
+  
+  maximum ~ beta(beta_a, beta_b);
+  
+  beta ~ normal(mu_beta, sigma_sq_beta);
+  alpha ~ normal(mu_alpha, sigma_sq_alpha);
+  
+  
+  obs_cases ~ poisson(rate .* pop[country]);
+}
+```
 
