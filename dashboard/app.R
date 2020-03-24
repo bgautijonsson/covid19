@@ -20,7 +20,7 @@ fileurl <- local({
     if (url.exists(url)) {
         url
     } else {
-        paste0(baseurl, "Iceland_Predictions_", today - 1, ".csv")
+        paste0(baseurl, "Iceland_Predictions_", "2020-03-22", ".csv")
     }
 })
 

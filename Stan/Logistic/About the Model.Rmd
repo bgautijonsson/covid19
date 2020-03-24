@@ -1,0 +1,68 @@
+---
+title: "Hierarchical Logistic Growth Curves"
+author: "Brynjólfur Gauti Jónsson"
+date: "3/24/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Parametrization
+
+Let $E_i$ and $I_i$ be the population and number of infected in country $i$. Then the percent of infected can be calculated as
+
+$$
+P_i = \frac{I_i}{E_i}.
+$$
+
+In a normal Logistic Regression GLM we could model the percent of infected, as a function of time *(in days)* as
+
+$$
+\log\left(\frac{P_i}{1 - P_i}\right) = \alpha_i + \beta_i \cdot t,
+$$
+
+where $\alpha_i$ is a measure of how many have been infected in country $i$ at time $t = 0$ and $\beta_i$ is a measure of growth. In the case of COVID-19 infections we don't know the maximum percent of populations that will be infected, so we have another unknown parameter, the saturation percent at which a country will reach its maximum number of infected, $S_i$. Thus our model looks like
+
+$$
+\log\left(\frac{P_i}{S_i - P_i}\right) = \alpha_i + \beta_i \cdot t.
+$$
+
+These parameters are hard to estimate when data from only one country are used. However, if we were to pool information about them between countries as in a hierarchical Bayesian model estimation might prove easier. Let
+
+$$
+z_i = \alpha_i + \beta_i \cdot t.
+$$
+
+Then
+
+$$
+P_i = \frac{S_i}{1 + \exp(-z_i)},
+$$
+
+and conditional on some sampling distribution, $f$, then
+
+$$
+I_i \sim \mathrm{f}(P_i \cdot E_i).
+$$
+
+# Bayesian Inference
+
+Bayesian inference is a great tool when small amounts of data are to be shared from various sourcs. In this case the sources are different countries, and the data are cumulative numbers of cases. If we utilize a Poisson likelihood for the observed cumulative cases, then
+
+$$
+I_i \sim \mathrm{Poisson}(P_i \cdot E_i).
+$$
+
+The parameters, $\alpha$ and $\beta$, are treated as in a generalized linear model, and we put a hierarchical prior on them so that for each country, $i$,
+
+$$
+\begin{aligned}
+\beta_i &\sim \mathrm{Normal}(\mu_\beta, \sigma^2_\beta) \\
+\alpha_i &\sim \mathrm{Normal}(\mu_\alpha, \sigma^2_\alpha).
+\end{aligned}
+$$
+
+The $\mu$ parameters are given a flat prior distribution, while $\sigma^2_\beta$ and $\sigma^2_\alpha$ are given $\mathrm{Inv-}\chi^2(2)$ prior distributions. This is equal to putting $\mathrm{Exponential}(1)$ prior distributions on the 
+
