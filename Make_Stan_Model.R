@@ -6,23 +6,24 @@ library(magrittr)
 options(mc.cores = parallel::detectCores())
 source("Make_Stan_Data.R")
 
-d <- Make_Stan_Data(min_days = 8)
+d <- Make_Stan_Data(min_case_rat = 0.02, min_days = 8)
 
 N_obs <- nrow(d)
 N_countries <- max(d$country_id)
 
 
 days <- d$days
-cases <- d$new_cases
+new_cases <- d$new_cases
+total_cases <- d$total_cases
 country <- d$country_id %>% as.integer
-
 
 pop <- d %>% distinct(country_id, pop) %>% arrange(country_id) %>%  .$pop
 
 stan_data <- list(N_obs = N_obs,
                   N_countries = N_countries,
                   days = days, 
-                  obs_cases = cases, 
+                  new_cases = new_cases, 
+                  total_cases = total_cases, 
                   country = country,
                   pop = pop)
 

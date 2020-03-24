@@ -4,4 +4,5 @@
 .Ruserdata
 *.xls
 *.rds
-*.RData
+**/*.RData
+**/*.rds

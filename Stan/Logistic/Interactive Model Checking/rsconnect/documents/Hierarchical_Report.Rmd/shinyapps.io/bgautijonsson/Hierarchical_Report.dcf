@@ -5,8 +5,8 @@ account: bgautijonsson
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 1978499
-bundleId: 2918142
+bundleId: 2919011
 url: https://bgautijonsson.shinyapps.io/Hierarchical_Report/
-when: 1585058082.148
+when: 1585069608.04264
 asMultiple: FALSE
 asStatic: FALSE

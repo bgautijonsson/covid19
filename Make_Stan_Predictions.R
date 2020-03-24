@@ -21,7 +21,7 @@ sheets_auth(email = "bgautijonsson@gmail.com")
 
 source("Make_Stan_Data.R")
 
-d <- Make_Stan_Data()
+d <- Make_Stan_Data(min_case_rat = 0.02, min_days = 8)
 
 daily_cases <- function(alpha, beta, maximum, t) {
     z <- alpha + beta * t
@@ -60,7 +60,7 @@ results <- spread_draws(m, alpha[country], beta[country], maximum[country]) %>%
 
 
 age_results <- results %>% 
-    filter(iter >= max(iter) - 2000) %>% 
+    filter(iter >= max(iter) - 3000) %>% 
     rowwise %>% 
     mutate(age_cases = list(tibble(age = aldur$aldur, 
                                    cases_active = as.vector(rmultinom(1, 
