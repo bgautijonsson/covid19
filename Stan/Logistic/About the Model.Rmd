@@ -86,6 +86,54 @@ $$
 I_{i, t} \sim \mathrm{Poisson}(P_{i, t} \cdot E_i).
 $$
 
+### Modeling daily counts
+
+However, there is a lot of implicit correlation in the values of $I_{i, t}$ for differet values of $t$. Thus, a better parametrization would be to model the daily number of cases. 
+
+Let
+
+$$
+z_{i, t} = \alpha_i + \beta_i \cdot t,
+$$
+
+so that the percent of infected, $P_i$, is
+
+$$
+P_{i, t} = \frac{S_i}{1 + \exp(-z_{i,t})}.
+$$
+
+If we furthermore write
+
+$$
+z^*_{i, t - 1} = \alpha_i + \beta_i \cdot (t - 1),
+$$
+
+and
+
+$$
+P^*_{i, t - 1} = \frac{S_i}{1 + \exp(-z^*_{i, t-1})},
+$$
+
+so that the change in rates between days is
+
+$$
+C_{i, t} = P_{i, t} - P^*_{i, t - 1}.
+$$
+
+Since $C_{i, t}$ is simply the first derivative of $P_{i, t}$ with respect to $t$, we can skip the differencing step and directly model the derivative
+
+$$
+C_{i, t} = \frac{d}{dt}P_{i, t} = \beta_i S_i \frac{\exp{(-z_{i, t})}}{(\exp(-z_{i, t}) + 1))^2}
+$$
+
+Then, conditional on a Poisson likelihood and population $E_i$, the daily number of observed cases, $D_i$, can be written as
+
+$$
+D_i \sim \mathrm{Poisson}(C_{i, t} \cdot E_i)
+$$
+
+### Parameters
+
 The parameters, $\alpha$ and $\beta$, are treated as in a generalized linear model, and we put a hierarchical prior on them so that for each country, $i$,
 
 $$
@@ -111,8 +159,8 @@ where $a_S$ and $b_S$, being strictly positive, are given flat prior distributio
 
 $$
 \begin{aligned}
-I_{i, t} &\sim \mathrm{Poisson}(P_{i, t} \cdot E_i) \\
-P_{i, t} &= \frac{S_i}{1 + \exp(-z_{i, t})} \\
+D_{i, t} &\sim \mathrm{Poisson}(C_{i, t} \cdot E_i) \\
+C_{i, t} = \frac{d}{dt}P_{i, t} &= \beta_i S_i \frac{\exp{(-z_{i, t})}}{(\exp(-z_{i, t}) + 1))^2} \\
 z_{i, t} &= \alpha_i + \beta_i \cdot t \\
 \beta_i &\sim \mathrm{Normal}(\mu_\beta, \sigma^2_\beta) \\
 \alpha_i &\sim \mathrm{Normal}(\mu_\alpha, \sigma^2_\alpha) \\
@@ -185,12 +233,12 @@ ggplotly(p)
     kable_styling(bootstrap_options = c("striped", "hover")) %>% 
     add_header_above(c("", "", "", "95% PI" = 2, "Convergence" = 2)) %>% 
     column_spec(1, bold = T) %>% 
-    row_spec(which_iceland + c(0, 1, 2, 3) * n_countries, bold = T) %>% 
+    row_spec(which_iceland + c(0, 1, 2) * n_countries, bold = T) %>% 
     collapse_rows(1, valign = "top") %>% 
     scroll_box(height = "600px")
 ```
 
-```{r}
+```{r, fig.width = 9}
 p <- results %>% 
     ungroup %>% 
     filter(par %in% c("beta", "alpha", "maximum", "phi_inv")) %>% 
@@ -237,43 +285,6 @@ knitr::include_app("https://bgautijonsson.shinyapps.io/Hierarchical_Report/", he
 
 # Next actions
 
-## Modeling the daily counts instead of cumulative counts
-
-Let
-
-$$
-z_{i, t} = \alpha_i + \beta_i \cdot t,
-$$
-
-so that the percent of infected, $P_i$, is
-
-$$
-P_{i, t} = \frac{S_i}{1 + \exp(-z_{i,t})}.
-$$
-
-If we furthermore write
-
-$$
-z^*_{i, t - 1} = \alpha_i + \beta_i \cdot (t - 1),
-$$
-
-and
-
-$$
-P^*_{i, t - 1} = \frac{S_i}{1 + \exp(-z^*_{i, t-1})},
-$$
-
-so that the change in rates between days is
-
-$$
-C_{i, t} = P_{i, t} - P^*_{i, t - 1}.
-$$
-
-Then, conditional on a Poisson likelihood and population $E_i$, the daily number of observed cases, $D_i$, can be written as
-
-$$
-D_i \sim \mathrm{Poisson}(C_{i, t} \cdot E_i)
-$$
 
 ## Time-varying growth rates
 

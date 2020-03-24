@@ -23,7 +23,10 @@ source("Make_Stan_Data.R")
 
 d <- Make_Stan_Data()
 
-
+daily_cases <- function(alpha, beta, maximum, t) {
+    z <- alpha + beta * t
+    beta * maximum * exp(-z) / (exp(-z) + 1)^2
+}
 
 aldur <- sheets_read("https://docs.google.com/spreadsheets/d/1xgDhtejTtcyy6EN5dbDp5W3TeJhKFRRgm6Xk0s0YFeA", sheet = "Aldur") %>% 
     mutate(tilfelli = tilfelli + 1,
@@ -45,10 +48,11 @@ results <- spread_draws(m, alpha[country], beta[country], maximum[country]) %>%
     select(iter, alpha, beta, maximum) %>% 
     expand_grid(days = seq(0, 60)) %>% 
     mutate(linear = alpha + beta * days,
-           rate = maximum / (1 + exp(-linear)),
-           cases = rate * pop) %>% 
+           daily_rate = daily_cases(alpha = alpha, beta = beta, maximum = maximum, t = days),
+           daily_cases = rpois(n(), daily_rate * pop)) %>% 
     group_by(iter) %>% 
-    mutate(recovered = lag(cases, n = 21, default = 0),
+    mutate(cases = as.numeric(cumsum(daily_cases)),
+           recovered = lag(cases, n = 21, default = 0),
            active_cases = pmax(0, cases - recovered)) %>% 
     ungroup %>% 
     select(iter, days, cumulative_cases = cases, active_cases)
@@ -97,7 +101,7 @@ all_results <- age_results %>%
     select(-active_cases, -cumulative_cases) %>% 
     pivot_wider(names_from = "age", values_from = "value") %>% 
     pivot_longer(c(-iter, -days, -name, -type), names_to = "age", values_to = "value") %>% 
-    group_by(date = days + start_date, type, name, age,) %>% 
+    group_by(date = days + start_date, type, name, age) %>% 
     summarise(median = median(value),
               upper = quantile(value, .975))
 

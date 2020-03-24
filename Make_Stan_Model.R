@@ -27,7 +27,7 @@ stan_data <- list(N_obs = N_obs,
                   pop = pop)
 
 m <- sampling(stan_model("Stan/Logistic/Hierarchical_Logistic_Cases.stan"), 
-              data  = stan_data, chains = 4, iter = 4000, warmup = 2000)
+              data  = stan_data, chains = 4, iter = 3000, warmup = 1000)
 
 write_rds(m, "Stan/Logistic/Hierarchical_Model.rds")
 write_rds(m, str_c("Stan/Logistic/Saved_Models/Hierarchical_Model", Sys.Date(), ".rds"))
