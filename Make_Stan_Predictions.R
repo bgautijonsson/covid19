@@ -21,7 +21,7 @@ sheets_auth(email = "bgautijonsson@gmail.com")
 
 source("Make_Stan_Data.R")
 
-d <- Make_Stan_Data(min_case_rat = 0.02, min_days = 7)
+d <- Make_Stan_Data(min_case_rat = 0.2, min_days = 5)
 
 daily_cases <- function(alpha, beta, maximum, t) {
     z <- alpha + beta * t
@@ -40,6 +40,7 @@ iceland_d <- d %>% filter(country == "Iceland")
 id <- unique(iceland_d$country_id)
 pop <- unique(iceland_d$pop)
 start_date <- min(iceland_d$date)
+start_cases <- min(iceland_d$total_cases)
 
 results <- spread_draws(m, 
                         alpha[country], 
@@ -57,7 +58,7 @@ results <- spread_draws(m,
         maximum
         # phi
         ) %>% 
-    expand_grid(days = seq(0, 60)) %>% 
+    expand_grid(days = seq(1, 60)) %>% 
     mutate(linear = alpha + beta * days,
            daily_rate = daily_cases(alpha = alpha, beta = beta, maximum = maximum, t = days),
            daily_cases = rpois(n(), daily_rate * pop),
@@ -67,7 +68,7 @@ results <- spread_draws(m,
     ) %>% 
     group_by(iter) %>% 
     mutate(
-        cases = as.numeric(cumsum(daily_cases)),
+        cases = as.numeric(cumsum(daily_cases)) + start_cases,
         recovered = lag(cases, n = 21, default = 0),
         active_cases = pmax(0, cases - recovered)
     ) %>% 
