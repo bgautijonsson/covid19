@@ -9,11 +9,9 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Brynjólfur Gauti Jónsson" />
 
-<meta name="date" content="2020-03-23" />
 
-<title>Logistic Forspár</title>
+<title>Hierarchical_Report.utf8</title>
 
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -169,40 +167,54 @@ summary {
 
 
 
-<h1 class="title toc-ignore">Logistic Forspár</h1>
-<h4 class="author">Brynjólfur Gauti Jónsson</h4>
-<h4 class="date">2020-03-23</h4>
 
 </div>
 
 
 <p><div class="row">
+<div class="col-sm-2">
+<button id="gobutton" type="button" class="btn btn-default action-button">Predict</button>
+</div>
 <div class="col-sm-3">
 <div class="form-group shiny-input-container">
-<label class="control-label" for="country">Land</label>
+<label class="control-label" for="country">Country</label>
 <div>
 <select id="country"><option value="Andorra">Andorra</option>
+<option value="Armenia">Armenia</option>
 <option value="Austria">Austria</option>
 <option value="Bahrain">Bahrain</option>
 <option value="Belgium">Belgium</option>
-<option value="Denmark">Denmark</option>
+<option value="Cyprus">Cyprus</option>
+<option value="Czech Republic">Czech Republic</option>
 <option value="Estonia">Estonia</option>
 <option value="Finland">Finland</option>
 <option value="France">France</option>
 <option value="Germany">Germany</option>
+<option value="Greece">Greece</option>
 <option value="Iran">Iran</option>
+<option value="Ireland">Ireland</option>
+<option value="Israel">Israel</option>
 <option value="Italy">Italy</option>
+<option value="Kuwait">Kuwait</option>
+<option value="Latvia">Latvia</option>
 <option value="Liechtenstein">Liechtenstein</option>
-<option value="Luxembourg">Luxembourg</option>
+<option value="Malaysia">Malaysia</option>
+<option value="Maldives">Maldives</option>
 <option value="Malta">Malta</option>
 <option value="Monaco">Monaco</option>
 <option value="Netherlands">Netherlands</option>
 <option value="Norway">Norway</option>
-<option value="Qatar">Qatar</option>
+<option value="Panama">Panama</option>
+<option value="Portugal">Portugal</option>
+<option value="San Marino">San Marino</option>
+<option value="Seychelles">Seychelles</option>
+<option value="Singapore">Singapore</option>
 <option value="Slovenia">Slovenia</option>
+<option value="South Korea">South Korea</option>
 <option value="Spain">Spain</option>
 <option value="Sweden">Sweden</option>
 <option value="Switzerland">Switzerland</option>
+<option value="United Kingdom">United Kingdom</option>
 <option value="Iceland" selected>Iceland</option></select>
 <script type="application/json" data-for="country" data-nonempty="">{}</script>
 </div>
@@ -210,28 +222,20 @@ summary {
 </div>
 <div class="col-sm-3">
 <div class="form-group shiny-input-container">
-<label class="control-label" for="conf">Öryggismörk</label>
+<label class="control-label" for="conf">Quantiles</label>
 <input id="conf" type="number" class="form-control" value="0.95" min="0.01" max="0.99" step="0.01"/>
 </div>
 </div>
 <div class="col-sm-3">
 <div class="form-group shiny-input-container">
-<label class="control-label" for="recovered_days">Lengd veikinda</label>
-<input id="recovered_days" type="number" class="form-control" value="21" min="5" max="31" step="1"/>
-</div>
-</div>
-<div class="col-sm-3">
-<div class="form-group shiny-input-container">
-<label class="control-label" for="scale">Skali</label>
+<label class="control-label" for="scale">Scale</label>
 <div>
-<select id="scale"><option value="Upprunalegur" selected>Upprunalegur</option>
-<option value="Logra">Logra</option></select>
+<select id="scale"><option value="Additive" selected>Additive</option>
+<option value="Log">Log</option></select>
 <script type="application/json" data-for="scale" data-nonempty="">{}</script>
 </div>
 </div>
 </div>
-</div><div class="center" align="middle">
-<button id="gobutton" type="button" class="btn btn-default action-button">Birta</button>
 </div><div id="pred_plot" class="shiny-plot-output" style="width: 100% ; height: 400px"></div></p>
 
 <script type="application/shiny-prerendered" data-context="server-start">
@@ -256,12 +260,18 @@ m <- read_rds("Hierarchical_Model.rds")
 <script type="application/shiny-prerendered" data-context="server">
 pred_plot <-  eventReactive(input$gobutton, {
   
+  daily_cases <- function(alpha, beta, maximum, t) {
+    z <- alpha + beta * t
+    beta * maximum * exp(-z) / (exp(-z) + 1)^2
+  }
+  
   req(input$country, input$conf)
   
   plot_dat <- d %>% filter(country == input$country)
   id <- unique(plot_dat$country_id)
   pop <- unique(plot_dat$pop)
   alph <- 1 - input$conf
+  start_cases <- min(plot_dat$total_cases)
   
   days_in_data <- max(plot_dat$days) + 1
   
@@ -270,19 +280,18 @@ pred_plot <-  eventReactive(input$gobutton, {
     filter(country == id) %>% 
     mutate(iter = row_number()) %>% 
     select(iter, alpha, beta, maximum) %>% 
-    expand_grid(days = seq(-30, days_in_data + 25)) %>% 
+    expand_grid(days = seq(1, days_in_data + 80)) %>% 
     mutate(linear = alpha + beta * days,
-           rate = maximum / (1 + exp(-linear)),
-           cases = rate * pop) %>% 
+           daily_rate = daily_cases(alpha, beta, maximum, days),
+           daily_cases = rpois(n(), daily_rate * pop)) %>% 
     group_by(iter) %>% 
-    mutate(recovered = lag(cases, n = input$recovered_days, default = 0),
-           active_cases = pmax(0, cases - recovered)) %>% 
+    mutate(cases = as.numeric(cumsum(daily_cases)) + start_cases) %>% 
     ungroup %>% 
-    select(iter, days, cumulative_cases = cases, active_cases)
+    select(iter, days, cumulative_cases = cases)
   
-  plot_lab1 <- str_c("Uppsöfnuð smit í ", 
+  plot_lab1 <- str_c("Cumulative cases in  ", 
                      input$country, 
-                     ": Spá og raun")
+                     ": Prediction and observations")
   
   p1 <- results %>% 
     mutate(date = days + min(plot_dat$date)) %>% 
@@ -297,39 +306,19 @@ pred_plot <-  eventReactive(input$gobutton, {
     geom_point(data = plot_dat,
                aes(date, total_cases), inherit.aes = F) +
     scale_y_continuous(breaks = pretty_breaks(8)) +
-    labs(y = "Fjöldi",
+    labs(y = "Count",
          title = plot_lab1,
-         subtitle = "Forspáð miðgildi ásamt PI") +
+         subtitle = "Predicted median and PI") +
     theme(axis.title.x = element_blank())
   
   
-  plot_lab2 <- str_c("Virk smit í ", 
-                     input$country, 
-                     ": Spá og raun")
-  p2 <- results %>% 
-    mutate(date = days + min(plot_dat$date)) %>% 
-    group_by(date) %>% 
-    summarise(median = median(active_cases),
-              lower = quantile(active_cases, alph / 2),
-              upper = quantile(active_cases, 1 - alph / 2)) %>% 
-    ggplot(aes(date, median, ymin = lower, ymax = upper)) +
-    geom_line(aes(y = lower), lty = 2) +
-    geom_line(aes(y = upper), lty = 2) +
-    geom_line() +
-    geom_point(data = plot_dat,
-               aes(date, total_cases), inherit.aes = F) +
-    scale_y_continuous(breaks = pretty_breaks()) +
-    labs(y = "Fjöldi",
-         title = plot_lab2,
-         subtitle = "Forspáð miðgildi ásamt PI") +
-    theme(axis.title.x = element_blank())
   
-  if (input$scale == "Logra") {
+  if (input$scale == "Log") {
     p1 <- p1 + scale_y_log10(breaks = c(1, 3, 10, 30, 100, 300, 1000, 3000, 10000, 30000, 100000, 300000, 1000000, 3000000))
-    p2 <- p2 + scale_y_log10(breaks = c(1, 3, 10, 30, 100, 300, 1000, 3000, 10000, 30000, 100000, 300000, 1000000, 3000000))
   }
   
-  plot_grid(p1, p2, align = "v")
+  
+  p1
   
 })
 

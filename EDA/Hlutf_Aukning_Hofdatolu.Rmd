@@ -24,8 +24,20 @@ sheets_auth("bgautijonsson@gmail.com")
 
 ```{r}
 thyding <- sheets_read("https://docs.google.com/spreadsheets/d/1g70BDSxTotmdY8VgoovxhphBa9tiWVT_FG6kGgNt7TY/edit?fbclid=IwAR3BgRvZSCOU03YQkVa1koEidC3CXbMv4sNmzbEklnM4H4svUfCxtTiRT_A") %>% 
-    select(country = Country, land = Land)
+    select(country = Country, land = Land) 
 ```
+
+```{r}
+thyding <- thyding %>% 
+    bind_rows(
+        tibble(
+            country = c("Albania", "Bulgaria", "Croatia", "Hungary", "Latvia", "Luxembourg", "Serbia", "Slovakia"),
+            land = c("Albanía", "Búlgaría", "Króatía", "Ungverjaland", "Latvía", "Lúxemborg", "Serbía", "Slóvakía")
+        )
+    )
+```
+
+
 
 
 ```{r, fig.asp = 0.3}
@@ -78,6 +90,19 @@ tibble(country = rownames(country_effects), increase = exp(country_effects[, 1])
     background_grid(major = "none", minor = "none") +
     ggsave("throun_14_dagar.png", width = 8, height = 0.3 * 8, scale = 1.5)
 ```
+
+```{r}
+read_csv("../Input/ECDC_Data.csv") %>% 
+    filter(total_cases >= 50, continent == "Europe") %>% 
+    group_by(country) %>% 
+    mutate(days = row_number() - 1) %>% 
+    filter(n() > 7) %>% 
+    ungroup %>% 
+    mutate(log_case_rate = log(case_rate)) %>% 
+    anti_join(thyding) %>% 
+    distinct(country)
+```
+
 
 ```{r, fig.asp = 0.4}
 d <- read_csv("../Input/ECDC_Data.csv") %>% 

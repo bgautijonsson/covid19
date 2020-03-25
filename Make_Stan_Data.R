@@ -1,4 +1,4 @@
-Make_Stan_Data <- function(min_case_rate = 0.04, min_days = 7) {
+Make_Stan_Data <- function(min_case_rate = 0.04, min_days = 8) {
     library(tidyverse)
     library(googlesheets4)
     library(readxl)
@@ -25,7 +25,8 @@ Make_Stan_Data <- function(min_case_rate = 0.04, min_days = 7) {
     
     stan_data <- read_xlsx(temp) %>% 
         select(country = "Countries and territories", date = DateRep, new_cases = Cases, new_deaths = Deaths) %>% 
-        mutate(date = as_date(date)) %>% 
+        mutate(date = as_date(date),
+               country = str_replace(country, "_", " ")) %>% 
         arrange(country, date) %>% 
         group_by(country) %>% 
         mutate(total_cases = cumsum(new_cases), total_deaths = cumsum(new_deaths)) %>% 
@@ -43,7 +44,7 @@ Make_Stan_Data <- function(min_case_rate = 0.04, min_days = 7) {
         filter(case_rate >= min_case_rate) %>% 
         group_by(country) %>% 
         mutate(days = row_number() - 1) %>% 
-        filter(any(days >= min_days)) %>% 
+        filter(any(days >= min_days), any(case_rate < 2 * min_case_rate)) %>% 
         ungroup %>% 
         mutate(country_id = as.numeric(as.factor(country)))
 }

@@ -27,6 +27,16 @@ d <- read_csv("https://raw.githubusercontent.com/bgautijonsson/covid19/master/Ou
 Sys.setlocale("LC_TIME", "is_IS")
 ```
 
+```{r}
+d %>% 
+    filter(type == "active", name == "cases", age == "total") %>% 
+    ggplot(aes(date, median)) +
+    geom_line() +
+    geom_line(aes(date, upper), lty = 2)
+```
+
+
+
 ```{r, fig.asp = 0.4}
 cols <- c("#084594",
           "#2171b5",

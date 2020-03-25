@@ -1,7 +1,4 @@
 ---
-title: "Logistic Forspár"
-author: "Brynjólfur Gauti Jónsson"
-date: "`r Sys.Date()`"
 output: 
     html_document:
         theme: flatly
@@ -29,26 +26,23 @@ m <- read_rds("Hierarchical_Model.rds")
 
 ```{r, context = "render"}
 fluidRow(
+  column(2,
+         actionButton(inputId = "gobutton", label = "Predict")
+  ),
   column(3,
          selectInput(inputId = "country",
-                     label = "Land",
+                     label = "Country",
                      choices = unique(d$country), selected = "Iceland")
   ),
   column(3,
          numericInput(inputId = "conf",
-                      label = "Öryggismörk", min = 0.01, max = 0.99, value = 0.95, step = 0.01)
-  ),
-  column(3,
-         numericInput(inputId = "recovered_days",
-                      label = "Lengd veikinda", min = 5, max = 31, value = 21, step = 1)
+                      label = "Quantiles", min = 0.01, max = 0.99, value = 0.95, step = 0.01)
   ),
   column(3,
          selectInput(inputId = "scale",
-                     label = "Skali", choices = c("Upprunalegur", "Logra"), selected = "Upprunalegur")
+                     label = "Scale", choices = c("Additive", "Log"), selected = "Additive")
   )
 )
-div(actionButton(inputId = "gobutton", label = "Birta"),
-    class = "center", align = "middle")
 
 plotOutput("pred_plot")
 ```
@@ -57,12 +51,18 @@ plotOutput("pred_plot")
 ```{r, context = "server"}
 pred_plot <-  eventReactive(input$gobutton, {
   
+  daily_cases <- function(alpha, beta, maximum, t) {
+    z <- alpha + beta * t
+    beta * maximum * exp(-z) / (exp(-z) + 1)^2
+  }
+  
   req(input$country, input$conf)
   
   plot_dat <- d %>% filter(country == input$country)
   id <- unique(plot_dat$country_id)
   pop <- unique(plot_dat$pop)
   alph <- 1 - input$conf
+  start_cases <- min(plot_dat$total_cases)
   
   days_in_data <- max(plot_dat$days) + 1
   
@@ -71,19 +71,18 @@ pred_plot <-  eventReactive(input$gobutton, {
     filter(country == id) %>% 
     mutate(iter = row_number()) %>% 
     select(iter, alpha, beta, maximum) %>% 
-    expand_grid(days = seq(-30, days_in_data + 25)) %>% 
+    expand_grid(days = seq(1, days_in_data + 80)) %>% 
     mutate(linear = alpha + beta * days,
-           rate = maximum / (1 + exp(-linear)),
-           cases = rate * pop) %>% 
+           daily_rate = daily_cases(alpha, beta, maximum, days),
+           daily_cases = rpois(n(), daily_rate * pop)) %>% 
     group_by(iter) %>% 
-    mutate(recovered = lag(cases, n = input$recovered_days, default = 0),
-           active_cases = pmax(0, cases - recovered)) %>% 
+    mutate(cases = as.numeric(cumsum(daily_cases)) + start_cases) %>% 
     ungroup %>% 
-    select(iter, days, cumulative_cases = cases, active_cases)
+    select(iter, days, cumulative_cases = cases)
   
-  plot_lab1 <- str_c("Uppsöfnuð smit í ", 
+  plot_lab1 <- str_c("Cumulative cases in  ", 
                      input$country, 
-                     ": Spá og raun")
+                     ": Prediction and observations")
   
   p1 <- results %>% 
     mutate(date = days + min(plot_dat$date)) %>% 
@@ -98,39 +97,19 @@ pred_plot <-  eventReactive(input$gobutton, {
     geom_point(data = plot_dat,
                aes(date, total_cases), inherit.aes = F) +
     scale_y_continuous(breaks = pretty_breaks(8)) +
-    labs(y = "Fjöldi",
+    labs(y = "Count",
          title = plot_lab1,
-         subtitle = "Forspáð miðgildi ásamt PI") +
+         subtitle = "Predicted median and PI") +
     theme(axis.title.x = element_blank())
   
   
-  plot_lab2 <- str_c("Virk smit í ", 
-                     input$country, 
-                     ": Spá og raun")
-  p2 <- results %>% 
-    mutate(date = days + min(plot_dat$date)) %>% 
-    group_by(date) %>% 
-    summarise(median = median(active_cases),
-              lower = quantile(active_cases, alph / 2),
-              upper = quantile(active_cases, 1 - alph / 2)) %>% 
-    ggplot(aes(date, median, ymin = lower, ymax = upper)) +
-    geom_line(aes(y = lower), lty = 2) +
-    geom_line(aes(y = upper), lty = 2) +
-    geom_line() +
-    geom_point(data = plot_dat,
-               aes(date, total_cases), inherit.aes = F) +
-    scale_y_continuous(breaks = pretty_breaks()) +
-    labs(y = "Fjöldi",
-         title = plot_lab2,
-         subtitle = "Forspáð miðgildi ásamt PI") +
-    theme(axis.title.x = element_blank())
   
-  if (input$scale == "Logra") {
+  if (input$scale == "Log") {
     p1 <- p1 + scale_y_log10(breaks = c(1, 3, 10, 30, 100, 300, 1000, 3000, 10000, 30000, 100000, 300000, 1000000, 3000000))
-    p2 <- p2 + scale_y_log10(breaks = c(1, 3, 10, 30, 100, 300, 1000, 3000, 10000, 30000, 100000, 300000, 1000000, 3000000))
   }
   
-  plot_grid(p1, p2, align = "v")
+  
+  p1
   
 })
 
