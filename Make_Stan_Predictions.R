@@ -41,23 +41,43 @@ id <- unique(iceland_d$country_id)
 pop <- unique(iceland_d$pop)
 start_date <- min(iceland_d$date)
 
-results <- spread_draws(m, alpha[country], beta[country], maximum[country]) %>% 
+results <- spread_draws(m, 
+                        alpha[country], 
+                        beta[country], 
+                        maximum[country]
+                        #phi[country]
+                        ) %>% 
     ungroup %>% 
     filter(country == id) %>% 
     mutate(iter = row_number()) %>% 
-    select(iter, alpha, beta, maximum) %>% 
+    select(
+        iter, 
+        alpha, 
+        beta, 
+        maximum
+        ) %>% 
     expand_grid(days = seq(0, 60)) %>% 
     mutate(linear = alpha + beta * days,
-           daily_rate = daily_cases(alpha = alpha, beta = beta, maximum = maximum, t = days),
-           daily_cases = rpois(n(), daily_rate * pop)) %>% 
+           # daily_rate = daily_cases(alpha = alpha, beta = beta, maximum = maximum, t = days),
+           # daily_cases = rpois(n(), daily_rate * pop)
+           rate = maximum / (1 + exp(-linear)),
+           cases = as.numeric(rpois(n(), rate * pop)),
+    ) %>% 
     group_by(iter) %>% 
-    mutate(cases = as.numeric(cumsum(daily_cases)),
-           recovered = lag(cases, n = 21, default = 0),
-           active_cases = pmax(0, cases - recovered)) %>% 
+    mutate(
+        # cases = as.numeric(cumsum(daily_cases)),
+        recovered = lag(cases, n = 21, default = 0),
+        active_cases = pmax(0, cases - recovered)
+    ) %>% 
     ungroup %>% 
     select(iter, days, cumulative_cases = cases, active_cases)
 
-
+results %>% 
+    group_by(days) %>% 
+    summarise(median = median(cumulative_cases), 
+              upper = quantile(cumulative_cases, .975)) %>% 
+    ggplot(aes(days, median)) +
+    geom_line()
 
 age_results <- results %>% 
     filter(iter >= max(iter) - 3000) %>% 
@@ -67,8 +87,8 @@ age_results <- results %>%
                                                                       size = active_cases, 
                                                                       prob = aldur$p_tilfelli)),
                                    cases_cumulative = as.vector(rmultinom(1, 
-                                                                      size = cumulative_cases, 
-                                                                      prob = aldur$p_tilfelli))))) %>% 
+                                                                          size = cumulative_cases, 
+                                                                          prob = aldur$p_tilfelli))))) %>% 
     unnest(age_cases) %>% 
     ungroup
 

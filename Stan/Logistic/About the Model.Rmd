@@ -207,7 +207,7 @@ p <- d %>%
   geom_line() +
   scale_y_log10() +
   scale_colour_manual(values = c("grey", "blue")) +
-  labs(x = "Days since rate reached 0.02",
+  labs(x = "Days since rate reached 0.02 per 1000",
        y = "Cases per 1000",
        title = "Observed trends for countries used in data",
        subtitle = "Shown as days since a country entered the modeling data")
@@ -223,7 +223,7 @@ ggplotly(p)
 ```{r}
 results %>% 
   ungroup %>% 
-  filter(par %in% c("beta", "alpha", "maximum", "beta2")) %>% 
+  filter(par %in% c("beta", "beta2", "alpha", "maximum", "phi_inv", "detected_perc")) %>% 
   inner_join(countries, by = c("num" = "country_id")) %>% 
   mutate(par = str_to_title(par)) %>% 
   select(par, country, num, everything(), -num, -term, -std.error) %>% 
@@ -241,7 +241,7 @@ results %>%
 ```{r, fig.width = 9, fig.asp = 1}
 p <- results %>% 
   ungroup %>% 
-  filter(par %in% c("beta", "alpha", "maximum", "beta2")) %>% 
+  filter(par %in% c("beta", "alpha", "beta2", "maximum", "phi", "detected_perc", "beta2")) %>% 
   inner_join(countries, by = c("num" = "country_id")) %>% 
   mutate(par = str_to_title(par)) %>% 
   mutate(plot_var = str_c(par, "_", country)) %>% 
@@ -265,7 +265,10 @@ Our method of filtering the data used in modeling ensured that countries have si
 ```{r}
 results %>% 
   ungroup %>% 
-  filter(par %in% c("mu_beta", "sigma_sq_beta", "sigma_sq_beta2", "mu_alpha", "sigma_sq_alpha", "beta_a", "beta_b", "mu_phi_inv")) %>% 
+  filter(par %in% c("mu_beta", "sigma_sq_beta", "sigma_sq_beta2", 
+                    "mu_alpha", "sigma_sq_alpha", "beta_a", "beta_b",
+                    "mu_phi_inv", "detect_a", "detect_b",
+                    "mu_beta2", "sigma_sq_beta2", "mu_error", "sigma_sq_error")) %>% 
   mutate(par = str_to_title(par)) %>% 
   select(par, everything(), -num, -term, -std.error) %>% 
   set_names(c("Parameter",  "Median", "Lower", "Upper", "Rhat", "ESS")) %>% 

@@ -8,6 +8,7 @@ source("Make_Stan_Data.R")
 
 d <- Make_Stan_Data(min_case_rat = 0.02, min_days = 8)
 
+
 N_obs <- nrow(d)
 N_countries <- max(d$country_id)
 
@@ -28,7 +29,7 @@ stan_data <- list(N_obs = N_obs,
                   pop = pop)
 
 m <- sampling(stan_model("Stan/Logistic/Hierarchical_Logistic_Cases.stan"), 
-              data  = stan_data, chains = 4, iter = 3000, warmup = 1000)
+              data  = stan_data, chains = 4, iter = 2000, warmup = 1000)
 
 write_rds(m, "Stan/Logistic/Hierarchical_Model.rds")
 write_rds(m, str_c("Stan/Logistic/Saved_Models/Hierarchical_Model", Sys.Date(), ".rds"))
