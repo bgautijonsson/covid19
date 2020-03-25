@@ -6,7 +6,7 @@ library(magrittr)
 options(mc.cores = parallel::detectCores())
 source("Make_Stan_Data.R")
 
-d <- Make_Stan_Data(min_case_rat = 0.02, min_days = 8)
+d <- Make_Stan_Data(min_case_rat = 0.02, min_days = 7)
 
 
 N_obs <- nrow(d)
@@ -42,5 +42,5 @@ d %>%
     summarise(First = min(date),
               Days_In_Data = n(),
               Start_Rate = min(case_rate),
-              End_Rate = max(case_rate)) %>%
+              End_Rate = max(case_rate)) %>% 
     write_csv(str_c("Output/Stan_Data_Info/Stan_Data_Info_", Sys.Date(), ".csv"))

@@ -23,10 +23,20 @@ sheets_auth("bgautijonsson@gmail.com")
 ```
 
 ```{r}
-d <- read_csv("https://raw.githubusercontent.com/bgautijonsson/covid19/master/Output/Iceland_Predictions_2020-03-22.csv") %>% 
+d <- read_csv("https://raw.githubusercontent.com/bgautijonsson/covid19/master/Output/Iceland_Predictions/Iceland_Predictions_2020-03-25.csv") %>% 
     filter(date < ymd("2020-04-17"))
 Sys.setlocale("LC_TIME", "is_IS")
 ```
+
+```{r}
+d %>% 
+    filter(type == "active", name == "cases", age == "total") %>% 
+    ggplot(aes(date, median)) +
+    geom_line() +
+    geom_line(aes(date, upper), lty = 2)
+```
+
+
 
 ```{r, fig.asp = 0.4}
 cols <- c("#084594",
