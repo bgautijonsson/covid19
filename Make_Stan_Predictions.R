@@ -21,7 +21,7 @@ sheets_auth(email = "bgautijonsson@gmail.com")
 
 source("Make_Stan_Data.R")
 
-d <- Make_Stan_Data(min_case_rat = 0.02, min_days = 5)
+d <- Make_Stan_Data(min_case_rat = 0.02, min_days = 7)
 
 daily_cases <- function(alpha, beta, maximum, t) {
     z <- alpha + beta * t
@@ -74,16 +74,16 @@ results <- spread_draws(m,
     ungroup %>% 
     select(iter, days, cumulative_cases = cases, active_cases)
 
-# results %>% 
-#     group_by(days) %>% 
-#     summarise(median = median(active_cases), 
-#               upper = quantile(active_cases, .975)) %>% 
-#     ggplot(aes(days, median)) +
-#     geom_line() +
-#     geom_line(aes(y = upper), lty = 2)
+results %>%
+    group_by(days) %>%
+    summarise(median = median(active_cases),
+              upper = quantile(active_cases, .975)) %>%
+    ggplot(aes(days, median)) +
+    geom_line() +
+    geom_line(aes(y = upper), lty = 2)
 
 age_results <- results %>% 
-    filter(iter >= max(iter) - 3000) %>% 
+    filter(iter >= max(iter) - 500) %>% 
     rowwise %>% 
     mutate(age_cases = list(tibble(age = aldur$aldur, 
                                    cases_active = as.vector(rmultinom(1, 
