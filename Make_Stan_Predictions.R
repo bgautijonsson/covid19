@@ -21,7 +21,7 @@ sheets_auth(email = "bgautijonsson@gmail.com")
 
 source("Make_Stan_Data.R")
 
-d <- Make_Stan_Data(min_case_rat = 0.02, min_days = 8)
+d <- Make_Stan_Data(min_case_rat = 0.02, min_days = 5)
 
 daily_cases <- function(alpha, beta, maximum, t) {
     z <- alpha + beta * t
@@ -45,7 +45,7 @@ results <- spread_draws(m,
                         alpha[country], 
                         beta[country], 
                         maximum[country]
-                        #phi[country]
+                        # phi[country]
                         ) %>% 
     ungroup %>% 
     filter(country == id) %>% 
@@ -55,29 +55,32 @@ results <- spread_draws(m,
         alpha, 
         beta, 
         maximum
+        # phi
         ) %>% 
     expand_grid(days = seq(0, 60)) %>% 
     mutate(linear = alpha + beta * days,
-           # daily_rate = daily_cases(alpha = alpha, beta = beta, maximum = maximum, t = days),
-           # daily_cases = rpois(n(), daily_rate * pop)
-           rate = maximum / (1 + exp(-linear)),
-           cases = as.numeric(rpois(n(), rate * pop)),
+           daily_rate = daily_cases(alpha = alpha, beta = beta, maximum = maximum, t = days),
+           daily_cases = rpois(n(), daily_rate * pop),
+           # daily_cases = rnbinom(n(), mu = daily_rate * pop, size = phi),
+           # rate = maximum / (1 + exp(-linear)),
+           # cases = as.numeric(rpois(n(), rate * pop)),
     ) %>% 
     group_by(iter) %>% 
     mutate(
-        # cases = as.numeric(cumsum(daily_cases)),
+        cases = as.numeric(cumsum(daily_cases)),
         recovered = lag(cases, n = 21, default = 0),
         active_cases = pmax(0, cases - recovered)
     ) %>% 
     ungroup %>% 
     select(iter, days, cumulative_cases = cases, active_cases)
 
-results %>% 
-    group_by(days) %>% 
-    summarise(median = median(cumulative_cases), 
-              upper = quantile(cumulative_cases, .975)) %>% 
-    ggplot(aes(days, median)) +
-    geom_line()
+# results %>% 
+#     group_by(days) %>% 
+#     summarise(median = median(active_cases), 
+#               upper = quantile(active_cases, .975)) %>% 
+#     ggplot(aes(days, median)) +
+#     geom_line() +
+#     geom_line(aes(y = upper), lty = 2)
 
 age_results <- results %>% 
     filter(iter >= max(iter) - 3000) %>% 

@@ -51,7 +51,7 @@ d %>%
   geom_point(data = iceland_d, aes(x = date, y = total_cases), inherit.aes = F) +
   scale_y_continuous(breaks = pretty_breaks(8)) +
   scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
-  labs(title = "Uppsöfnuð smit í heildina", linetype = " ") +
+  labs(linetype = " ") +
   theme(axis.title = element_blank(),
         legend.position = "top") +
   ggsave(make_fig_path("cases_cumul_total.png"), width = 8, height = 0.621 * 8, scale = 1.5)
@@ -65,10 +65,10 @@ d %>%
   ggplot(aes(date, median)) +
   geom_line(aes(lty = "Líklegasta spá")) +
   geom_line(aes(y = upper, lty = "Svartsýn spá"), col = "grey50") +
-  geom_point(data = iceland_d, aes(x = date, y = total_cases), inherit.aes = F) +
+  # geom_point(data = iceland_d, aes(x = date, y = total_cases), inherit.aes = F) +
   scale_y_continuous(breaks = pretty_breaks(8)) +
   scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
-  labs(title = "Virk smit í heildina", linetype = " ") +
+  labs(linetype = " ") +
   theme(axis.title = element_blank(),
         legend.position = "top") +
   ggsave(make_fig_path("cases_active_total.png"), width = 8, height = 0.621 * 8, scale = 1.5)
@@ -86,7 +86,7 @@ d %>%
   geom_line(aes(y = upper, lty = "Svartsýn spá"), col = "grey50") +
   scale_y_continuous(breaks = pretty_breaks(8)) +
   scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
-  labs(title = "Uppsafnaðar sjúkrahúslalegur í heildina", linetype = " ") +
+  labs(linetype = " ") +
   theme(axis.title = element_blank(),
         legend.position = "top")  +
   ggsave(make_fig_path("hospital_cumulative_total.png"), width = 8, height = 0.621 * 8, scale = 1.5)
@@ -102,7 +102,7 @@ d %>%
   geom_line(aes(y = upper, lty = "Svartsýn spá"), col = "grey50") +
   scale_y_continuous(breaks = pretty_breaks(8)) +
   scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
-  labs(title = "Virkar sjúkrahúslegur í heildina", linetype = " ") +
+  labs(linetype = " ") +
   theme(axis.title = element_blank(),
         legend.position = "top")  +
   ggsave(make_fig_path("hospital_active_total.png"), width = 8, height = 0.621 * 8, scale = 1.5)
@@ -120,7 +120,7 @@ d %>%
   geom_line(aes(y = upper, lty = "Svartsýn spá"), col = "grey50") +
   scale_y_continuous(breaks = pretty_breaks(8)) +
   scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
-  labs(title = "Uppsafnaðar gjörgæslulegur í heildina", linetype = " ") +
+  labs(linetype = " ") +
   theme(axis.title = element_blank(),
         legend.position = "top") +
   ggsave(make_fig_path("icu_cumulative_total.png"), width = 8, height = 0.621 * 8, scale = 1.5)
@@ -136,7 +136,7 @@ d %>%
   geom_line(aes(y = upper, lty = "Svartsýn spá"), col = "grey50") +
   scale_y_continuous(breaks = pretty_breaks(8)) +
   scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
-  labs(title = "Virkar gjörgæslulegur í heildina", linetype = " ") +
+  labs(linetype = " ") +
   theme(axis.title = element_blank(),
         legend.position = "top") +
   ggsave(make_fig_path("icu_active_total.png"), width = 8, height = 0.621 * 8, scale = 1.5)
@@ -159,8 +159,7 @@ d %>%
   facet_wrap("age", scales = "free") +
   scale_y_continuous(breaks = pretty_breaks(8)) +
   scale_x_date(date_breaks = "2 week", date_labels = "%d/%m") +
-  labs(title = "Uppsöfnuð smit eftir aldri",
-       y = "Tilfelli") +
+  labs(y = "Tilfelli") +
   theme(axis.title = element_blank()) +
   ggsave(make_fig_path("cases_cumulative_age.png"), width = 8, height = 8, scale = 1.5)
 ```
@@ -176,8 +175,7 @@ d %>%
   facet_wrap("age", scales = "free") +
   scale_y_continuous(breaks = pretty_breaks(8)) +
   scale_x_date(date_breaks = "2 week", date_labels = "%d/%m") +
-  labs(title = "Virk smit eftir aldri",
-       y = "Tilfelli") +
+  labs(y = "Tilfelli") +
   theme(axis.title = element_blank()) +
   ggsave(make_fig_path("cases__active_age.png"), width = 8, height = 8, scale = 1.5)
 ```
@@ -195,7 +193,7 @@ d %>%
   facet_wrap("age", scales = "free") +
   scale_y_continuous(breaks = pretty_breaks(8)) +
   scale_x_date(date_breaks = "2 week", date_labels = "%d/%m") +
-  labs(title = "Uppsafnaðar sjúkrahúslegur eftir aldri") +
+  labs() +
   theme(axis.title = element_blank()) +
   ggsave(make_fig_path("hospital_active_age.png"), width = 8, height = 8, scale = 1.5)
 ```
@@ -211,7 +209,7 @@ d %>%
   facet_wrap("age", scales = "free") +
   scale_y_continuous(breaks = pretty_breaks(8)) +
   scale_x_date(date_breaks = "2 week", date_labels = "%d/%m") +
-  labs(title = "Virkar sjúkrahúslegur eftir aldri") +
+  labs() +
   theme(axis.title = element_blank()) +
   ggsave(make_fig_path("hospital_active_age.png"), width = 8, height = 8, scale = 1.5)
 ```
@@ -229,8 +227,7 @@ d %>%
   facet_wrap("age", scales = "free") +
   scale_y_continuous(breaks = pretty_breaks(5)) +
   scale_x_date(date_breaks = "2 week", date_labels = "%d/%m") +
-  labs(title = "Uppsöfnuð alvarleg tilfelli á sjúkrahúsi eftir aldri",
-       y = "Tilfelli") +
+  labs(y = "Tilfelli") +
   theme(axis.title = element_blank()) +
   ggsave(make_fig_path("icu_cumulative_age.png"), width = 8, height = 0.621 * 8, scale = 1.5)
 ```
