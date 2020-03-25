@@ -83,7 +83,7 @@ results %>%
     geom_line(aes(y = upper), lty = 2)
 
 age_results <- results %>% 
-    filter(iter >= max(iter) - 500) %>% 
+    filter(iter >= max(iter) - 2000) %>% 
     rowwise %>% 
     mutate(age_cases = list(tibble(age = aldur$aldur, 
                                    cases_active = as.vector(rmultinom(1, 
