@@ -10,7 +10,6 @@ knitr::opts_chunk$set(echo = TRUE, warning = F, message = F, fig.asp = 0.621, ou
 ```
 
 
-
 ```{r}
 library(tidyverse); library(cowplot); library(kableExtra); library(scales); library(gganimate)
 library(lubridate); library(lme4); library(googlesheets4); library(ggtext)
@@ -23,7 +22,7 @@ sheets_auth("bgautijonsson@gmail.com")
 ```
 
 ```{r}
-d <- read_csv("https://raw.githubusercontent.com/bgautijonsson/covid19/master/Output/Iceland_Predictions_2020-03-22.csv") %>% 
+d <- read_csv("https://raw.githubusercontent.com/bgautijonsson/covid19/master/Output/Iceland_Predictions/Iceland_Predictions_2020-03-25.csv") %>% 
     filter(date < ymd("2020-04-17"))
 Sys.setlocale("LC_TIME", "is_IS")
 ```
@@ -53,21 +52,24 @@ p1 <- d %>%
                              "[0 - 9]")) %>% 
     ggplot(aes(date, median, fill = age, col = age)) +
     geom_area() +
-    geom_text(aes(x = ymd("2020-03-16"), y = 1500, 
-                  label = "Einstaklingar 50 ára og eldri\neru minnihluti greindra smita "), 
-              size = 4, col = "#2171b5") +
-    scale_fill_manual(values = cols) +
+    geom_text(aes(x = ymd("2020-03-12"), y = 950, 
+                  label = "Virk COVID-19 tilfelli \n50 ára og eldri í minnihluta "), 
+              size = 4, col = "#2171b5",hjust=0) +
+    #geom_text(aes(x = ymd("2020-03-09"), y = 2050, 
+    #              label = "Fjöldi"), 
+    #          size = 3, col = "black",hjust=0) +
+        scale_fill_manual(values = cols) +
     scale_colour_manual(values = cols) +
     scale_y_continuous(breaks = pretty_breaks(7)) +
-    scale_x_date(date_breaks = "1 weeks", date_labels = "%d. %B", expand = expand_scale(add = 1)) +
+    scale_x_date(date_breaks = "1 weeks", date_labels = c("","9. mars", "16. mars","23. mars","30. mars", "6. apríl", "13. apríl"), expand = expand_scale(add = 1),limits = c(ymd("2020-03-09"),NA)) +
+#    scale_x_date(date_breaks = "1 weeks", date_labels = "%d. %B", expand = expand_scale(add = 1),limits = c(ymd("2020-03-09"),NA)) +
     background_grid(major = "none", minor = "none") +
     labs(y = "Virk greind smit",
-         subtitle = "Fjöldi greindra smita á hverjum degi",
-         title = "Mynd 1. Aldurssamsetning greindra smita og sjúkrahúslega") +
+         subtitle = "Fjöldi eftir dögum")+
     theme(axis.title = element_blank(),
           plot.title = element_markdown(),
           plot.margin = margin(5, 5, 5, 5)) +
-    coord_cartesian(ylim = c(0, 2250))
+    coord_cartesian(ylim = c(0, 1200))
 
 p2 <- d %>% 
     filter(type == "active", name == "hospital", age != "total") %>% 
@@ -81,28 +83,48 @@ p2 <- d %>%
                              "[20 - 29]",
                              "[10 - 19]",
                              "[0 - 9]")) %>% 
-    ggplot(aes(date, median, fill = age, col = age)) +
+     ggplot(aes(date, median, fill = age, col = age)) +
     geom_area() +
-    geom_text(aes(x = ymd("2020-03-23"), y = 60, 
-                  label = "En munu vera meirihluti\n         sjúkrahúsinnlagna"), 
-              size = 4, col = "#2171b5") +
-    scale_fill_manual(values = cols) +
-    scale_colour_manual(values = cols) +
-    scale_x_date(date_breaks = "1 weeks", date_labels = "%d. %B", expand = expand_scale(add = 1)) +
-    scale_y_continuous(breaks = pretty_breaks(5)) +
+    geom_text(aes(x = ymd("2020-03-15"), y = 47, 
+                  label = "Inniliggjandi á sjúkrahúsum \n50 ára og eldri í meirihluta"), 
+              size = 4, col = "#2171b5",hjust=0) +
+    scale_fill_manual(values = cols,labels=c("80+","70-79","60-69","50-59","40-49","30-39","20-29","10-19","<10")) +
+    scale_colour_manual(values = cols,labels=c("80+","70-79","60-69","50-59","40-49","30-39","20-29","10-19","<10")) +
+    scale_x_date(date_breaks = "1 weeks", date_labels = c("","9. mars", "16. mars","23. mars","30. mars", "6. apríl", "13. apríl"), expand = expand_scale(add = 1),limits = c(ymd("2020-03-09"),NA)) +
+    scale_y_continuous(breaks = pretty_breaks(6)) +
     background_grid(major = "none", minor = "none") +
     labs(y = "Virkar sjúkrahúslegur",
-         subtitle = "Fjöldi virkra sjúkrahúslega",
+         subtitle = "Fjöldi eftir dögum",
          fill = "Aldur",
-         colour = "Aldur", title = " ") +
+         colour = "Aldur") +
     theme(axis.title = element_blank(),
           plot.title = element_markdown(),
-          legend.position = "right", 
-          legend.key.height = unit(1.2, "cm"), legend.box.just = "bottom",
-          plot.margin = margin(20, 5, 5, 5)) +
-    coord_cartesian(ylim = c(0, 88))
+          plot.margin = margin(5, 5, 5, 5)) +
+    coord_cartesian(ylim = c(0, 60))
 
-plot_grid(p1, p2, rel_widths = c(4, 5)) +
+title <- ggdraw() + 
+  draw_label("Mynd 1. Spá um fjölda virkra COVID-19 tilfella og inniliggjandi á sjúkrahúsum á Íslandi eftir aldri",x = 0,hjust = 0) +
+  theme(plot.margin = margin(0, 0, 0, 7)
+)
+
+legend_b <- get_legend(
+  p2 + theme(legend.position = "right",legend.key.height = unit(1.2, "cm"), legend.box.just = "bottom")
+)
+
+p1 <- p1 + theme(axis.line = element_line(linetype="blank"),
+                   axis.ticks = element_blank(),
+                   axis.text.x = element_text(angle = 0, hjust = 0.5,margin=margin(-10,0,0,0)),
+                   axis.text.y = element_text(angle = 0, hjust = 1,margin=margin(-10,0,0,0)))
+p2 <- p2 + theme(axis.line = element_line(linetype="blank"),
+                   axis.ticks = element_blank(),
+                   axis.text.x = element_text(angle = 0, hjust = 0.5,margin=margin(-10,0,0,0)),
+                   axis.text.y = element_text(angle = 0, hjust = 1,margin=margin(-10,0,0,0)))
+
+plot_row <- plot_grid(p1, p2, rel_widths = c(5, 5))
+plot_row <- plot_grid(plot_row, legend_b, rel_widths = c(1,0.1))
+
+plot_grid(title, plot_row,ncol = 1, rel_heights = c(0.1, 1)) + 
     ggsave("Mynd1_grein.png", width = 8, height = 0.621 * 6, scale = 1.8)
+
 ```
 
