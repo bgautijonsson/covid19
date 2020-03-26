@@ -25,14 +25,13 @@ fileurl <- local({
 })
 
 d_spa <- read_csv(
-    fileurl
+    "https://raw.githubusercontent.com/bgautijonsson/covid19/master/Output/Public/Iceland_Predictions/Iceland_Predictions_2020-03-24.csv"
 ) %>% 
     mutate_at(vars(median, upper), round)
 
-d <- read_csv("https://raw.githubusercontent.com/bgautijonsson/covid19/master/Input/ECDC_Data.csv")
+d <- read_csv("https://raw.githubusercontent.com/bgautijonsson/covid19/master/Input/Test/ECDC_Data.csv")
 sidast_uppfaert <- "Síðast uppfært 23. mars 2020 klukkan 19:30"
 
-Sys.setlocale("LC_TIME", "is_IS")
 
 ui <- navbarPage(
     title = "Ísland og COVID19", 
