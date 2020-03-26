@@ -1,3 +1,5 @@
+TEST <- TRUE
+
 library(tidyverse)
 library(googlesheets4)
 library(readxl)
@@ -40,5 +42,10 @@ d <- read_xlsx(temp) %>%
            death_rate = ifelse(total_cases == 0, 0, total_deaths / total_cases))
 
 
-d %>% 
-    write_csv("Input/ECDC_Data.csv")
+if (TEST) {
+    d %>% 
+        write_csv("Input/Test/ECDC_Data.csv")
+} else {
+    d %>% 
+        write_csv("Input/Public/ECDC_Data.csv")
+}
