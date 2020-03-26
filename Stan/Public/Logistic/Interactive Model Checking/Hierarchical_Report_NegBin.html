@@ -300,7 +300,7 @@ pred_plot <-  eventReactive(input$gobutton, {
     filter(country == id) %>% 
     mutate(iter = row_number()) %>% 
     select(iter, alpha, beta, maximum, phi) %>% 
-    expand_grid(days = seq(1, days_in_data + 80)) %>% 
+    expand_grid(days = seq(1, days_in_data + 50)) %>% 
     mutate(daily_rate = daily_cases(alpha, beta, maximum, days),
            daily_cases = rnbinom(n(), mu = daily_rate * pop, size = phi)) %>% 
     group_by(iter) %>% 
@@ -332,10 +332,10 @@ pred_plot <-  eventReactive(input$gobutton, {
   
   p2 <- results %>% 
     mutate(date = days + min(plot_dat$date)) %>% 
-    filter(iter %in% sample(iter, size = 4000)) %>% 
+    filter(iter %in% sample(iter, size = 1000)) %>% 
     ggplot(aes(date, cumulative_cases, group = iter)) +
-    geom_line(alpha = 0.01) +
-    geom_point(data = plot_dat,
+    geom_line(alpha = 0.05) +
+    geom_point(data = plot_dat, col = "grey", size = 2,
                aes(date, total_cases), inherit.aes = F) +
     scale_y_continuous(breaks = pretty_breaks(8)) +
     labs(y = "Count",
