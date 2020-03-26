@@ -6,3 +6,5 @@
 *.rds
 **/*.RData
 **/*.rds
+**/*.xls
+**/*.xlsx

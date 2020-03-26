@@ -29,7 +29,7 @@ source("../Make_Stan_Data.R")
 ```{r data}
 data_path_age <- str_c("../Output/Iceland_Age_Simulations/Iceland_Flat_Age_Distribution_Simulation_", Sys.Date(), ".csv")
 data_path_obs <- str_c("../Output/Iceland_Predictions/Iceland_Predictions_", Sys.Date(), ".csv")
-d_age <- read_csv(data_path_age) %>% mutate(age_type = "Íbúafjöldadreifing")
+d_age <- read_csv(data_path_age) %>% mutate(age_type = "Hermun")
 d_obs <- read_csv(data_path_obs) %>% mutate(age_type = "Dreifing greindra smita")
 fig_out_path <- str_c(as.character(Sys.Date()), "/Figures/")
 make_fig_path <- function(name) str_c(fig_out_path, name)
@@ -40,29 +40,52 @@ iceland_d <- read_csv("../Input/ECDC_Data.csv") %>%
   filter(country == "Iceland")
 
 aldur <- sheets_read("https://docs.google.com/spreadsheets/d/1xgDhtejTtcyy6EN5dbDp5W3TeJhKFRRgm6Xk0s0YFeA", sheet = "Aldur") %>% 
-  mutate(p_tilfelli_unnormalized = c(dreifing_aldur_data[1:4], flat_dreifing_aldur_iceland[-(1:4)]),
-         p_tilfelli = p_tilfelli_unnormalized / sum(p_tilfelli_unnormalized),
-         fake_tilfelli = p_tilfelli * sum(tilfelli)) %>% 
-  select(aldur, tilfelli, fake_tilfelli, p_tilfelli, everything())
+    mutate(p_tilfelli_unnormalized = c(dreifing_aldur_data[1:4], flat_dreifing_aldur_iceland[-(1:4)]),
+           p_tilfelli = p_tilfelli_unnormalized / sum(p_tilfelli_unnormalized),
+           fake_tilfelli = p_tilfelli * sum(tilfelli)) %>% 
+    select(aldur, tilfelli, fake_tilfelli, p_tilfelli, everything())
 ```
+
+# Samantekt
+
+* Mjög lítil hliðrun á aldursdreifingu í átt að eldri smituðum leiðir til meiri álags á heilbrigðiskerfið.
 
 # Aðferð
 
 Gefum okkur að yfirvöld hafi ekki framkvæmt neinar aðgerðir og að almenningi væri alveg sama um útbreiðslu covid19. Þá gæti maður hugsað sér að jafnlíklegt væri að hver sem er væri smitaður óháð aldri. Ef svo væri myndi aldursdreifing smitaðra á Íslandi vera sú sama og aldursdreifing Íslendinga yfirhöfuð. 
 
-Í töflu 1 að neðan má sjá muninn á aldursdreifingu smitaðra og íbúa á Íslandi yfirhöfuð. Ljóst er að aðrir hlutir myndu breytast ef forsendur að ofan stæðust, til dæmis væru væntanlega mun fleiri greind smit yfir höfuð. Í eftirfarandi tilraun ætlum við þó að halda heildarfjölda smita föstum í gögnum og forspám, en prófa spár fyrir þessar tvær mismunandi aldursdreifingar.
+Í töflu 1 að neðan má sjá muninn á aldursdreifingu smitaðra og íbúa á Íslandi yfirhöfuð. Niðurstöður hingað til sýna að börn smitast ekki jafn gjarnan og fullorðin. Búum því til hermunardreifinguna á eftirfarandi máta:
 
-Við fyrstu sýn sjáum við að smitin yrðu fleiri meðal aldraðra, en jafnframt yrðu þau fleiri meðal þeirra sem yngri eru. Hvernig skilar þessi breyting sér í álag á heilbrigðiskerfið?
+* Höldum smitadreifingunni í aldurshópum `[30 - 39]` og yngri.
+* Fyrir ofan þennan aldur notum við aldursdreifingu íbúa íslands.
+* Þessi dreifing summar ekki endilega upp í 100%, svo við deilum í hana með summunni svo að hún summist í 100%.
 
 ```{r}
 aldur %>% 
-  select(aldur, flat_dreifing_aldur_iceland, dreifing_aldur_data) %>% 
-  set_names(c("Aldur", "Íbúa", "Greindra smita")) %>% 
+  select(aldur, flat_dreifing_aldur_iceland, dreifing_aldur_data, p_tilfelli) %>% 
+  set_names(c("Aldur", "Íbúa", "Greindra smita", "Hermun")) %>% 
   mutate_at(vars(-Aldur), ~ percent(., accuracy = 0.1)) %>% 
   kable(caption = "Tafla 1. Aldursdreifing greindra smita og íbúa yfirhöfuð á Íslandi.",
         align = c("l", rep("c", ncol(.) - 1))) %>% 
   kable_styling(bootstrap_options = c("striped", "hover")) %>% 
-  add_header_above(c("", "Dreifing" = 2))
+  add_header_above(c("", "Dreifing" = 3))
+```
+
+```{r}
+aldur %>% 
+  select(aldur, dreifing_aldur_data, p_tilfelli) %>% 
+  set_names(c("aldur", "Greind smit", "Hermunardreifing")) %>% 
+  pivot_longer(-aldur) %>% 
+  ggplot(aes(aldur, value, fill = name, group = name, col = name)) +
+  geom_area(position = "identity", alpha = 0.4) +
+  scale_fill_brewer(type = "qual", palette = "Set1") +
+  scale_colour_brewer(type = "qual", palette = "Set1") +
+  scale_y_continuous(labels = percent) +
+  labs(title = "Aldursdreifing greindra smita og í hermun",
+       y = "Hlutfall af sýktum",
+       fill = " ", col = " ") +
+  theme(axis.title.x = element_blank(), legend.position = "top") +
+  ggsave(make_fig_path("age_distributions.png"), width = 8, height = 0.621 * 8, scale = 1.5)
 ```
 
 

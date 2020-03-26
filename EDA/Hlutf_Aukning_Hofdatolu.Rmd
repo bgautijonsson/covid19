@@ -105,7 +105,7 @@ read_csv("../Input/ECDC_Data.csv") %>%
 
 
 ```{r, fig.asp = 0.4}
-d <- read_csv("../Input/ECDC_Data.csv") %>% 
+d <- read_csv("../Input/Public/ECDC_Data.csv") %>% 
     filter(total_cases >= 50, continent == "Europe") %>% 
     group_by(country) %>% 
     mutate(days = row_number() - 1) %>% 
@@ -129,8 +129,8 @@ tibble(country = rownames(country_effects), increase = exp(country_effects[, 1])
     mutate(country = fct_reorder(country, increase),
            col = factor(1 * (country == "Ísland"))) %>% 
     ggplot(aes(country, increase)) +
-    geom_point(aes(col = col), show.legend = F) +
-    geom_segment(aes(xend = country, yend = 0, col = col), show.legend = F) +
+    geom_point(aes(col = col), show.legend = F, size = 3) +
+    geom_segment(aes(xend = country, yend = 0, col = col), show.legend = F, size = 1) +
     geom_hline(yintercept = mean_evo, lty = 2) +
     # Meðalaukning
     geom_text(data = tibble(), 
@@ -147,7 +147,7 @@ tibble(country = rownames(country_effects), increase = exp(country_effects[, 1])
                        breaks = c(0, 0.05, 0.1, 0.15, 0.2, mean_evo, 0.3, 0.35),
                        expand = expansion(mult = 0.02)) +
     scale_x_discrete() +
-    scale_colour_manual(values = c( "grey", "blue")) +
+    scale_colour_manual(values = c( "grey60", "blue")) +
     coord_flip() +
     labs(title = "Mynd 2. Dagleg aukning á tíðni staðfestra COVID-19 tilfella (per 1000 íbúa)",
          subtitle = "Þróun reiknuð frá því að 50 tilfelli höfðu greinst og fyrir lönd með að minnsta kosti 7 daga eftirfylgd") +

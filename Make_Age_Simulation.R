@@ -20,15 +20,12 @@ sheets_auth(email = "bgautijonsson@gmail.com")
 
 source("Make_Stan_Data.R")
 
-d <- Make_Stan_Data()
+daily_cases <- function(alpha, beta, maximum, t) {
+    z <- alpha + beta * t
+    beta * maximum * exp(-z) / (exp(-z) + 1)^2
+}
 
-d %>% 
-    group_by(country) %>% 
-    summarise(First = min(date),
-              Days_In_Data = n(),
-              Start_Rate = min(case_rate),
-              End_Rate = max(case_rate)) %>% 
-    write_csv("Output/stan_data_info.csv")
+d <- Make_Stan_Data(min_case_rate = 0.02, min_days = 7)
 
 aldur <- sheets_read("https://docs.google.com/spreadsheets/d/1xgDhtejTtcyy6EN5dbDp5W3TeJhKFRRgm6Xk0s0YFeA", sheet = "Aldur") %>% 
     mutate(p_tilfelli_unnormalized = c(dreifing_aldur_data[1:4], flat_dreifing_aldur_iceland[-(1:4)]),
@@ -43,6 +40,7 @@ iceland_d <- d %>% filter(country == "Iceland")
 id <- unique(iceland_d$country_id)
 pop <- unique(iceland_d$pop)
 start_date <- min(iceland_d$date)
+start_cases <- min(iceland_d$total_cases)
 
 results <- spread_draws(m, alpha[country], beta[country], maximum[country]) %>% 
     ungroup %>% 
@@ -50,11 +48,11 @@ results <- spread_draws(m, alpha[country], beta[country], maximum[country]) %>%
     mutate(iter = row_number()) %>% 
     select(iter, alpha, beta, maximum) %>% 
     expand_grid(days = seq(0, 60)) %>% 
-    mutate(linear = alpha + beta * days,
-           rate = maximum / (1 + exp(-linear)),
-           cases = rate * pop) %>% 
+    mutate(daily_rate = daily_cases(alpha = alpha, beta = beta, maximum = maximum, t = days),
+           daily_cases = rpois(n(), daily_rate * pop),) %>% 
     group_by(iter) %>% 
-    mutate(recovered = lag(cases, n = 21, default = 0),
+    mutate(cases = as.numeric(cumsum(daily_cases)) + start_cases,
+           recovered = lag(cases, n = 21, default = 0),
            active_cases = pmax(0, cases - recovered)) %>% 
     ungroup %>% 
     select(iter, days, cumulative_cases = cases, active_cases)
@@ -107,6 +105,9 @@ all_results <- age_results %>%
     summarise(median = median(value),
               upper = quantile(value, .975))
 
-out_path <- str_c("Output/Iceland_Flat_Age_Distribution_Simulation_", Sys.Date(), ".csv")
+out_path <- str_c("Output/Iceland_Age_Simulations/Iceland_Flat_Age_Distribution_Simulation_", Sys.Date(), ".csv")
+aldur %>% 
+    select(aldur, distribution = p_tilfelli) %>% 
+    write_csv(str_c("Output/Iceland_Age_Simulations/Age_Distribution_Simulation_", Sys.Date(), ".csv"))
 
 write_csv(all_results, out_path)
