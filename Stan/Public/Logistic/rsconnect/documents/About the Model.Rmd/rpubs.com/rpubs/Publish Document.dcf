@@ -1,0 +1,10 @@
+name: Publish Document
+title:
+username:
+account: rpubs
+server: rpubs.com
+hostUrl: rpubs.com
+appId: https://api.rpubs.com/api/v1/document/588776/2ca99f7111644f7da62f98261391bba0
+bundleId: https://api.rpubs.com/api/v1/document/588776/2ca99f7111644f7da62f98261391bba0
+url: http://rpubs.com/bgautijonsson/588776
+when: 1585067162.31646
