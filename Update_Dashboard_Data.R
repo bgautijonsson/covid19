@@ -1,4 +1,4 @@
-TEST <- FALSE
+TEST <- TRUE
 
 library(tidyverse)
 library(googlesheets4)
@@ -9,11 +9,12 @@ library(lubridate)
 source("Make_Pop_Data.R")
 source("Make_Landlaeknir_Data.R")
 
-world_pop <- make_pop_data()
+world_pop <- make_pop_data() %>% 
+    mutate(country = str_to_lower(country))
 
 url <- "https://www.ecdc.europa.eu/sites/default/files/documents/COVID-19-geographic-disbtribution-worldwide.csv"
 
-d <- read_csv(url) %>% 
+stan_data <- read_csv(url) %>% 
     select(country = "Countries and territories", 
            date = DateRep, 
            new_cases = Cases, 
