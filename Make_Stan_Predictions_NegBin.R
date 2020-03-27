@@ -22,7 +22,7 @@ sheets_auth(email = "bgautijonsson@gmail.com")
 
 source("Make_Stan_Data.R")
 
-d <- Make_Stan_Data(min_case_rat = 0.02, min_days = 6, upper_mult = 3)
+d <- Make_Stan_Data()
 
 daily_cases <- function(alpha, beta, maximum, t) {
     z <- alpha + beta * t

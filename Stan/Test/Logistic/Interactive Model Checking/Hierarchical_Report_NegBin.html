@@ -185,21 +185,15 @@ summary {
 <option value="Australia">Australia</option>
 <option value="Austria">Austria</option>
 <option value="Bahrain">Bahrain</option>
-<option value="Barbados">Barbados</option>
 <option value="Belgium">Belgium</option>
 <option value="Bermuda">Bermuda</option>
-<option value="Cayman Islands">Cayman Islands</option>
-<option value="Chile">Chile</option>
-<option value="Costa Rica">Costa Rica</option>
 <option value="Croatia">Croatia</option>
 <option value="Cyprus">Cyprus</option>
 <option value="Czech Republic">Czech Republic</option>
 <option value="Denmark">Denmark</option>
-<option value="Ecuador">Ecuador</option>
 <option value="Estonia">Estonia</option>
 <option value="Finland">Finland</option>
 <option value="France">France</option>
-<option value="French Polynesia">French Polynesia</option>
 <option value="Germany">Germany</option>
 <option value="Greece">Greece</option>
 <option value="Greenland">Greenland</option>
@@ -211,7 +205,6 @@ summary {
 <option value="Latvia">Latvia</option>
 <option value="Lebanon">Lebanon</option>
 <option value="Liechtenstein">Liechtenstein</option>
-<option value="Lithuania">Lithuania</option>
 <option value="Luxembourg">Luxembourg</option>
 <option value="Malaysia">Malaysia</option>
 <option value="Maldives">Maldives</option>
@@ -332,9 +325,9 @@ pred_plot <-  eventReactive(input$gobutton, {
   
   p2 <- results %>% 
     mutate(date = days + min(plot_dat$date)) %>% 
-    filter(iter %in% sample(iter, size = 1000)) %>% 
+    filter(iter %in% sample(iter, size = 200)) %>% 
     ggplot(aes(date, cumulative_cases, group = iter)) +
-    geom_line(alpha = 0.05) +
+    geom_line(alpha = 0.1) +
     geom_point(data = plot_dat, col = "grey", size = 2,
                aes(date, total_cases), inherit.aes = F) +
     scale_y_continuous(breaks = pretty_breaks(8)) +

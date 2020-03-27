@@ -7,7 +7,7 @@ Make_Landlaeknir_Data <- function(email = "bgautijonsson@gmail.com") {
     
     sheets_auth(email = email)
     
-    sheets_read("https://docs.google.com/spreadsheets/d/1xgDhtejTtcyy6EN5dbDp5W3TeJhKFRRgm6Xk0s0YFeA", sheet = "Smit") %>% 
+    sheets_read("https://docs.google.com/spreadsheets/d/1ODqwILD6yBfE5mgKmI4mE-t-wzBDaw8l27gERUiAMgo/edit", sheet = "Smit") %>% 
         mutate(ny_smit = Ny_Smit + IE_Smit,
                date = as_date(Dagsetning),
                new_deaths = 0,

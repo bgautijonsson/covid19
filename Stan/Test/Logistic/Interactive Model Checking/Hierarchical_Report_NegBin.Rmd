@@ -103,9 +103,9 @@ pred_plot <-  eventReactive(input$gobutton, {
   
   p2 <- results %>% 
     mutate(date = days + min(plot_dat$date)) %>% 
-    filter(iter %in% sample(iter, size = 1000)) %>% 
+    filter(iter %in% sample(iter, size = 200)) %>% 
     ggplot(aes(date, cumulative_cases, group = iter)) +
-    geom_line(alpha = 0.05) +
+    geom_line(alpha = 0.1) +
     geom_point(data = plot_dat, col = "grey", size = 2,
                aes(date, total_cases), inherit.aes = F) +
     scale_y_continuous(breaks = pretty_breaks(8)) +

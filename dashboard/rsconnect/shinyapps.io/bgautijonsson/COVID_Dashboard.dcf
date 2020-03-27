@@ -5,8 +5,8 @@ account: bgautijonsson
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 1945536
-bundleId: 2928355
+bundleId: 2928474
 url: https://bgautijonsson.shinyapps.io/COVID_Dashboard/
-when: 1585244198.50591
+when: 1585245872.96885
 asMultiple: FALSE
 asStatic: FALSE

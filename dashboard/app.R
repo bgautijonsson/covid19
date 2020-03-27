@@ -29,7 +29,7 @@ d_spa <- read_csv(
 ) %>% 
     mutate_at(vars(median, upper), round)
 
-d <- read_csv("https://raw.githubusercontent.com/bgautijonsson/covid19/master/Input/Public/ECDC_Data.csv")
+d <- read_csv("https://raw.githubusercontent.com/bgautijonsson/covid19/master/Input/Test/ECDC_Data.csv")
 sidast_uppfaert <- "Síðast uppfært 23. mars 2020 klukkan 19:30"
 
 
