@@ -1,16 +1,12 @@
-##### Info ####
 
-# Fjöldi virkra smita
-# Stan model gefur predictions á cumulative cases, ekki current cases.
-# Gefum okkur að manneskja sé 3 vikur (21 dag) að jafna sig. 
-# Þá væri active_cases á tíma t = cumulative_t - cumulative_(t - 21).
-# Getum því fengið cumulative predictions úr líkani og differencað til að fá active numbers.
-# 
-# 
-# Fjöldi fólks á sjúkrahúsi
-# Við höfum tölur frá 
+##### Parameters #####
+lag_infected_to_hospital <- 7
+lag_hospital_to_icu <- 3
+days_from_infection_to_healthy <- 21
+days_in_hospital <- 14
+days_in_icu <- 10
 
-
+##### Packages #####
 library(tidyverse)
 library(rstan)
 library(tidybayes)
@@ -19,6 +15,7 @@ library(broom)
 library(googlesheets4)
 sheets_auth(email = "bgautijonsson@gmail.com")
 
+##### Data and Functions #####
 source("Make_Stan_Data.R")
 
 d <- Make_Stan_Data()
@@ -44,6 +41,9 @@ pop <- unique(iceland_d$pop)
 start_date <- min(iceland_d$date)
 start_cases <- min(iceland_d$total_cases)
 
+##### Start simulations #####
+
+# Sample cumulative cases and calculate active cases
 results <- spread_draws(m, 
                         alpha[country], 
                         beta[country], 
@@ -68,14 +68,15 @@ results <- spread_draws(m,
     group_by(iter) %>% 
     mutate(
         cases = as.numeric(cumsum(daily_cases)) + start_cases,
-        # People recover 21 days after becoming sick
-        recovered = lag(cases, n = 21, default = 0),
+        # People recover X days after becoming sick
+        recovered = lag(cases, n = days_from_infection_to_healthy, default = 0),
         # Active cases = Cumulative - Recovered
         active_cases = pmax(0, cases - recovered)
     ) %>% 
     ungroup %>% 
     select(iter, days, cumulative_cases = cases, active_cases)
 
+# Calculate cases in each age-group
 age_results <- results %>% 
     filter(iter >= max(iter) - 2000) %>% 
     rowwise %>% 
@@ -90,27 +91,28 @@ age_results <- results %>%
     unnest(age_cases) %>% 
     ungroup
 
+# Perform hospital simulations
 all_results <- age_results %>% 
     group_by(iter, days) %>% 
-    # Sample hospitalizations with binomial distribution fom Ferguson et a.
+    # Sample hospitalizations with binomial distribution fom Ferguson et al.
     mutate(hospital_active = rbinom(n(), size = cases_active, prob = aldur$p_spitali),
            hospital_cumulative = rbinom(n(), size = cases_cumulative, prob = aldur$p_spitali)) %>% 
     group_by(iter, age) %>% 
-    # Lag hospitalizations by 7 days since you won't necessarily go to the hospital as soon as you are infected
-    mutate(hospital_active = lag(hospital_active, 7, default = 0),
-           hospital_cumulative = lag(hospital_cumulative, 7, default = 0),
+    # Lag hospitalizations by X days since you won't necessarily go to the hospital as soon as you are infected
+    mutate(hospital_active = lag(hospital_active, lag_hospital_to_icu, default = 0),
+           hospital_cumulative = lag(hospital_cumulative, lag_hospital_to_icu, default = 0),
            # People are release from hospital 14 days after admittance
-           hospital_active = pmax(hospital_active - lag(hospital_active, 14, default = 0), 0)) %>% 
+           hospital_active = pmax(hospital_active - lag(hospital_active, days_in_hospital, default = 0), 0)) %>% 
     group_by(iter, days) %>% 
     # Sample ICU using hospital numbers and Ferguson et al. percentages
     mutate(icu_active = rbinom(n(), size = hospital_active, prob = aldur$p_spitali),
            icu_cumulative = rbinom(n(), size = hospital_cumulative, prob = aldur$p_spitali))  %>% 
     group_by(iter, age) %>% 
     # Takes 3 days to go from hospital to ICU
-    mutate(icu_active = lag(icu_active, 3, default = 0),
-           icu_cumulative = lag(icu_cumulative, 3, default = 0),
+    mutate(icu_active = lag(icu_active, lag_hospital_to_icu, default = 0),
+           icu_cumulative = lag(icu_cumulative, lag_hospital_to_icu, default = 0),
            # Released from ICU in 10 days
-           icu_active = pmax(icu_active - lag(icu_active, n = 10, default = 0), 0)) %>% 
+           icu_active = pmax(icu_active - lag(icu_active, n = days_in_icu, default = 0), 0)) %>% 
     ungroup %>% 
     pivot_longer(c(cases_active, hospital_active, icu_active,
                    cases_cumulative, hospital_cumulative, icu_cumulative), 
@@ -129,6 +131,7 @@ all_results <- age_results %>%
     summarise(median = median(value),
               upper = quantile(value, .975))
 
+##### Output #####
 out_path <- str_c("Output/Iceland_Predictions/Iceland_Predictions_", Sys.Date(), ".csv")
 write_csv(all_results, out_path)
 
