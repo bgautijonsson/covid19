@@ -315,7 +315,7 @@ results %>%
   scroll_box(height = "600px")
 ```
 
-```{r, fig.width = 9, fig.asp = 1.5}
+```{r, fig.width = 9, fig.asp = 1.8}
 p <- results %>% 
   ungroup %>% 
   filter(par %in% c("beta", "alpha", "beta2", "maximum", "phi_inv", "detected_perc", "beta2")) %>% 
