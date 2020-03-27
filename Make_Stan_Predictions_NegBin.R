@@ -1,10 +1,11 @@
-
 ##### Parameters #####
 lag_infected_to_hospital <- 7
 lag_hospital_to_icu <- 3
 days_from_infection_to_healthy <- 21
 days_in_hospital <- 14
 days_in_icu <- 10
+
+N_iter <- 500
 
 ##### Packages #####
 library(tidyverse)
@@ -13,6 +14,7 @@ library(tidybayes)
 library(magrittr)
 library(broom)
 library(googlesheets4)
+library(lubridate)
 sheets_auth(email = "bgautijonsson@gmail.com")
 
 ##### Data and Functions #####
@@ -26,7 +28,7 @@ daily_cases <- function(alpha, beta, maximum, t) {
 }
 
 aldur <- sheets_read("https://docs.google.com/spreadsheets/d/1xgDhtejTtcyy6EN5dbDp5W3TeJhKFRRgm6Xk0s0YFeA", sheet = "Aldur") %>% 
-    mutate(tilfelli = tilfelli + 1,
+    mutate(tilfelli = tilfelli,
            p_tilfelli = tilfelli / sum(tilfelli)) %>% 
     select(aldur, tilfelli, p_tilfelli, everything())
 
@@ -44,11 +46,12 @@ start_cases <- min(iceland_d$total_cases)
 ##### Start simulations #####
 
 # Sample cumulative cases and calculate active cases
-results <- spread_draws(m, 
-                        alpha[country], 
-                        beta[country], 
-                        maximum[country],
-                        phi[country]
+results <- spread_draws(
+    m, 
+    alpha[country], 
+    beta[country], 
+    maximum[country],
+    phi[country]
 ) %>% 
     ungroup %>% 
     filter(country == id) %>% 
@@ -61,79 +64,146 @@ results <- spread_draws(m,
         phi
     ) %>% 
     expand_grid(days = seq(1, 60)) %>% 
-    mutate(linear = alpha + beta * days,
-           daily_rate = daily_cases(alpha = alpha, beta = beta, maximum = maximum, t = days),
-           daily_cases = rnbinom(n(), mu = daily_rate * pop, size = phi),
+    mutate(
+        daily_rate = daily_cases(alpha = alpha, beta = beta, maximum = maximum, t = days),
+        new_cases = rnbinom(n(), mu = daily_rate * pop, size = phi),
     ) %>% 
     group_by(iter) %>% 
-    mutate(
-        cases = as.numeric(cumsum(daily_cases)) + start_cases,
-        # People recover X days after becoming sick
-        recovered = lag(cases, n = days_from_infection_to_healthy, default = 0),
-        # Active cases = Cumulative - Recovered
-        active_cases = pmax(0, cases - recovered)
-    ) %>% 
+    mutate(total_cases = cumsum(new_cases) + start_cases,
+           recovered_cases = lag(total_cases, n = 21, default = 0),
+           active_cases = total_cases - recovered_cases) %>%  
     ungroup %>% 
-    select(iter, days, cumulative_cases = cases, active_cases)
+    select(iter, days, new_cases, total_cases, recovered_cases, active_cases)
+
 
 # Calculate cases in each age-group
 age_results <- results %>% 
-    filter(iter >= max(iter) - 2000) %>% 
+    filter(iter >= max(iter) - N_iter) %>% 
     rowwise %>% 
-    mutate(age_cases = list(tibble(age = aldur$aldur, 
-                                   # Sample cases split into age-groups with multinomial distribution
-                                   cases_active = as.vector(rmultinom(1, 
-                                                                      size = active_cases, 
-                                                                      prob = aldur$p_tilfelli)),
-                                   cases_cumulative = as.vector(rmultinom(1, 
-                                                                          size = cumulative_cases, 
-                                                                          prob = aldur$p_tilfelli))))) %>% 
+    mutate(
+        age_cases = list(
+            tibble(
+                age = aldur$aldur, 
+                cases_new = as.vector(rmultinom(1, 
+                                                size = new_cases, 
+                                                prob = aldur$p_tilfelli)),
+            )
+        )
+    ) %>% 
     unnest(age_cases) %>% 
+    group_by(iter, age) %>% 
+    mutate(cases_cumulative = cumsum(cases_new),
+           cases_recovered = lag(cases_cumulative, n = 21, default = 0),
+           cases_active = cases_cumulative - cases_recovered) %>% 
     ungroup
 
-# Perform hospital simulations
+
 all_results <- age_results %>% 
     group_by(iter, days) %>% 
     # Sample hospitalizations with binomial distribution fom Ferguson et al.
-    mutate(hospital_active = rbinom(n(), size = cases_active, prob = aldur$p_spitali),
-           hospital_cumulative = rbinom(n(), size = cases_cumulative, prob = aldur$p_spitali)) %>% 
+    mutate(hospital_new = ifelse(cases_new == 0, 0, rbinom(n(), size = cases_new, prob = aldur$p_spitali)),
+           icu_new = ifelse(hospital_new == 0, 0, rbinom(n(), size = hospital_new, prob = aldur$p_alvarlegt))) %>% 
     group_by(iter, age) %>% 
-    # Lag hospitalizations by X days since you won't necessarily go to the hospital as soon as you are infected
-    mutate(hospital_active = lag(hospital_active, lag_hospital_to_icu, default = 0),
-           hospital_cumulative = lag(hospital_cumulative, lag_hospital_to_icu, default = 0),
-           # People are release from hospital 14 days after admittance
-           hospital_active = pmax(hospital_active - lag(hospital_active, days_in_hospital, default = 0), 0)) %>% 
-    group_by(iter, days) %>% 
-    # Sample ICU using hospital numbers and Ferguson et al. percentages
-    mutate(icu_active = rbinom(n(), size = hospital_active, prob = aldur$p_spitali),
-           icu_cumulative = rbinom(n(), size = hospital_cumulative, prob = aldur$p_spitali))  %>% 
-    group_by(iter, age) %>% 
-    # Takes 3 days to go from hospital to ICU
-    mutate(icu_active = lag(icu_active, lag_hospital_to_icu, default = 0),
-           icu_cumulative = lag(icu_cumulative, lag_hospital_to_icu, default = 0),
-           # Released from ICU in 10 days
-           icu_active = pmax(icu_active - lag(icu_active, n = days_in_icu, default = 0), 0)) %>% 
-    ungroup %>% 
-    pivot_longer(c(cases_active, hospital_active, icu_active,
-                   cases_cumulative, hospital_cumulative, icu_cumulative), 
+    mutate(hospital_new = lag(hospital_new, n = lag_infected_to_hospital, default = 0),
+           icu_new = lag(icu_new, n =  lag_infected_to_hospital + lag_hospital_to_icu, default = 0),
+           hospital_cumulative = cumsum(hospital_new),
+           icu_cumulative = cumsum(icu_new),
+           hospital_discharged = lag(hospital_cumulative, n = days_in_hospital, default = 0),
+           icu_discharged = lag(icu_cumulative, n = days_in_icu, default = 0),
+           hospital_active = hospital_cumulative - hospital_discharged,
+           icu_active = icu_cumulative - icu_discharged) %>% 
+    select(iter, days, new_cases, total_cases, recovered_cases, active_cases, age, starts_with("cases"), starts_with("hospital"), starts_with("icu")) %>%  
+    pivot_longer(c(cases_new, cases_cumulative, cases_recovered, cases_active,
+                   hospital_new, hospital_cumulative, hospital_discharged, hospital_active,
+                   icu_new, icu_cumulative, icu_discharged, icu_active),
                  names_to = c("name", "type"),
                  names_pattern = "(.*)_(.*)",
                  values_to = "value") %>% 
     group_by(iter, days, name, type) %>% 
-    mutate(total = case_when(name == "cases" & type == "active" ~ active_cases,
-                             name == "cases" & type == "cumulative" ~ cumulative_cases,
-                             name %in% c("hospital", "icu") ~ sum(value))) %>% 
+    mutate(total = sum(value)) %>% 
     ungroup %>% 
-    select(-active_cases, -cumulative_cases) %>% 
-    pivot_wider(names_from = "age", values_from = "value") %>% 
+    mutate(total = case_when(name %in% c("hospital", "icu") ~ total,
+                             type == "new" ~ new_cases,
+                             type == "cumulative" ~ total_cases,
+                             type == "recovered" ~ recovered_cases,
+                             type == "active" ~ active_cases)) %>% 
+    select(-new_cases, -total_cases, -recovered_cases, -active_cases) %>% 
+    arrange(iter, days, name, type) %>% 
+    pivot_wider(names_from = age, values_from = value) %>% 
     pivot_longer(c(-iter, -days, -name, -type), names_to = "age", values_to = "value") %>% 
-    group_by(date = days + start_date, type, name, age) %>% 
+    group_by(date = days + start_date, name, type, age) %>% 
     summarise(median = median(value),
-              upper = quantile(value, .975))
+              upper = quantile(value, 0.975))
+
+out <- all_results %>% 
+    mutate(aldursdreifing = "gögn")
+
+# Calculate cases in each age-group
+age_results <- results %>% 
+    filter(iter >= max(iter) - N_iter) %>% 
+    rowwise %>% 
+    mutate(
+        age_cases = list(
+            tibble(
+                age = aldur$aldur, 
+                cases_new = as.vector(rmultinom(1, 
+                                                size = new_cases, 
+                                                prob = aldur$smoothed_dreifing)),
+            )
+        )
+    ) %>% 
+    unnest(age_cases) %>% 
+    group_by(iter, age) %>% 
+    mutate(cases_cumulative = cumsum(cases_new),
+           cases_recovered = lag(cases_cumulative, n = 21, default = 0),
+           cases_active = cases_cumulative - cases_recovered) %>% 
+    ungroup
+
+
+all_results <- age_results %>% 
+    group_by(iter, days) %>% 
+    # Sample hospitalizations with binomial distribution fom Ferguson et al.
+    mutate(hospital_new = ifelse(cases_new == 0, 0, rbinom(n(), size = cases_new, prob = aldur$p_spitali)),
+           icu_new = ifelse(hospital_new == 0, 0, rbinom(n(), size = hospital_new, prob = aldur$p_alvarlegt))) %>% 
+    group_by(iter, age) %>% 
+    mutate(hospital_new = lag(hospital_new, n = lag_infected_to_hospital, default = 0),
+           icu_new = lag(icu_new, n =  lag_infected_to_hospital + lag_hospital_to_icu, default = 0),
+           hospital_cumulative = cumsum(hospital_new),
+           icu_cumulative = cumsum(icu_new),
+           hospital_discharged = lag(hospital_cumulative, n = days_in_hospital, default = 0),
+           icu_discharged = lag(icu_cumulative, n = days_in_icu, default = 0),
+           hospital_active = hospital_cumulative - hospital_discharged,
+           icu_active = icu_cumulative - icu_discharged) %>% 
+    select(iter, days, new_cases, total_cases, recovered_cases, active_cases, age, starts_with("cases"), starts_with("hospital"), starts_with("icu")) %>%  
+    pivot_longer(c(cases_new, cases_cumulative, cases_recovered, cases_active,
+                   hospital_new, hospital_cumulative, hospital_discharged, hospital_active,
+                   icu_new, icu_cumulative, icu_discharged, icu_active),
+                 names_to = c("name", "type"),
+                 names_pattern = "(.*)_(.*)",
+                 values_to = "value") %>% 
+    group_by(iter, days, name, type) %>% 
+    mutate(total = sum(value)) %>% 
+    ungroup %>% 
+    mutate(total = case_when(name %in% c("hospital", "icu") ~ total,
+                             type == "new" ~ new_cases,
+                             type == "cumulative" ~ total_cases,
+                             type == "recovered" ~ recovered_cases,
+                             type == "active" ~ active_cases)) %>% 
+    select(-new_cases, -total_cases, -recovered_cases, -active_cases) %>% 
+    arrange(iter, days, name, type) %>% 
+    pivot_wider(names_from = age, values_from = value) %>% 
+    pivot_longer(c(-iter, -days, -name, -type), names_to = "age", values_to = "value") %>% 
+    group_by(date = days + start_date, name, type, age) %>% 
+    summarise(median = median(value),
+              upper = quantile(value, 0.975))
+
+out <- out %>% 
+    bind_rows(all_results %>% 
+                  mutate(aldursdreifing = "óhagstæð"))
 
 ##### Output #####
 out_path <- str_c("Output/Iceland_Predictions/Iceland_Predictions_", Sys.Date(), ".csv")
-write_csv(all_results, out_path)
+write_csv(out, out_path)
 
 
 

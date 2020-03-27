@@ -9,15 +9,29 @@ Make_Stan_Data <- function(min_case_rate = 0.02, min_days = 5, upper_mult = 3) {
     world_pop <- make_pop_data() %>% 
         mutate(country = str_to_lower(country))
     
+    base_url <- "https://www.ecdc.europa.eu/sites/default/files/documents/COVID-19-geographic-disbtribution-worldwide-"
     
-    url <- "https://www.ecdc.europa.eu/sites/default/files/documents/COVID-19-geographic-disbtribution-worldwide.csv"
+    cur_date <- Sys.Date()
     
-    stan_data <- read_csv(url) %>% 
-        select(country = "Countries and territories", 
-               date = DateRep, 
-               new_cases = Cases, 
-               new_deaths = Deaths) %>% 
-        mutate(date = dmy(date),
+    full_url <- str_c(base_url, cur_date, ".xlsx")
+    temp <- tempfile()
+    
+    if (RCurl::url.exists(full_url)) {
+        download.file(full_url, temp)
+        
+    } else {
+        cur_date <- cur_date - 1
+        full_url <- str_c(base_url, cur_date, ".xlsx")
+        download.file(full_url, temp)
+    }
+    
+    
+    stan_data <- read_xlsx(temp) %>% 
+        select(country = "countriesAndTerritories", 
+               date = dateRep, 
+               new_cases = cases, 
+               new_deaths = deaths) %>% 
+        mutate(date = as_date(date),
                country = str_replace_all(country, "_", " ")) %>% 
         arrange(country, date) %>% 
         group_by(country) %>% 

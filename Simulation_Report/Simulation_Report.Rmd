@@ -14,13 +14,13 @@ output:
 knitr::opts_chunk$set(echo = FALSE, warning = F, message = F, fig.asp = 0.621, out.width = "100%", fig.width = 8)
 
 library(tidyverse); library(cowplot); library(kableExtra); library(scales); 
-library(lubridate); library(broom); library(ggtext)
+library(lubridate); library(broom); library(ggtext); library(googlesheets4)
+sheets_auth(email = "bgautijonsson@gmail.com")
 theme_set(theme_classic(base_size = 12) + 
             background_grid(color.major = "grey90", 
                             color.minor = "grey95", 
                             minor = "xy", major = "xy") +
             theme(legend.position = "none"))
-select <- dplyr::select
 Sys.setlocale("LC_TIME", "is_IS")
 source("../Make_Stan_Data.R")
 ```
@@ -33,6 +33,8 @@ make_fig_path <- function(name) str_c(fig_out_path, name)
 
 iceland_d <- read_csv("../Input/ECDC_Data.csv") %>% 
   filter(country == "Iceland")
+aldur <- sheets_read("https://docs.google.com/spreadsheets/d/1xgDhtejTtcyy6EN5dbDp5W3TeJhKFRRgm6Xk0s0YFeA", sheet = "Aldur") %>% 
+  mutate(p_tilfelli = tilfelli / sum(tilfelli))
 ```
 
 # Samantekt
@@ -83,7 +85,7 @@ Greiningarvinnan mun halda áfram og spálíkanið verður uppfært reglulega me
 
 ```{r}
 d %>% 
-  filter(name == "cases", age == "total", type == "cumulative") %>% 
+  filter(name == "cases", age == "total", type == "cumulative", aldursdreifing == "gögn") %>% 
   ggplot(aes(date, median)) +
   geom_line(aes(lty = "Líklegasta spá")) +
   geom_line(aes(y = upper, lty = "Svartsýn spá"), col = "grey50") +
@@ -100,7 +102,7 @@ d %>%
 
 ```{r}
 d %>% 
-  filter(name == "cases", age == "total", type == "active") %>% 
+  filter(name == "cases", age == "total", type == "active", aldursdreifing == "gögn") %>% 
   ggplot(aes(date, median)) +
   geom_line(aes(lty = "Líklegasta spá")) +
   geom_line(aes(y = upper, lty = "Svartsýn spá"), col = "grey50") +
@@ -119,7 +121,7 @@ d %>%
 
 ```{r, fig.asp = 0.621}
 d %>% 
-  filter(name == "hospital", age == "total", type == "cumulative")  %>% 
+  filter(name == "hospital", age == "total", type == "cumulative", aldursdreifing == "gögn")  %>% 
   ggplot(aes(date, median)) +
   geom_line(aes(lty = "Líklegasta spá")) +
   geom_line(aes(y = upper, lty = "Svartsýn spá"), col = "grey50") +
@@ -135,7 +137,7 @@ d %>%
 
 ```{r, fig.asp = 0.621}
 d %>% 
-  filter(name == "hospital", age == "total", type == "active")  %>% 
+  filter(name == "hospital", age == "total", type == "active", aldursdreifing == "gögn")  %>% 
   ggplot(aes(date, median)) +
   geom_line(aes(lty = "Líklegasta spá")) +
   geom_line(aes(y = upper, lty = "Svartsýn spá"), col = "grey50") +
@@ -153,7 +155,7 @@ d %>%
 
 ```{r, fig.asp = 0.621}
 d %>% 
-  filter(name == "icu", age == "total", type == "cumulative") %>% 
+  filter(name == "icu", age == "total", type == "cumulative", aldursdreifing == "gögn") %>% 
   ggplot(aes(date, median)) +
   geom_line(aes(lty = "Líklegasta spá")) +
   geom_line(aes(y = upper, lty = "Svartsýn spá"), col = "grey50") +
@@ -169,7 +171,7 @@ d %>%
 
 ```{r, fig.asp = 0.621}
 d %>% 
-  filter(name == "icu", age == "total", type == "active") %>% 
+  filter(name == "icu", age == "total", type == "active", aldursdreifing == "gögn") %>% 
   ggplot(aes(date, median)) +
   geom_line(aes(lty = "Líklegasta spá")) +
   geom_line(aes(y = upper, lty = "Svartsýn spá"), col = "grey50") +
@@ -191,7 +193,7 @@ d %>%
 
 ```{r, fig.asp = 1}
 d %>% 
-  filter(name == "cases", age != "total", type == "cumulative") %>% 
+  filter(name == "cases", age != "total", type == "cumulative", aldursdreifing == "gögn") %>% 
   ggplot(aes(date, median)) +
   geom_line() +
   geom_line(aes(y = upper), lty = 2, col  = "grey50") +
@@ -207,7 +209,7 @@ d %>%
 
 ```{r, fig.asp = 1}
 d %>% 
-  filter(name == "cases", age != "total", type == "active") %>% 
+  filter(name == "cases", age != "total", type == "active", aldursdreifing == "gögn") %>% 
   ggplot(aes(date, median)) +
   geom_line() +
   geom_line(aes(y = upper), lty = 2, col  = "grey50") +
@@ -225,7 +227,7 @@ d %>%
 
 ```{r, fig.asp = 1}
 d %>% 
-  filter(name == "hospital", age != "total", type == "cumulative") %>% 
+  filter(name == "hospital", age != "total", type == "cumulative", aldursdreifing == "gögn") %>% 
   ggplot(aes(date, median)) +
   geom_line() +
   geom_line(aes(y = upper), lty = 2, col = "grey60") +
@@ -241,7 +243,7 @@ d %>%
 
 ```{r, fig.asp = 1}
 d %>% 
-  filter(name == "hospital", age != "total", type == "active") %>% 
+  filter(name == "hospital", age != "total", type == "active", aldursdreifing == "gögn") %>% 
   ggplot(aes(date, median)) +
   geom_line() +
   geom_line(aes(y = upper), lty = 2, col = "grey60") +
@@ -259,7 +261,7 @@ d %>%
 
 ```{r, fig.asp = 1}
 d %>% 
-  filter(name == "icu", age != "total", type == "cumulative") %>% 
+  filter(name == "icu", age != "total", type == "cumulative", aldursdreifing == "gögn") %>% 
   ggplot(aes(date, median)) +
   geom_line() +
   geom_line(aes(y = upper), lty = 2, col = "grey50") +
@@ -275,7 +277,241 @@ d %>%
 
 ```{r, fig.asp = 1}
 d %>% 
-  filter(name == "icu", age != "total", type == "active") %>% 
+  filter(name == "icu", age != "total", type == "active", aldursdreifing == "gögn") %>% 
+  ggplot(aes(date, median)) +
+  geom_line() +
+  geom_line(aes(y = upper), lty = 2, col = "grey50") +
+  facet_wrap("age", scales = "free") +
+  scale_y_continuous(breaks = pretty_breaks(5)) +
+  scale_x_date(date_breaks = "2 week", date_labels = "%d/%m") +
+  labs(title = "Virk alvarleg tilfelli á sjúkrahúsi eftir aldri",
+       y = "Tilfelli") +
+  theme(axis.title = element_blank()) +
+  ggsave(make_fig_path("icu_active_age.png"), width = 8, height = 0.621 * 8, scale = 1.5)
+```
+
+# Niðurstöður með annarri aldursdreifingu
+
+## Ný aldurdreifing
+
+blablabla myndrit aðferð halló
+
+```{r}
+aldur %>% 
+  select(aldur, p_tilfelli, smoothed_dreifing) %>% 
+  set_names(c("aldur", "Greind smit", "Hermunardreifing")) %>% 
+  pivot_longer(-aldur) %>% 
+  ggplot(aes(aldur, value, fill = name, group = name, col = name)) +
+  geom_area(position = "identity", alpha = 0.4) +
+  scale_fill_brewer(type = "qual", palette = "Set1") +
+  scale_colour_brewer(type = "qual", palette = "Set1") +
+  scale_y_continuous(labels = percent) +
+  labs(title = "Aldursdreifing greindra smita og í hermun",
+       y = "Hlutfall af sýktum",
+       fill = " ", col = " ") +
+  theme(axis.title.x = element_blank(), legend.position = "top") +
+  ggsave(make_fig_path("age_distributions.png"), width = 8, height = 0.621 * 8, scale = 1.5)
+```
+
+## Greind smit
+
+### Uppsöfnuð greind smit
+
+```{r}
+d %>% 
+  filter(name == "cases", age == "total", type == "cumulative", aldursdreifing == "óhagstæð") %>% 
+  ggplot(aes(date, median)) +
+  geom_line(aes(lty = "Líklegasta spá")) +
+  geom_line(aes(y = upper, lty = "Svartsýn spá"), col = "grey50") +
+  geom_point(data = iceland_d, aes(x = date, y = total_cases), inherit.aes = F) +
+  scale_y_continuous(breaks = pretty_breaks(8)) +
+  scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
+  labs(linetype = " ") +
+  theme(axis.title = element_blank(),
+        legend.position = "top") +
+  ggsave(make_fig_path("cases_cumul_total.png"), width = 8, height = 0.621 * 8, scale = 1.5)
+```
+
+### Virk greind smit á hverjum degi
+
+```{r}
+d %>% 
+  filter(name == "cases", age == "total", type == "active", aldursdreifing == "óhagstæð") %>% 
+  ggplot(aes(date, median)) +
+  geom_line(aes(lty = "Líklegasta spá")) +
+  geom_line(aes(y = upper, lty = "Svartsýn spá"), col = "grey50") +
+  # geom_point(data = iceland_d, aes(x = date, y = total_cases), inherit.aes = F) +
+  scale_y_continuous(breaks = pretty_breaks(8)) +
+  scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
+  labs(linetype = " ") +
+  theme(axis.title = element_blank(),
+        legend.position = "top") +
+  ggsave(make_fig_path("cases_active_total.png"), width = 8, height = 0.621 * 8, scale = 1.5)
+```
+
+## Sjúkrahúslegur
+
+### Uppsafnaðar sjúkrahúslegur
+
+```{r, fig.asp = 0.621}
+d %>% 
+  filter(name == "hospital", age == "total", type == "cumulative", aldursdreifing == "óhagstæð")  %>% 
+  ggplot(aes(date, median)) +
+  geom_line(aes(lty = "Líklegasta spá")) +
+  geom_line(aes(y = upper, lty = "Svartsýn spá"), col = "grey50") +
+  scale_y_continuous(breaks = pretty_breaks(8)) +
+  scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
+  labs(linetype = " ") +
+  theme(axis.title = element_blank(),
+        legend.position = "top")  +
+  ggsave(make_fig_path("hospital_cumulative_total.png"), width = 8, height = 0.621 * 8, scale = 1.5)
+```
+
+### Virkar sjúkrahúslegur á hverjum degi
+
+```{r, fig.asp = 0.621}
+d %>% 
+  filter(name == "hospital", age == "total", type == "active", aldursdreifing == "óhagstæð")  %>% 
+  ggplot(aes(date, median)) +
+  geom_line(aes(lty = "Líklegasta spá")) +
+  geom_line(aes(y = upper, lty = "Svartsýn spá"), col = "grey50") +
+  scale_y_continuous(breaks = pretty_breaks(8)) +
+  scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
+  labs(linetype = " ") +
+  theme(axis.title = element_blank(),
+        legend.position = "top")  +
+  ggsave(make_fig_path("hospital_active_total.png"), width = 8, height = 0.621 * 8, scale = 1.5)
+```
+
+## Gjörgæsla
+
+### Uppsafnaðar gjörgæslulegur
+
+```{r, fig.asp = 0.621}
+d %>% 
+  filter(name == "icu", age == "total", type == "cumulative", aldursdreifing == "óhagstæð") %>% 
+  ggplot(aes(date, median)) +
+  geom_line(aes(lty = "Líklegasta spá")) +
+  geom_line(aes(y = upper, lty = "Svartsýn spá"), col = "grey50") +
+  scale_y_continuous(breaks = pretty_breaks(8)) +
+  scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
+  labs(linetype = " ") +
+  theme(axis.title = element_blank(),
+        legend.position = "top") +
+  ggsave(make_fig_path("icu_cumulative_total.png"), width = 8, height = 0.621 * 8, scale = 1.5)
+```
+
+### Virkar gjörgæslulegur á hverjum degi
+
+```{r, fig.asp = 0.621}
+d %>% 
+  filter(name == "icu", age == "total", type == "active", aldursdreifing == "óhagstæð") %>% 
+  ggplot(aes(date, median)) +
+  geom_line(aes(lty = "Líklegasta spá")) +
+  geom_line(aes(y = upper, lty = "Svartsýn spá"), col = "grey50") +
+  scale_y_continuous(breaks = pretty_breaks(8)) +
+  scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
+  labs(linetype = " ") +
+  theme(axis.title = element_blank(),
+        legend.position = "top") +
+  ggsave(make_fig_path("icu_active_total.png"), width = 8, height = 0.621 * 8, scale = 1.5)
+```
+
+
+
+## Aldursskipt
+
+### Greind smit
+
+#### Uppsöfnuð
+
+```{r, fig.asp = 1}
+d %>% 
+  filter(name == "cases", age != "total", type == "cumulative", aldursdreifing == "óhagstæð") %>% 
+  ggplot(aes(date, median)) +
+  geom_line() +
+  geom_line(aes(y = upper), lty = 2, col  = "grey50") +
+  facet_wrap("age", scales = "free") +
+  scale_y_continuous(breaks = pretty_breaks(8)) +
+  scale_x_date(date_breaks = "2 week", date_labels = "%d/%m") +
+  labs(y = "Tilfelli") +
+  theme(axis.title = element_blank()) +
+  ggsave(make_fig_path("cases_cumulative_age.png"), width = 8, height = 8, scale = 1.5)
+```
+
+#### Virk
+
+```{r, fig.asp = 1}
+d %>% 
+  filter(name == "cases", age != "total", type == "active", aldursdreifing == "óhagstæð") %>% 
+  ggplot(aes(date, median)) +
+  geom_line() +
+  geom_line(aes(y = upper), lty = 2, col  = "grey50") +
+  facet_wrap("age", scales = "free") +
+  scale_y_continuous(breaks = pretty_breaks(8)) +
+  scale_x_date(date_breaks = "2 week", date_labels = "%d/%m") +
+  labs(y = "Tilfelli") +
+  theme(axis.title = element_blank()) +
+  ggsave(make_fig_path("cases__active_age.png"), width = 8, height = 8, scale = 1.5)
+```
+
+### Sjúkrahúslegur
+
+#### Uppsafnaðar
+
+```{r, fig.asp = 1}
+d %>% 
+  filter(name == "hospital", age != "total", type == "cumulative", aldursdreifing == "óhagstæð") %>% 
+  ggplot(aes(date, median)) +
+  geom_line() +
+  geom_line(aes(y = upper), lty = 2, col = "grey60") +
+  facet_wrap("age", scales = "free") +
+  scale_y_continuous(breaks = pretty_breaks(8)) +
+  scale_x_date(date_breaks = "2 week", date_labels = "%d/%m") +
+  labs() +
+  theme(axis.title = element_blank()) +
+  ggsave(make_fig_path("hospital_active_age.png"), width = 8, height = 8, scale = 1.5)
+```
+
+#### Virkar
+
+```{r, fig.asp = 1}
+d %>% 
+  filter(name == "hospital", age != "total", type == "active", aldursdreifing == "óhagstæð") %>% 
+  ggplot(aes(date, median)) +
+  geom_line() +
+  geom_line(aes(y = upper), lty = 2, col = "grey60") +
+  facet_wrap("age", scales = "free") +
+  scale_y_continuous(breaks = pretty_breaks(8)) +
+  scale_x_date(date_breaks = "2 week", date_labels = "%d/%m") +
+  labs() +
+  theme(axis.title = element_blank()) +
+  ggsave(make_fig_path("hospital_active_age.png"), width = 8, height = 8, scale = 1.5)
+```
+
+### Gjörgæslulegur
+
+#### Uppsafnaðar
+
+```{r, fig.asp = 1}
+d %>% 
+  filter(name == "icu", age != "total", type == "cumulative", aldursdreifing == "óhagstæð") %>% 
+  ggplot(aes(date, median)) +
+  geom_line() +
+  geom_line(aes(y = upper), lty = 2, col = "grey50") +
+  facet_wrap("age", scales = "free") +
+  scale_y_continuous(breaks = pretty_breaks(5)) +
+  scale_x_date(date_breaks = "2 week", date_labels = "%d/%m") +
+  labs(y = "Tilfelli") +
+  theme(axis.title = element_blank()) +
+  ggsave(make_fig_path("icu_cumulative_age.png"), width = 8, height = 0.621 * 8, scale = 1.5)
+```
+
+#### Virkar
+
+```{r, fig.asp = 1}
+d %>% 
+  filter(name == "icu", age != "total", type == "active", aldursdreifing == "óhagstæð") %>% 
   ggplot(aes(date, median)) +
   geom_line() +
   geom_line(aes(y = upper), lty = 2, col = "grey50") +

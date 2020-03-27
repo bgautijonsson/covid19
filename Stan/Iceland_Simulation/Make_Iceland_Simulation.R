@@ -30,91 +30,25 @@ daily_cases <- function(alpha, beta, maximum, t) {
 }
 
 aldur <- sheets_read("https://docs.google.com/spreadsheets/d/1xgDhtejTtcyy6EN5dbDp5W3TeJhKFRRgm6Xk0s0YFeA", sheet = "Aldur") %>% 
-    mutate(tilfelli = tilfelli + 1,
+    mutate(tilfelli = round(tilfelli / 4),
            p_tilfelli = tilfelli / sum(tilfelli)) %>% 
     select(aldur, tilfelli, p_tilfelli, everything())
 
-
-m_total_cases <- read_rds("Stan/Logistic/Hierarchical_Model_NegBin.rds")
-
-
-iceland_d <- d %>% filter(country == "Iceland")
-
-id <- unique(iceland_d$country_id)
-
-pars <- spread_draws(m_total_cases, 
-                        alpha[country], 
-                        beta[country], 
-                        maximum[country],
-                        phi[country]
-) %>% 
-    ungroup %>% 
-    filter(country == id) %>% 
-    mutate(iter = row_number()) %>% 
-    select(
-        iter, 
-        alpha, 
-        beta, 
-        maximum,
-        phi
-    ) %>% 
-    pivot_longer(-iter) %>% 
-    group_by(name) %>% 
-    summarise(mean = mean(value), var = var(value)) %>% 
-    pivot_longer(-name, names_to = "par") %>% 
-    pivot_wider(names_from = name, values_from = value)
-
-N_days <- 60
 N_agegroups <- nrow(aldur)
-pop <- unique(iceland_d$pop)
-
-alpha_prior <- pars$alpha
-beta_prior <- pars$beta
-maximum_prior <- pars$maximum
-phi_prior <- pars$phi
-
-days <- seq_len(N_days) - 1
 
 age_cases <- aldur$tilfelli %>% as.integer
 
 stan_data <- list(
-    N_days = N_days,
     N_agegroups = N_agegroups,
-    pop = pop,
-    age_cases = age_cases,
-    days = days,
-    age_cases = age_cases,
-    alpha_prior = alpha_prior,
-    beta_prior = beta_prior,
-    maximum_prior = maximum_prior,
-    phi_prior = phi_prior
+    age_cases = age_cases
 )
 
 str(stan_data)
 
 
 m_iceland <- sampling(stan_model("Stan/Iceland_Simulation/Iceland_Simulation.stan"), 
-              data  = stan_data, chains = 1, iter = 1000, warmup = 500)
+              data  = stan_data, chains = 4, iter = 2000, warmup = 100)
 
+tidyMCMC(m_iceland, conf.int = T)
 
-tidyMCMC(m_iceland, conf.int = T, ess = T, rhat = T,
-         pars = c("theta"))
-
-
-
-spread_draws(m_iceland, new_cases[days]) %>% 
-    ungroup %>% 
-    mutate(days = days - 1) %>% 
-    select(days, new_cases) %>% 
-    group_by(days) %>% 
-    mutate(iter = row_number()) %>% 
-    group_by(iter) %>% 
-    mutate(total_cases = cumsum(new_cases)) %>% 
-    group_by(days) %>% 
-    summarise(median = median(total_cases),
-              upper = quantile(total_cases, 0.975)) %>% 
-    ggplot(aes(days, median)) +
-    geom_line() +
-    geom_line(aes(y = upper), lty = 2) +
-    scale_y_continuous(breaks = pretty_breaks(8))
-
+write_rds(m_iceland, "age_dist.rds")

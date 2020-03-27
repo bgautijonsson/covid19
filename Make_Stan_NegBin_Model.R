@@ -1,5 +1,3 @@
-
-
 library(readr)
 library(dplyr)
 library(rstan)
