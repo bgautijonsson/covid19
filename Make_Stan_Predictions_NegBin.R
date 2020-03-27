@@ -68,24 +68,19 @@ results <- spread_draws(m,
     group_by(iter) %>% 
     mutate(
         cases = as.numeric(cumsum(daily_cases)) + start_cases,
+        # People recover 21 days after becoming sick
         recovered = lag(cases, n = 21, default = 0),
+        # Active cases = Cumulative - Recovered
         active_cases = pmax(0, cases - recovered)
     ) %>% 
     ungroup %>% 
     select(iter, days, cumulative_cases = cases, active_cases)
 
-results %>%
-    group_by(days) %>%
-    summarise(median = median(active_cases),
-              upper = quantile(active_cases, .975)) %>%
-    ggplot(aes(days, median)) +
-    geom_line() +
-    geom_line(aes(y = upper), lty = 2)
-
 age_results <- results %>% 
     filter(iter >= max(iter) - 2000) %>% 
     rowwise %>% 
     mutate(age_cases = list(tibble(age = aldur$aldur, 
+                                   # Sample cases split into age-groups with multinomial distribution
                                    cases_active = as.vector(rmultinom(1, 
                                                                       size = active_cases, 
                                                                       prob = aldur$p_tilfelli)),
@@ -97,18 +92,24 @@ age_results <- results %>%
 
 all_results <- age_results %>% 
     group_by(iter, days) %>% 
+    # Sample hospitalizations with binomial distribution fom Ferguson et a.
     mutate(hospital_active = rbinom(n(), size = cases_active, prob = aldur$p_spitali),
            hospital_cumulative = rbinom(n(), size = cases_cumulative, prob = aldur$p_spitali)) %>% 
     group_by(iter, age) %>% 
+    # Lag hospitalizations by 7 days since you won't necessarily go to the hospital as soon as you are infected
     mutate(hospital_active = lag(hospital_active, 7, default = 0),
            hospital_cumulative = lag(hospital_cumulative, 7, default = 0),
+           # People are release from hospital 14 days after admittance
            hospital_active = pmax(hospital_active - lag(hospital_active, 14, default = 0), 0)) %>% 
     group_by(iter, days) %>% 
+    # Sample ICU using hospital numbers and Ferguson et al. percentages
     mutate(icu_active = rbinom(n(), size = hospital_active, prob = aldur$p_spitali),
            icu_cumulative = rbinom(n(), size = hospital_cumulative, prob = aldur$p_spitali))  %>% 
     group_by(iter, age) %>% 
+    # Takes 3 days to go from hospital to ICU
     mutate(icu_active = lag(icu_active, 3, default = 0),
            icu_cumulative = lag(icu_cumulative, 3, default = 0),
+           # Released from ICU in 10 days
            icu_active = pmax(icu_active - lag(icu_active, n = 10, default = 0), 0)) %>% 
     ungroup %>% 
     pivot_longer(c(cases_active, hospital_active, icu_active,
