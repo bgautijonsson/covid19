@@ -1,3 +1,6 @@
+# We are making changes to the repo today. Getting organized, and trying to add some english comments.
+
+
 Hér eru skrár og kóði á bak við vefsíðuna [bgautijonsson.shinyapps.io/COVID_Dashboard](https://bgautijonsson.shinyapps.io/COVID_Dashboard/), [covid.hi.is](covid.hi.is) og annar kóði sem ég hef verið að fikta við.
 
 # Gögn
