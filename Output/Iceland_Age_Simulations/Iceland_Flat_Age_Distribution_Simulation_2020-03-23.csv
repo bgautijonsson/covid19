@@ -1,0 +1,3661 @@
+date,type,name,age,median,upper
+2020-03-03,active,cases,[0 - 9],3,6
+2020-03-03,active,cases,[10 - 19],3,6
+2020-03-03,active,cases,[20 - 29],3,7
+2020-03-03,active,cases,[30 - 39],3,7
+2020-03-03,active,cases,[40 - 49],3,6
+2020-03-03,active,cases,[50 - 59],3,6
+2020-03-03,active,cases,[60 - 69],2,5
+2020-03-03,active,cases,[70 - 79],1,4
+2020-03-03,active,cases,80+,1,3
+2020-03-03,active,cases,total,22.30654180049052,25.125792721303146
+2020-03-03,active,hospital,[0 - 9],0,0
+2020-03-03,active,hospital,[10 - 19],0,0
+2020-03-03,active,hospital,[20 - 29],0,0
+2020-03-03,active,hospital,[30 - 39],0,0
+2020-03-03,active,hospital,[40 - 49],0,0
+2020-03-03,active,hospital,[50 - 59],0,0
+2020-03-03,active,hospital,[60 - 69],0,0
+2020-03-03,active,hospital,[70 - 79],0,0
+2020-03-03,active,hospital,80+,0,0
+2020-03-03,active,hospital,total,0,0
+2020-03-03,active,icu,[0 - 9],0,0
+2020-03-03,active,icu,[10 - 19],0,0
+2020-03-03,active,icu,[20 - 29],0,0
+2020-03-03,active,icu,[30 - 39],0,0
+2020-03-03,active,icu,[40 - 49],0,0
+2020-03-03,active,icu,[50 - 59],0,0
+2020-03-03,active,icu,[60 - 69],0,0
+2020-03-03,active,icu,[70 - 79],0,0
+2020-03-03,active,icu,80+,0,0
+2020-03-03,active,icu,total,0,0
+2020-03-03,cumulative,cases,[0 - 9],3,6
+2020-03-03,cumulative,cases,[10 - 19],3,6
+2020-03-03,cumulative,cases,[20 - 29],3,7
+2020-03-03,cumulative,cases,[30 - 39],3,7
+2020-03-03,cumulative,cases,[40 - 49],3,6
+2020-03-03,cumulative,cases,[50 - 59],3,6
+2020-03-03,cumulative,cases,[60 - 69],2,5
+2020-03-03,cumulative,cases,[70 - 79],1,4
+2020-03-03,cumulative,cases,80+,1,3
+2020-03-03,cumulative,cases,total,22.30654180049052,25.125792721303146
+2020-03-03,cumulative,hospital,[0 - 9],0,0
+2020-03-03,cumulative,hospital,[10 - 19],0,0
+2020-03-03,cumulative,hospital,[20 - 29],0,0
+2020-03-03,cumulative,hospital,[30 - 39],0,0
+2020-03-03,cumulative,hospital,[40 - 49],0,0
+2020-03-03,cumulative,hospital,[50 - 59],0,0
+2020-03-03,cumulative,hospital,[60 - 69],0,0
+2020-03-03,cumulative,hospital,[70 - 79],0,0
+2020-03-03,cumulative,hospital,80+,0,0
+2020-03-03,cumulative,hospital,total,0,0
+2020-03-03,cumulative,icu,[0 - 9],0,0
+2020-03-03,cumulative,icu,[10 - 19],0,0
+2020-03-03,cumulative,icu,[20 - 29],0,0
+2020-03-03,cumulative,icu,[30 - 39],0,0
+2020-03-03,cumulative,icu,[40 - 49],0,0
+2020-03-03,cumulative,icu,[50 - 59],0,0
+2020-03-03,cumulative,icu,[60 - 69],0,0
+2020-03-03,cumulative,icu,[70 - 79],0,0
+2020-03-03,cumulative,icu,80+,0,0
+2020-03-03,cumulative,icu,total,0,0
+2020-03-04,active,cases,[0 - 9],3,7
+2020-03-04,active,cases,[10 - 19],3,7
+2020-03-04,active,cases,[20 - 29],4,8
+2020-03-04,active,cases,[30 - 39],4,7
+2020-03-04,active,cases,[40 - 49],3,7
+2020-03-04,active,cases,[50 - 59],3,7
+2020-03-04,active,cases,[60 - 69],3,6
+2020-03-04,active,cases,[70 - 79],2,4
+2020-03-04,active,cases,80+,1,3
+2020-03-04,active,cases,total,26.979899763291524,30.08827876318336
+2020-03-04,active,hospital,[0 - 9],0,0
+2020-03-04,active,hospital,[10 - 19],0,0
+2020-03-04,active,hospital,[20 - 29],0,0
+2020-03-04,active,hospital,[30 - 39],0,0
+2020-03-04,active,hospital,[40 - 49],0,0
+2020-03-04,active,hospital,[50 - 59],0,0
+2020-03-04,active,hospital,[60 - 69],0,0
+2020-03-04,active,hospital,[70 - 79],0,0
+2020-03-04,active,hospital,80+,0,0
+2020-03-04,active,hospital,total,0,0
+2020-03-04,active,icu,[0 - 9],0,0
+2020-03-04,active,icu,[10 - 19],0,0
+2020-03-04,active,icu,[20 - 29],0,0
+2020-03-04,active,icu,[30 - 39],0,0
+2020-03-04,active,icu,[40 - 49],0,0
+2020-03-04,active,icu,[50 - 59],0,0
+2020-03-04,active,icu,[60 - 69],0,0
+2020-03-04,active,icu,[70 - 79],0,0
+2020-03-04,active,icu,80+,0,0
+2020-03-04,active,icu,total,0,0
+2020-03-04,cumulative,cases,[0 - 9],3,7
+2020-03-04,cumulative,cases,[10 - 19],3,7
+2020-03-04,cumulative,cases,[20 - 29],4,8
+2020-03-04,cumulative,cases,[30 - 39],4,8
+2020-03-04,cumulative,cases,[40 - 49],3,7
+2020-03-04,cumulative,cases,[50 - 59],3,7
+2020-03-04,cumulative,cases,[60 - 69],3,6
+2020-03-04,cumulative,cases,[70 - 79],2,4
+2020-03-04,cumulative,cases,80+,1,3
+2020-03-04,cumulative,cases,total,26.979899763291524,30.08827876318336
+2020-03-04,cumulative,hospital,[0 - 9],0,0
+2020-03-04,cumulative,hospital,[10 - 19],0,0
+2020-03-04,cumulative,hospital,[20 - 29],0,0
+2020-03-04,cumulative,hospital,[30 - 39],0,0
+2020-03-04,cumulative,hospital,[40 - 49],0,0
+2020-03-04,cumulative,hospital,[50 - 59],0,0
+2020-03-04,cumulative,hospital,[60 - 69],0,0
+2020-03-04,cumulative,hospital,[70 - 79],0,0
+2020-03-04,cumulative,hospital,80+,0,0
+2020-03-04,cumulative,hospital,total,0,0
+2020-03-04,cumulative,icu,[0 - 9],0,0
+2020-03-04,cumulative,icu,[10 - 19],0,0
+2020-03-04,cumulative,icu,[20 - 29],0,0
+2020-03-04,cumulative,icu,[30 - 39],0,0
+2020-03-04,cumulative,icu,[40 - 49],0,0
+2020-03-04,cumulative,icu,[50 - 59],0,0
+2020-03-04,cumulative,icu,[60 - 69],0,0
+2020-03-04,cumulative,icu,[70 - 79],0,0
+2020-03-04,cumulative,icu,80+,0,0
+2020-03-04,cumulative,icu,total,0,0
+2020-03-05,active,cases,[0 - 9],4,8
+2020-03-05,active,cases,[10 - 19],4,8
+2020-03-05,active,cases,[20 - 29],5,9
+2020-03-05,active,cases,[30 - 39],4,9
+2020-03-05,active,cases,[40 - 49],4,8
+2020-03-05,active,cases,[50 - 59],4,8
+2020-03-05,active,cases,[60 - 69],3,7
+2020-03-05,active,cases,[70 - 79],2,5
+2020-03-05,active,cases,80+,1,3
+2020-03-05,active,cases,total,32.6179761883818,35.996464765747604
+2020-03-05,active,hospital,[0 - 9],0,0
+2020-03-05,active,hospital,[10 - 19],0,0
+2020-03-05,active,hospital,[20 - 29],0,0
+2020-03-05,active,hospital,[30 - 39],0,0
+2020-03-05,active,hospital,[40 - 49],0,0
+2020-03-05,active,hospital,[50 - 59],0,0
+2020-03-05,active,hospital,[60 - 69],0,0
+2020-03-05,active,hospital,[70 - 79],0,0
+2020-03-05,active,hospital,80+,0,0
+2020-03-05,active,hospital,total,0,0
+2020-03-05,active,icu,[0 - 9],0,0
+2020-03-05,active,icu,[10 - 19],0,0
+2020-03-05,active,icu,[20 - 29],0,0
+2020-03-05,active,icu,[30 - 39],0,0
+2020-03-05,active,icu,[40 - 49],0,0
+2020-03-05,active,icu,[50 - 59],0,0
+2020-03-05,active,icu,[60 - 69],0,0
+2020-03-05,active,icu,[70 - 79],0,0
+2020-03-05,active,icu,80+,0,0
+2020-03-05,active,icu,total,0,0
+2020-03-05,cumulative,cases,[0 - 9],4,8
+2020-03-05,cumulative,cases,[10 - 19],4,8
+2020-03-05,cumulative,cases,[20 - 29],5,9
+2020-03-05,cumulative,cases,[30 - 39],5,9
+2020-03-05,cumulative,cases,[40 - 49],4,8
+2020-03-05,cumulative,cases,[50 - 59],4,8
+2020-03-05,cumulative,cases,[60 - 69],3,7
+2020-03-05,cumulative,cases,[70 - 79],2,5
+2020-03-05,cumulative,cases,80+,1,3
+2020-03-05,cumulative,cases,total,32.6179761883818,35.996464765747604
+2020-03-05,cumulative,hospital,[0 - 9],0,0
+2020-03-05,cumulative,hospital,[10 - 19],0,0
+2020-03-05,cumulative,hospital,[20 - 29],0,0
+2020-03-05,cumulative,hospital,[30 - 39],0,0
+2020-03-05,cumulative,hospital,[40 - 49],0,0
+2020-03-05,cumulative,hospital,[50 - 59],0,0
+2020-03-05,cumulative,hospital,[60 - 69],0,0
+2020-03-05,cumulative,hospital,[70 - 79],0,0
+2020-03-05,cumulative,hospital,80+,0,0
+2020-03-05,cumulative,hospital,total,0,0
+2020-03-05,cumulative,icu,[0 - 9],0,0
+2020-03-05,cumulative,icu,[10 - 19],0,0
+2020-03-05,cumulative,icu,[20 - 29],0,0
+2020-03-05,cumulative,icu,[30 - 39],0,0
+2020-03-05,cumulative,icu,[40 - 49],0,0
+2020-03-05,cumulative,icu,[50 - 59],0,0
+2020-03-05,cumulative,icu,[60 - 69],0,0
+2020-03-05,cumulative,icu,[70 - 79],0,0
+2020-03-05,cumulative,icu,80+,0,0
+2020-03-05,cumulative,icu,total,0,0
+2020-03-06,active,cases,[0 - 9],4,9
+2020-03-06,active,cases,[10 - 19],5,9
+2020-03-06,active,cases,[20 - 29],6,11
+2020-03-06,active,cases,[30 - 39],6,10
+2020-03-06,active,cases,[40 - 49],5,9
+2020-03-06,active,cases,[50 - 59],5,9
+2020-03-06,active,cases,[60 - 69],4,8
+2020-03-06,active,cases,[70 - 79],2,6
+2020-03-06,active,cases,80+,1,4
+2020-03-06,active,cases,total,39.363009135180086,43.05142447116111
+2020-03-06,active,hospital,[0 - 9],0,0
+2020-03-06,active,hospital,[10 - 19],0,0
+2020-03-06,active,hospital,[20 - 29],0,0
+2020-03-06,active,hospital,[30 - 39],0,0
+2020-03-06,active,hospital,[40 - 49],0,0
+2020-03-06,active,hospital,[50 - 59],0,0
+2020-03-06,active,hospital,[60 - 69],0,0
+2020-03-06,active,hospital,[70 - 79],0,0
+2020-03-06,active,hospital,80+,0,0
+2020-03-06,active,hospital,total,0,0
+2020-03-06,active,icu,[0 - 9],0,0
+2020-03-06,active,icu,[10 - 19],0,0
+2020-03-06,active,icu,[20 - 29],0,0
+2020-03-06,active,icu,[30 - 39],0,0
+2020-03-06,active,icu,[40 - 49],0,0
+2020-03-06,active,icu,[50 - 59],0,0
+2020-03-06,active,icu,[60 - 69],0,0
+2020-03-06,active,icu,[70 - 79],0,0
+2020-03-06,active,icu,80+,0,0
+2020-03-06,active,icu,total,0,0
+2020-03-06,cumulative,cases,[0 - 9],5,9
+2020-03-06,cumulative,cases,[10 - 19],5,10
+2020-03-06,cumulative,cases,[20 - 29],6,11
+2020-03-06,cumulative,cases,[30 - 39],6,10
+2020-03-06,cumulative,cases,[40 - 49],5,9
+2020-03-06,cumulative,cases,[50 - 59],4,9
+2020-03-06,cumulative,cases,[60 - 69],4,8
+2020-03-06,cumulative,cases,[70 - 79],2,6
+2020-03-06,cumulative,cases,80+,1,4
+2020-03-06,cumulative,cases,total,39.363009135180086,43.05142447116111
+2020-03-06,cumulative,hospital,[0 - 9],0,0
+2020-03-06,cumulative,hospital,[10 - 19],0,0
+2020-03-06,cumulative,hospital,[20 - 29],0,0
+2020-03-06,cumulative,hospital,[30 - 39],0,0
+2020-03-06,cumulative,hospital,[40 - 49],0,0
+2020-03-06,cumulative,hospital,[50 - 59],0,0
+2020-03-06,cumulative,hospital,[60 - 69],0,0
+2020-03-06,cumulative,hospital,[70 - 79],0,0
+2020-03-06,cumulative,hospital,80+,0,0
+2020-03-06,cumulative,hospital,total,0,0
+2020-03-06,cumulative,icu,[0 - 9],0,0
+2020-03-06,cumulative,icu,[10 - 19],0,0
+2020-03-06,cumulative,icu,[20 - 29],0,0
+2020-03-06,cumulative,icu,[30 - 39],0,0
+2020-03-06,cumulative,icu,[40 - 49],0,0
+2020-03-06,cumulative,icu,[50 - 59],0,0
+2020-03-06,cumulative,icu,[60 - 69],0,0
+2020-03-06,cumulative,icu,[70 - 79],0,0
+2020-03-06,cumulative,icu,80+,0,0
+2020-03-06,cumulative,icu,total,0,0
+2020-03-07,active,cases,[0 - 9],6,10
+2020-03-07,active,cases,[10 - 19],6,11
+2020-03-07,active,cases,[20 - 29],7,13
+2020-03-07,active,cases,[30 - 39],7,12
+2020-03-07,active,cases,[40 - 49],6,11
+2020-03-07,active,cases,[50 - 59],6,10
+2020-03-07,active,cases,[60 - 69],5,9
+2020-03-07,active,cases,[70 - 79],3,7
+2020-03-07,active,cases,80+,1,4
+2020-03-07,active,cases,total,47.50980857281844,51.47711242661032
+2020-03-07,active,hospital,[0 - 9],0,0
+2020-03-07,active,hospital,[10 - 19],0,0
+2020-03-07,active,hospital,[20 - 29],0,0
+2020-03-07,active,hospital,[30 - 39],0,0
+2020-03-07,active,hospital,[40 - 49],0,0
+2020-03-07,active,hospital,[50 - 59],0,0
+2020-03-07,active,hospital,[60 - 69],0,0
+2020-03-07,active,hospital,[70 - 79],0,0
+2020-03-07,active,hospital,80+,0,0
+2020-03-07,active,hospital,total,0,0
+2020-03-07,active,icu,[0 - 9],0,0
+2020-03-07,active,icu,[10 - 19],0,0
+2020-03-07,active,icu,[20 - 29],0,0
+2020-03-07,active,icu,[30 - 39],0,0
+2020-03-07,active,icu,[40 - 49],0,0
+2020-03-07,active,icu,[50 - 59],0,0
+2020-03-07,active,icu,[60 - 69],0,0
+2020-03-07,active,icu,[70 - 79],0,0
+2020-03-07,active,icu,80+,0,0
+2020-03-07,active,icu,total,0,0
+2020-03-07,cumulative,cases,[0 - 9],6,11
+2020-03-07,cumulative,cases,[10 - 19],6,11
+2020-03-07,cumulative,cases,[20 - 29],7,13
+2020-03-07,cumulative,cases,[30 - 39],7,12
+2020-03-07,cumulative,cases,[40 - 49],6,10
+2020-03-07,cumulative,cases,[50 - 59],5,10
+2020-03-07,cumulative,cases,[60 - 69],5,9
+2020-03-07,cumulative,cases,[70 - 79],3,7
+2020-03-07,cumulative,cases,80+,1,4
+2020-03-07,cumulative,cases,total,47.50980857281844,51.47711242661032
+2020-03-07,cumulative,hospital,[0 - 9],0,0
+2020-03-07,cumulative,hospital,[10 - 19],0,0
+2020-03-07,cumulative,hospital,[20 - 29],0,0
+2020-03-07,cumulative,hospital,[30 - 39],0,0
+2020-03-07,cumulative,hospital,[40 - 49],0,0
+2020-03-07,cumulative,hospital,[50 - 59],0,0
+2020-03-07,cumulative,hospital,[60 - 69],0,0
+2020-03-07,cumulative,hospital,[70 - 79],0,0
+2020-03-07,cumulative,hospital,80+,0,0
+2020-03-07,cumulative,hospital,total,0,0
+2020-03-07,cumulative,icu,[0 - 9],0,0
+2020-03-07,cumulative,icu,[10 - 19],0,0
+2020-03-07,cumulative,icu,[20 - 29],0,0
+2020-03-07,cumulative,icu,[30 - 39],0,0
+2020-03-07,cumulative,icu,[40 - 49],0,0
+2020-03-07,cumulative,icu,[50 - 59],0,0
+2020-03-07,cumulative,icu,[60 - 69],0,0
+2020-03-07,cumulative,icu,[70 - 79],0,0
+2020-03-07,cumulative,icu,80+,0,0
+2020-03-07,cumulative,icu,total,0,0
+2020-03-08,active,cases,[0 - 9],7,12
+2020-03-08,active,cases,[10 - 19],7,12
+2020-03-08,active,cases,[20 - 29],9,14
+2020-03-08,active,cases,[30 - 39],8,14
+2020-03-08,active,cases,[40 - 49],7,12
+2020-03-08,active,cases,[50 - 59],7,12
+2020-03-08,active,cases,[60 - 69],6,10
+2020-03-08,active,cases,[70 - 79],3,8
+2020-03-08,active,cases,80+,2,5
+2020-03-08,active,cases,total,57.35979576830674,61.5958523607788
+2020-03-08,active,hospital,[0 - 9],0,0
+2020-03-08,active,hospital,[10 - 19],0,0
+2020-03-08,active,hospital,[20 - 29],0,0
+2020-03-08,active,hospital,[30 - 39],0,0
+2020-03-08,active,hospital,[40 - 49],0,0
+2020-03-08,active,hospital,[50 - 59],0,0
+2020-03-08,active,hospital,[60 - 69],0,0
+2020-03-08,active,hospital,[70 - 79],0,0
+2020-03-08,active,hospital,80+,0,0
+2020-03-08,active,hospital,total,0,0
+2020-03-08,active,icu,[0 - 9],0,0
+2020-03-08,active,icu,[10 - 19],0,0
+2020-03-08,active,icu,[20 - 29],0,0
+2020-03-08,active,icu,[30 - 39],0,0
+2020-03-08,active,icu,[40 - 49],0,0
+2020-03-08,active,icu,[50 - 59],0,0
+2020-03-08,active,icu,[60 - 69],0,0
+2020-03-08,active,icu,[70 - 79],0,0
+2020-03-08,active,icu,80+,0,0
+2020-03-08,active,icu,total,0,0
+2020-03-08,cumulative,cases,[0 - 9],7,12
+2020-03-08,cumulative,cases,[10 - 19],7,12
+2020-03-08,cumulative,cases,[20 - 29],9,14
+2020-03-08,cumulative,cases,[30 - 39],8,14
+2020-03-08,cumulative,cases,[40 - 49],7,12
+2020-03-08,cumulative,cases,[50 - 59],7,12
+2020-03-08,cumulative,cases,[60 - 69],6,11
+2020-03-08,cumulative,cases,[70 - 79],3,8
+2020-03-08,cumulative,cases,80+,2,5
+2020-03-08,cumulative,cases,total,57.35979576830674,61.5958523607788
+2020-03-08,cumulative,hospital,[0 - 9],0,0
+2020-03-08,cumulative,hospital,[10 - 19],0,0
+2020-03-08,cumulative,hospital,[20 - 29],0,0
+2020-03-08,cumulative,hospital,[30 - 39],0,0
+2020-03-08,cumulative,hospital,[40 - 49],0,0
+2020-03-08,cumulative,hospital,[50 - 59],0,0
+2020-03-08,cumulative,hospital,[60 - 69],0,0
+2020-03-08,cumulative,hospital,[70 - 79],0,0
+2020-03-08,cumulative,hospital,80+,0,0
+2020-03-08,cumulative,hospital,total,0,0
+2020-03-08,cumulative,icu,[0 - 9],0,0
+2020-03-08,cumulative,icu,[10 - 19],0,0
+2020-03-08,cumulative,icu,[20 - 29],0,0
+2020-03-08,cumulative,icu,[30 - 39],0,0
+2020-03-08,cumulative,icu,[40 - 49],0,0
+2020-03-08,cumulative,icu,[50 - 59],0,0
+2020-03-08,cumulative,icu,[60 - 69],0,0
+2020-03-08,cumulative,icu,[70 - 79],0,0
+2020-03-08,cumulative,icu,80+,0,0
+2020-03-08,cumulative,icu,total,0,0
+2020-03-09,active,cases,[0 - 9],8,14
+2020-03-09,active,cases,[10 - 19],8,14
+2020-03-09,active,cases,[20 - 29],10,16
+2020-03-09,active,cases,[30 - 39],10,16
+2020-03-09,active,cases,[40 - 49],9,15
+2020-03-09,active,cases,[50 - 59],8,14
+2020-03-09,active,cases,[60 - 69],7,12
+2020-03-09,active,cases,[70 - 79],4,9
+2020-03-09,active,cases,80+,2,6
+2020-03-09,active,cases,total,69.12519794351064,73.55120635495938
+2020-03-09,active,hospital,[0 - 9],0,0
+2020-03-09,active,hospital,[10 - 19],0,0
+2020-03-09,active,hospital,[20 - 29],0,0
+2020-03-09,active,hospital,[30 - 39],0,0
+2020-03-09,active,hospital,[40 - 49],0,0
+2020-03-09,active,hospital,[50 - 59],0,0
+2020-03-09,active,hospital,[60 - 69],0,0
+2020-03-09,active,hospital,[70 - 79],0,0
+2020-03-09,active,hospital,80+,0,0
+2020-03-09,active,hospital,total,0,0
+2020-03-09,active,icu,[0 - 9],0,0
+2020-03-09,active,icu,[10 - 19],0,0
+2020-03-09,active,icu,[20 - 29],0,0
+2020-03-09,active,icu,[30 - 39],0,0
+2020-03-09,active,icu,[40 - 49],0,0
+2020-03-09,active,icu,[50 - 59],0,0
+2020-03-09,active,icu,[60 - 69],0,0
+2020-03-09,active,icu,[70 - 79],0,0
+2020-03-09,active,icu,80+,0,0
+2020-03-09,active,icu,total,0,0
+2020-03-09,cumulative,cases,[0 - 9],8,14
+2020-03-09,cumulative,cases,[10 - 19],9,14
+2020-03-09,cumulative,cases,[20 - 29],11,17
+2020-03-09,cumulative,cases,[30 - 39],10,16
+2020-03-09,cumulative,cases,[40 - 49],9,14
+2020-03-09,cumulative,cases,[50 - 59],8,14
+2020-03-09,cumulative,cases,[60 - 69],7,12
+2020-03-09,cumulative,cases,[70 - 79],4,9
+2020-03-09,cumulative,cases,80+,2,6
+2020-03-09,cumulative,cases,total,69.12519794351064,73.55120635495938
+2020-03-09,cumulative,hospital,[0 - 9],0,0
+2020-03-09,cumulative,hospital,[10 - 19],0,0
+2020-03-09,cumulative,hospital,[20 - 29],0,0
+2020-03-09,cumulative,hospital,[30 - 39],0,0
+2020-03-09,cumulative,hospital,[40 - 49],0,0
+2020-03-09,cumulative,hospital,[50 - 59],0,0
+2020-03-09,cumulative,hospital,[60 - 69],0,0
+2020-03-09,cumulative,hospital,[70 - 79],0,0
+2020-03-09,cumulative,hospital,80+,0,0
+2020-03-09,cumulative,hospital,total,0,0
+2020-03-09,cumulative,icu,[0 - 9],0,0
+2020-03-09,cumulative,icu,[10 - 19],0,0
+2020-03-09,cumulative,icu,[20 - 29],0,0
+2020-03-09,cumulative,icu,[30 - 39],0,0
+2020-03-09,cumulative,icu,[40 - 49],0,0
+2020-03-09,cumulative,icu,[50 - 59],0,0
+2020-03-09,cumulative,icu,[60 - 69],0,0
+2020-03-09,cumulative,icu,[70 - 79],0,0
+2020-03-09,cumulative,icu,80+,0,0
+2020-03-09,cumulative,icu,total,0,0
+2020-03-10,active,cases,[0 - 9],10,16
+2020-03-10,active,cases,[10 - 19],10,17
+2020-03-10,active,cases,[20 - 29],12,19
+2020-03-10,active,cases,[30 - 39],12,18
+2020-03-10,active,cases,[40 - 49],11,17
+2020-03-10,active,cases,[50 - 59],10,17
+2020-03-10,active,cases,[60 - 69],8,14
+2020-03-10,active,cases,[70 - 79],5,10
+2020-03-10,active,cases,80+,3,6
+2020-03-10,active,cases,total,83.17170076201151,87.89558124941803
+2020-03-10,active,hospital,[0 - 9],0,0
+2020-03-10,active,hospital,[10 - 19],0,0
+2020-03-10,active,hospital,[20 - 29],0,1
+2020-03-10,active,hospital,[30 - 39],0,1
+2020-03-10,active,hospital,[40 - 49],0,1
+2020-03-10,active,hospital,[50 - 59],0,1
+2020-03-10,active,hospital,[60 - 69],0,2
+2020-03-10,active,hospital,[70 - 79],0,2
+2020-03-10,active,hospital,80+,0,1
+2020-03-10,active,hospital,total,1,4
+2020-03-10,active,icu,[0 - 9],0,0
+2020-03-10,active,icu,[10 - 19],0,0
+2020-03-10,active,icu,[20 - 29],0,0
+2020-03-10,active,icu,[30 - 39],0,0
+2020-03-10,active,icu,[40 - 49],0,0
+2020-03-10,active,icu,[50 - 59],0,0
+2020-03-10,active,icu,[60 - 69],0,0
+2020-03-10,active,icu,[70 - 79],0,0
+2020-03-10,active,icu,80+,0,0
+2020-03-10,active,icu,total,0,0
+2020-03-10,cumulative,cases,[0 - 9],10,16
+2020-03-10,cumulative,cases,[10 - 19],10,17
+2020-03-10,cumulative,cases,[20 - 29],13,20
+2020-03-10,cumulative,cases,[30 - 39],12,19
+2020-03-10,cumulative,cases,[40 - 49],10,17
+2020-03-10,cumulative,cases,[50 - 59],10,16
+2020-03-10,cumulative,cases,[60 - 69],8,14
+2020-03-10,cumulative,cases,[70 - 79],5,10
+2020-03-10,cumulative,cases,80+,3,6
+2020-03-10,cumulative,cases,total,83.17170076201151,87.89558124941803
+2020-03-10,cumulative,hospital,[0 - 9],0,0
+2020-03-10,cumulative,hospital,[10 - 19],0,0
+2020-03-10,cumulative,hospital,[20 - 29],0,1
+2020-03-10,cumulative,hospital,[30 - 39],0,1
+2020-03-10,cumulative,hospital,[40 - 49],0,1
+2020-03-10,cumulative,hospital,[50 - 59],0,2
+2020-03-10,cumulative,hospital,[60 - 69],0,2
+2020-03-10,cumulative,hospital,[70 - 79],0,2
+2020-03-10,cumulative,hospital,80+,0,1
+2020-03-10,cumulative,hospital,total,1,4
+2020-03-10,cumulative,icu,[0 - 9],0,0
+2020-03-10,cumulative,icu,[10 - 19],0,0
+2020-03-10,cumulative,icu,[20 - 29],0,0
+2020-03-10,cumulative,icu,[30 - 39],0,0
+2020-03-10,cumulative,icu,[40 - 49],0,0
+2020-03-10,cumulative,icu,[50 - 59],0,0
+2020-03-10,cumulative,icu,[60 - 69],0,0
+2020-03-10,cumulative,icu,[70 - 79],0,0
+2020-03-10,cumulative,icu,80+,0,0
+2020-03-10,cumulative,icu,total,0,0
+2020-03-11,active,cases,[0 - 9],12,19
+2020-03-11,active,cases,[10 - 19],12,19
+2020-03-11,active,cases,[20 - 29],15,23
+2020-03-11,active,cases,[30 - 39],14,22
+2020-03-11,active,cases,[40 - 49],13,20
+2020-03-11,active,cases,[50 - 59],12,19
+2020-03-11,active,cases,[60 - 69],10,17
+2020-03-11,active,cases,[70 - 79],6,11
+2020-03-11,active,cases,80+,3,7
+2020-03-11,active,cases,total,99.94477668807158,105.02365181416704
+2020-03-11,active,hospital,[0 - 9],0,0
+2020-03-11,active,hospital,[10 - 19],0,0
+2020-03-11,active,hospital,[20 - 29],0,1
+2020-03-11,active,hospital,[30 - 39],0,1
+2020-03-11,active,hospital,[40 - 49],0,1
+2020-03-11,active,hospital,[50 - 59],0,2
+2020-03-11,active,hospital,[60 - 69],0,2
+2020-03-11,active,hospital,[70 - 79],0,2
+2020-03-11,active,hospital,80+,0,2
+2020-03-11,active,hospital,total,2,5
+2020-03-11,active,icu,[0 - 9],0,0
+2020-03-11,active,icu,[10 - 19],0,0
+2020-03-11,active,icu,[20 - 29],0,0
+2020-03-11,active,icu,[30 - 39],0,0
+2020-03-11,active,icu,[40 - 49],0,0
+2020-03-11,active,icu,[50 - 59],0,0
+2020-03-11,active,icu,[60 - 69],0,0
+2020-03-11,active,icu,[70 - 79],0,0
+2020-03-11,active,icu,80+,0,0
+2020-03-11,active,icu,total,0,0
+2020-03-11,cumulative,cases,[0 - 9],12,19
+2020-03-11,cumulative,cases,[10 - 19],13,19
+2020-03-11,cumulative,cases,[20 - 29],15,23
+2020-03-11,cumulative,cases,[30 - 39],14,22
+2020-03-11,cumulative,cases,[40 - 49],13,20
+2020-03-11,cumulative,cases,[50 - 59],12,19
+2020-03-11,cumulative,cases,[60 - 69],10,16
+2020-03-11,cumulative,cases,[70 - 79],6,11
+2020-03-11,cumulative,cases,80+,3,7
+2020-03-11,cumulative,cases,total,99.94477668807158,105.02365181416704
+2020-03-11,cumulative,hospital,[0 - 9],0,0
+2020-03-11,cumulative,hospital,[10 - 19],0,0
+2020-03-11,cumulative,hospital,[20 - 29],0,1
+2020-03-11,cumulative,hospital,[30 - 39],0,1
+2020-03-11,cumulative,hospital,[40 - 49],0,1
+2020-03-11,cumulative,hospital,[50 - 59],0,2
+2020-03-11,cumulative,hospital,[60 - 69],0,2
+2020-03-11,cumulative,hospital,[70 - 79],0,2
+2020-03-11,cumulative,hospital,80+,0,1
+2020-03-11,cumulative,hospital,total,2,5
+2020-03-11,cumulative,icu,[0 - 9],0,0
+2020-03-11,cumulative,icu,[10 - 19],0,0
+2020-03-11,cumulative,icu,[20 - 29],0,0
+2020-03-11,cumulative,icu,[30 - 39],0,0
+2020-03-11,cumulative,icu,[40 - 49],0,0
+2020-03-11,cumulative,icu,[50 - 59],0,0
+2020-03-11,cumulative,icu,[60 - 69],0,0
+2020-03-11,cumulative,icu,[70 - 79],0,0
+2020-03-11,cumulative,icu,80+,0,0
+2020-03-11,cumulative,icu,total,0,0
+2020-03-12,active,cases,[0 - 9],15,22
+2020-03-12,active,cases,[10 - 19],15,22
+2020-03-12,active,cases,[20 - 29],18,26
+2020-03-12,active,cases,[30 - 39],17,26
+2020-03-12,active,cases,[40 - 49],15,23
+2020-03-12,active,cases,[50 - 59],14,21
+2020-03-12,active,cases,[60 - 69],12,19
+2020-03-12,active,cases,[70 - 79],8,13
+2020-03-12,active,cases,80+,4,9
+2020-03-12,active,cases,total,119.86379996222993,125.451266940128
+2020-03-12,active,hospital,[0 - 9],0,0
+2020-03-12,active,hospital,[10 - 19],0,0
+2020-03-12,active,hospital,[20 - 29],0,1
+2020-03-12,active,hospital,[30 - 39],0,1
+2020-03-12,active,hospital,[40 - 49],0,1
+2020-03-12,active,hospital,[50 - 59],0,2
+2020-03-12,active,hospital,[60 - 69],0,2
+2020-03-12,active,hospital,[70 - 79],0,2
+2020-03-12,active,hospital,80+,0,2
+2020-03-12,active,hospital,total,2,5
+2020-03-12,active,icu,[0 - 9],0,0
+2020-03-12,active,icu,[10 - 19],0,0
+2020-03-12,active,icu,[20 - 29],0,0
+2020-03-12,active,icu,[30 - 39],0,0
+2020-03-12,active,icu,[40 - 49],0,0
+2020-03-12,active,icu,[50 - 59],0,0
+2020-03-12,active,icu,[60 - 69],0,0
+2020-03-12,active,icu,[70 - 79],0,0
+2020-03-12,active,icu,80+,0,0
+2020-03-12,active,icu,total,0,0
+2020-03-12,cumulative,cases,[0 - 9],15,21
+2020-03-12,cumulative,cases,[10 - 19],15,23
+2020-03-12,cumulative,cases,[20 - 29],18,26
+2020-03-12,cumulative,cases,[30 - 39],17,25
+2020-03-12,cumulative,cases,[40 - 49],16,24
+2020-03-12,cumulative,cases,[50 - 59],14,22
+2020-03-12,cumulative,cases,[60 - 69],12,19
+2020-03-12,cumulative,cases,[70 - 79],7,13
+2020-03-12,cumulative,cases,80+,4,8
+2020-03-12,cumulative,cases,total,119.86379996222993,125.451266940128
+2020-03-12,cumulative,hospital,[0 - 9],0,0
+2020-03-12,cumulative,hospital,[10 - 19],0,0
+2020-03-12,cumulative,hospital,[20 - 29],0,1
+2020-03-12,cumulative,hospital,[30 - 39],0,1
+2020-03-12,cumulative,hospital,[40 - 49],0,1
+2020-03-12,cumulative,hospital,[50 - 59],0,2
+2020-03-12,cumulative,hospital,[60 - 69],0,2
+2020-03-12,cumulative,hospital,[70 - 79],0,2
+2020-03-12,cumulative,hospital,80+,0,2
+2020-03-12,cumulative,hospital,total,2,5
+2020-03-12,cumulative,icu,[0 - 9],0,0
+2020-03-12,cumulative,icu,[10 - 19],0,0
+2020-03-12,cumulative,icu,[20 - 29],0,0
+2020-03-12,cumulative,icu,[30 - 39],0,0
+2020-03-12,cumulative,icu,[40 - 49],0,0
+2020-03-12,cumulative,icu,[50 - 59],0,0
+2020-03-12,cumulative,icu,[60 - 69],0,0
+2020-03-12,cumulative,icu,[70 - 79],0,0
+2020-03-12,cumulative,icu,80+,0,0
+2020-03-12,cumulative,icu,total,0,0
+2020-03-13,active,cases,[0 - 9],17,26
+2020-03-13,active,cases,[10 - 19],18,26
+2020-03-13,active,cases,[20 - 29],22,31
+2020-03-13,active,cases,[30 - 39],21,29
+2020-03-13,active,cases,[40 - 49],19,26
+2020-03-13,active,cases,[50 - 59],17,25
+2020-03-13,active,cases,[60 - 69],14,22
+2020-03-13,active,cases,[70 - 79],9,15
+2020-03-13,active,cases,80+,5,10
+2020-03-13,active,cases,total,143.5888997980731,149.84882659388862
+2020-03-13,active,hospital,[0 - 9],0,0
+2020-03-13,active,hospital,[10 - 19],0,0
+2020-03-13,active,hospital,[20 - 29],0,1
+2020-03-13,active,hospital,[30 - 39],0,1
+2020-03-13,active,hospital,[40 - 49],0,2
+2020-03-13,active,hospital,[50 - 59],0,2
+2020-03-13,active,hospital,[60 - 69],1,2
+2020-03-13,active,hospital,[70 - 79],0,2
+2020-03-13,active,hospital,80+,0,2
+2020-03-13,active,hospital,total,2,6
+2020-03-13,active,icu,[0 - 9],0,0
+2020-03-13,active,icu,[10 - 19],0,0
+2020-03-13,active,icu,[20 - 29],0,0
+2020-03-13,active,icu,[30 - 39],0,0
+2020-03-13,active,icu,[40 - 49],0,0
+2020-03-13,active,icu,[50 - 59],0,1
+2020-03-13,active,icu,[60 - 69],0,1
+2020-03-13,active,icu,[70 - 79],0,1
+2020-03-13,active,icu,80+,0,1
+2020-03-13,active,icu,total,0,1
+2020-03-13,cumulative,cases,[0 - 9],17,26
+2020-03-13,cumulative,cases,[10 - 19],18,26
+2020-03-13,cumulative,cases,[20 - 29],22,31
+2020-03-13,cumulative,cases,[30 - 39],21,30
+2020-03-13,cumulative,cases,[40 - 49],19,27
+2020-03-13,cumulative,cases,[50 - 59],17,25
+2020-03-13,cumulative,cases,[60 - 69],15,22
+2020-03-13,cumulative,cases,[70 - 79],9,16
+2020-03-13,cumulative,cases,80+,5,9
+2020-03-13,cumulative,cases,total,143.5888997980731,149.84882659388862
+2020-03-13,cumulative,hospital,[0 - 9],0,0
+2020-03-13,cumulative,hospital,[10 - 19],0,0
+2020-03-13,cumulative,hospital,[20 - 29],0,1
+2020-03-13,cumulative,hospital,[30 - 39],0,1
+2020-03-13,cumulative,hospital,[40 - 49],0,1
+2020-03-13,cumulative,hospital,[50 - 59],0,2
+2020-03-13,cumulative,hospital,[60 - 69],0,3
+2020-03-13,cumulative,hospital,[70 - 79],0,2
+2020-03-13,cumulative,hospital,80+,0,2
+2020-03-13,cumulative,hospital,total,2,6
+2020-03-13,cumulative,icu,[0 - 9],0,0
+2020-03-13,cumulative,icu,[10 - 19],0,0
+2020-03-13,cumulative,icu,[20 - 29],0,0
+2020-03-13,cumulative,icu,[30 - 39],0,0
+2020-03-13,cumulative,icu,[40 - 49],0,0
+2020-03-13,cumulative,icu,[50 - 59],0,0
+2020-03-13,cumulative,icu,[60 - 69],0,1
+2020-03-13,cumulative,icu,[70 - 79],0,1
+2020-03-13,cumulative,icu,80+,0,1
+2020-03-13,cumulative,icu,total,0,1
+2020-03-14,active,cases,[0 - 9],21,30
+2020-03-14,active,cases,[10 - 19],21,31
+2020-03-14,active,cases,[20 - 29],26,36
+2020-03-14,active,cases,[30 - 39],25,35
+2020-03-14,active,cases,[40 - 49],22,32
+2020-03-14,active,cases,[50 - 59],21,30
+2020-03-14,active,cases,[60 - 69],17,25
+2020-03-14,active,cases,[70 - 79],11,17
+2020-03-14,active,cases,80+,6,11
+2020-03-14,active,cases,total,171.5942636512097,178.68797140987832
+2020-03-14,active,hospital,[0 - 9],0,0
+2020-03-14,active,hospital,[10 - 19],0,1
+2020-03-14,active,hospital,[20 - 29],0,1
+2020-03-14,active,hospital,[30 - 39],0,1
+2020-03-14,active,hospital,[40 - 49],0,2
+2020-03-14,active,hospital,[50 - 59],0,3
+2020-03-14,active,hospital,[60 - 69],1,3
+2020-03-14,active,hospital,[70 - 79],0,3
+2020-03-14,active,hospital,80+,0,2
+2020-03-14,active,hospital,total,3,7
+2020-03-14,active,icu,[0 - 9],0,0
+2020-03-14,active,icu,[10 - 19],0,0
+2020-03-14,active,icu,[20 - 29],0,0
+2020-03-14,active,icu,[30 - 39],0,0
+2020-03-14,active,icu,[40 - 49],0,0
+2020-03-14,active,icu,[50 - 59],0,1
+2020-03-14,active,icu,[60 - 69],0,1
+2020-03-14,active,icu,[70 - 79],0,1
+2020-03-14,active,icu,80+,0,1
+2020-03-14,active,icu,total,0,1
+2020-03-14,cumulative,cases,[0 - 9],21,29
+2020-03-14,cumulative,cases,[10 - 19],22,30
+2020-03-14,cumulative,cases,[20 - 29],26,36
+2020-03-14,cumulative,cases,[30 - 39],25,34
+2020-03-14,cumulative,cases,[40 - 49],22,31
+2020-03-14,cumulative,cases,[50 - 59],21,29
+2020-03-14,cumulative,cases,[60 - 69],17,26
+2020-03-14,cumulative,cases,[70 - 79],11,17
+2020-03-14,cumulative,cases,80+,6,11
+2020-03-14,cumulative,cases,total,171.5942636512097,178.68797140987832
+2020-03-14,cumulative,hospital,[0 - 9],0,0
+2020-03-14,cumulative,hospital,[10 - 19],0,0
+2020-03-14,cumulative,hospital,[20 - 29],0,1
+2020-03-14,cumulative,hospital,[30 - 39],0,1
+2020-03-14,cumulative,hospital,[40 - 49],0,2
+2020-03-14,cumulative,hospital,[50 - 59],0,2
+2020-03-14,cumulative,hospital,[60 - 69],1,3
+2020-03-14,cumulative,hospital,[70 - 79],1,3
+2020-03-14,cumulative,hospital,80+,0,2
+2020-03-14,cumulative,hospital,total,3,7
+2020-03-14,cumulative,icu,[0 - 9],0,0
+2020-03-14,cumulative,icu,[10 - 19],0,0
+2020-03-14,cumulative,icu,[20 - 29],0,0
+2020-03-14,cumulative,icu,[30 - 39],0,0
+2020-03-14,cumulative,icu,[40 - 49],0,0
+2020-03-14,cumulative,icu,[50 - 59],0,1
+2020-03-14,cumulative,icu,[60 - 69],0,1
+2020-03-14,cumulative,icu,[70 - 79],0,1
+2020-03-14,cumulative,icu,80+,0,1
+2020-03-14,cumulative,icu,total,0,2
+2020-03-15,active,cases,[0 - 9],25,34
+2020-03-15,active,cases,[10 - 19],26,34
+2020-03-15,active,cases,[20 - 29],31,42
+2020-03-15,active,cases,[30 - 39],30,40
+2020-03-15,active,cases,[40 - 49],27,36
+2020-03-15,active,cases,[50 - 59],25,34
+2020-03-15,active,cases,[60 - 69],21,30
+2020-03-15,active,cases,[70 - 79],13,20
+2020-03-15,active,cases,80+,7,13
+2020-03-15,active,cases,total,204.353309937565,212.88596745519865
+2020-03-15,active,hospital,[0 - 9],0,0
+2020-03-15,active,hospital,[10 - 19],0,0
+2020-03-15,active,hospital,[20 - 29],0,1
+2020-03-15,active,hospital,[30 - 39],0,2
+2020-03-15,active,hospital,[40 - 49],0,2
+2020-03-15,active,hospital,[50 - 59],1,3
+2020-03-15,active,hospital,[60 - 69],1,3
+2020-03-15,active,hospital,[70 - 79],1,3
+2020-03-15,active,hospital,80+,0,3
+2020-03-15,active,hospital,total,4,8
+2020-03-15,active,icu,[0 - 9],0,0
+2020-03-15,active,icu,[10 - 19],0,0
+2020-03-15,active,icu,[20 - 29],0,0
+2020-03-15,active,icu,[30 - 39],0,0
+2020-03-15,active,icu,[40 - 49],0,0
+2020-03-15,active,icu,[50 - 59],0,1
+2020-03-15,active,icu,[60 - 69],0,1
+2020-03-15,active,icu,[70 - 79],0,1
+2020-03-15,active,icu,80+,0,1
+2020-03-15,active,icu,total,0,2
+2020-03-15,cumulative,cases,[0 - 9],25,35
+2020-03-15,cumulative,cases,[10 - 19],25,36
+2020-03-15,cumulative,cases,[20 - 29],32,42
+2020-03-15,cumulative,cases,[30 - 39],30,40
+2020-03-15,cumulative,cases,[40 - 49],26,35
+2020-03-15,cumulative,cases,[50 - 59],24,34
+2020-03-15,cumulative,cases,[60 - 69],21,30
+2020-03-15,cumulative,cases,[70 - 79],13,20
+2020-03-15,cumulative,cases,80+,7,12
+2020-03-15,cumulative,cases,total,204.353309937565,212.88596745519865
+2020-03-15,cumulative,hospital,[0 - 9],0,0
+2020-03-15,cumulative,hospital,[10 - 19],0,1
+2020-03-15,cumulative,hospital,[20 - 29],0,1
+2020-03-15,cumulative,hospital,[30 - 39],0,1
+2020-03-15,cumulative,hospital,[40 - 49],0,2
+2020-03-15,cumulative,hospital,[50 - 59],0,3
+2020-03-15,cumulative,hospital,[60 - 69],1,3
+2020-03-15,cumulative,hospital,[70 - 79],1,3
+2020-03-15,cumulative,hospital,80+,0,2
+2020-03-15,cumulative,hospital,total,4,8
+2020-03-15,cumulative,icu,[0 - 9],0,0
+2020-03-15,cumulative,icu,[10 - 19],0,0
+2020-03-15,cumulative,icu,[20 - 29],0,0
+2020-03-15,cumulative,icu,[30 - 39],0,0
+2020-03-15,cumulative,icu,[40 - 49],0,0
+2020-03-15,cumulative,icu,[50 - 59],0,1
+2020-03-15,cumulative,icu,[60 - 69],0,1
+2020-03-15,cumulative,icu,[70 - 79],0,1
+2020-03-15,cumulative,icu,80+,0,1
+2020-03-15,cumulative,icu,total,0,2
+2020-03-16,active,cases,[0 - 9],29,40
+2020-03-16,active,cases,[10 - 19],30,40
+2020-03-16,active,cases,[20 - 29],37,49
+2020-03-16,active,cases,[30 - 39],36,47
+2020-03-16,active,cases,[40 - 49],31,42
+2020-03-16,active,cases,[50 - 59],29,40
+2020-03-16,active,cases,[60 - 69],25,34
+2020-03-16,active,cases,[70 - 79],15,23
+2020-03-16,active,cases,80+,8,14
+2020-03-16,active,cases,total,242.57032079701526,252.17850977938042
+2020-03-16,active,hospital,[0 - 9],0,0
+2020-03-16,active,hospital,[10 - 19],0,0
+2020-03-16,active,hospital,[20 - 29],0,1
+2020-03-16,active,hospital,[30 - 39],0,2
+2020-03-16,active,hospital,[40 - 49],0,2
+2020-03-16,active,hospital,[50 - 59],1,3
+2020-03-16,active,hospital,[60 - 69],1,3
+2020-03-16,active,hospital,[70 - 79],1,4
+2020-03-16,active,hospital,80+,0,3
+2020-03-16,active,hospital,total,4,9
+2020-03-16,active,icu,[0 - 9],0,0
+2020-03-16,active,icu,[10 - 19],0,0
+2020-03-16,active,icu,[20 - 29],0,0
+2020-03-16,active,icu,[30 - 39],0,0
+2020-03-16,active,icu,[40 - 49],0,0
+2020-03-16,active,icu,[50 - 59],0,1
+2020-03-16,active,icu,[60 - 69],0,1
+2020-03-16,active,icu,[70 - 79],0,1
+2020-03-16,active,icu,80+,0,1
+2020-03-16,active,icu,total,0,2
+2020-03-16,cumulative,cases,[0 - 9],30,39
+2020-03-16,cumulative,cases,[10 - 19],30,41
+2020-03-16,cumulative,cases,[20 - 29],37,49
+2020-03-16,cumulative,cases,[30 - 39],35,48
+2020-03-16,cumulative,cases,[40 - 49],31,42
+2020-03-16,cumulative,cases,[50 - 59],29,39
+2020-03-16,cumulative,cases,[60 - 69],25,35
+2020-03-16,cumulative,cases,[70 - 79],15,23
+2020-03-16,cumulative,cases,80+,8,15
+2020-03-16,cumulative,cases,total,242.57032079701526,252.17850977938042
+2020-03-16,cumulative,hospital,[0 - 9],0,0
+2020-03-16,cumulative,hospital,[10 - 19],0,1
+2020-03-16,cumulative,hospital,[20 - 29],0,1
+2020-03-16,cumulative,hospital,[30 - 39],0,2
+2020-03-16,cumulative,hospital,[40 - 49],0,2
+2020-03-16,cumulative,hospital,[50 - 59],1,3
+2020-03-16,cumulative,hospital,[60 - 69],1,3
+2020-03-16,cumulative,hospital,[70 - 79],1,3
+2020-03-16,cumulative,hospital,80+,0,2
+2020-03-16,cumulative,hospital,total,4,9
+2020-03-16,cumulative,icu,[0 - 9],0,0
+2020-03-16,cumulative,icu,[10 - 19],0,0
+2020-03-16,cumulative,icu,[20 - 29],0,0
+2020-03-16,cumulative,icu,[30 - 39],0,0
+2020-03-16,cumulative,icu,[40 - 49],0,0
+2020-03-16,cumulative,icu,[50 - 59],0,1
+2020-03-16,cumulative,icu,[60 - 69],0,1
+2020-03-16,cumulative,icu,[70 - 79],0,1
+2020-03-16,cumulative,icu,80+,0,1
+2020-03-16,cumulative,icu,total,0,2
+2020-03-17,active,cases,[0 - 9],35,47
+2020-03-17,active,cases,[10 - 19],36,48
+2020-03-17,active,cases,[20 - 29],44,56
+2020-03-17,active,cases,[30 - 39],42,54
+2020-03-17,active,cases,[40 - 49],37,47
+2020-03-17,active,cases,[50 - 59],35,45
+2020-03-17,active,cases,[60 - 69],29,41
+2020-03-17,active,cases,[70 - 79],18,27
+2020-03-17,active,cases,80+,10,16
+2020-03-17,active,cases,total,287.06357587637103,297.56047208758156
+2020-03-17,active,hospital,[0 - 9],0,0
+2020-03-17,active,hospital,[10 - 19],0,1
+2020-03-17,active,hospital,[20 - 29],0,1
+2020-03-17,active,hospital,[30 - 39],0,2
+2020-03-17,active,hospital,[40 - 49],0,2
+2020-03-17,active,hospital,[50 - 59],1,4
+2020-03-17,active,hospital,[60 - 69],1,4
+2020-03-17,active,hospital,[70 - 79],1,4
+2020-03-17,active,hospital,80+,1,3
+2020-03-17,active,hospital,total,5,11
+2020-03-17,active,icu,[0 - 9],0,0
+2020-03-17,active,icu,[10 - 19],0,0
+2020-03-17,active,icu,[20 - 29],0,0
+2020-03-17,active,icu,[30 - 39],0,0
+2020-03-17,active,icu,[40 - 49],0,0
+2020-03-17,active,icu,[50 - 59],0,1
+2020-03-17,active,icu,[60 - 69],0,1
+2020-03-17,active,icu,[70 - 79],0,1
+2020-03-17,active,icu,80+,0,1
+2020-03-17,active,icu,total,0,2
+2020-03-17,cumulative,cases,[0 - 9],35,48
+2020-03-17,cumulative,cases,[10 - 19],36,48
+2020-03-17,cumulative,cases,[20 - 29],44,56
+2020-03-17,cumulative,cases,[30 - 39],42,55
+2020-03-17,cumulative,cases,[40 - 49],37,48
+2020-03-17,cumulative,cases,[50 - 59],34,45
+2020-03-17,cumulative,cases,[60 - 69],29,40
+2020-03-17,cumulative,cases,[70 - 79],18,26
+2020-03-17,cumulative,cases,80+,10,17
+2020-03-17,cumulative,cases,total,287.06357587637103,297.56047208758156
+2020-03-17,cumulative,hospital,[0 - 9],0,0
+2020-03-17,cumulative,hospital,[10 - 19],0,1
+2020-03-17,cumulative,hospital,[20 - 29],0,1
+2020-03-17,cumulative,hospital,[30 - 39],0,2
+2020-03-17,cumulative,hospital,[40 - 49],0,2
+2020-03-17,cumulative,hospital,[50 - 59],1,3
+2020-03-17,cumulative,hospital,[60 - 69],1,4
+2020-03-17,cumulative,hospital,[70 - 79],1,4
+2020-03-17,cumulative,hospital,80+,1,3
+2020-03-17,cumulative,hospital,total,5,10
+2020-03-17,cumulative,icu,[0 - 9],0,0
+2020-03-17,cumulative,icu,[10 - 19],0,0
+2020-03-17,cumulative,icu,[20 - 29],0,0
+2020-03-17,cumulative,icu,[30 - 39],0,0
+2020-03-17,cumulative,icu,[40 - 49],0,0
+2020-03-17,cumulative,icu,[50 - 59],0,1
+2020-03-17,cumulative,icu,[60 - 69],0,1
+2020-03-17,cumulative,icu,[70 - 79],0,1
+2020-03-17,cumulative,icu,80+,0,1
+2020-03-17,cumulative,icu,total,0,2
+2020-03-18,active,cases,[0 - 9],41,53
+2020-03-18,active,cases,[10 - 19],42,54
+2020-03-18,active,cases,[20 - 29],52,65
+2020-03-18,active,cases,[30 - 39],50,63
+2020-03-18,active,cases,[40 - 49],43,57
+2020-03-18,active,cases,[50 - 59],40,52
+2020-03-18,active,cases,[60 - 69],34,46
+2020-03-18,active,cases,[70 - 79],21,30
+2020-03-18,active,cases,80+,11,19
+2020-03-18,active,cases,total,338.0538075801897,350.5320316052029
+2020-03-18,active,hospital,[0 - 9],0,0
+2020-03-18,active,hospital,[10 - 19],0,1
+2020-03-18,active,hospital,[20 - 29],0,1
+2020-03-18,active,hospital,[30 - 39],0,2
+2020-03-18,active,hospital,[40 - 49],0,2
+2020-03-18,active,hospital,[50 - 59],1,4
+2020-03-18,active,hospital,[60 - 69],2,4
+2020-03-18,active,hospital,[70 - 79],1,4
+2020-03-18,active,hospital,80+,1,3
+2020-03-18,active,hospital,total,6,12
+2020-03-18,active,icu,[0 - 9],0,0
+2020-03-18,active,icu,[10 - 19],0,0
+2020-03-18,active,icu,[20 - 29],0,0
+2020-03-18,active,icu,[30 - 39],0,0
+2020-03-18,active,icu,[40 - 49],0,0
+2020-03-18,active,icu,[50 - 59],0,1
+2020-03-18,active,icu,[60 - 69],0,1
+2020-03-18,active,icu,[70 - 79],0,1
+2020-03-18,active,icu,80+,0,1
+2020-03-18,active,icu,total,0,2
+2020-03-18,cumulative,cases,[0 - 9],41,54
+2020-03-18,cumulative,cases,[10 - 19],42,55
+2020-03-18,cumulative,cases,[20 - 29],52,66
+2020-03-18,cumulative,cases,[30 - 39],49,62
+2020-03-18,cumulative,cases,[40 - 49],43,57
+2020-03-18,cumulative,cases,[50 - 59],41,53
+2020-03-18,cumulative,cases,[60 - 69],34,46
+2020-03-18,cumulative,cases,[70 - 79],21,30
+2020-03-18,cumulative,cases,80+,11,18
+2020-03-18,cumulative,cases,total,338.0538075801897,350.5320316052029
+2020-03-18,cumulative,hospital,[0 - 9],0,0
+2020-03-18,cumulative,hospital,[10 - 19],0,1
+2020-03-18,cumulative,hospital,[20 - 29],0,1
+2020-03-18,cumulative,hospital,[30 - 39],0,2
+2020-03-18,cumulative,hospital,[40 - 49],0,3
+2020-03-18,cumulative,hospital,[50 - 59],1,4
+2020-03-18,cumulative,hospital,[60 - 69],2,5
+2020-03-18,cumulative,hospital,[70 - 79],1,5
+2020-03-18,cumulative,hospital,80+,1,3
+2020-03-18,cumulative,hospital,total,7,12
+2020-03-18,cumulative,icu,[0 - 9],0,0
+2020-03-18,cumulative,icu,[10 - 19],0,0
+2020-03-18,cumulative,icu,[20 - 29],0,0
+2020-03-18,cumulative,icu,[30 - 39],0,0
+2020-03-18,cumulative,icu,[40 - 49],0,0
+2020-03-18,cumulative,icu,[50 - 59],0,1
+2020-03-18,cumulative,icu,[60 - 69],0,1
+2020-03-18,cumulative,icu,[70 - 79],0,1
+2020-03-18,cumulative,icu,80+,0,1
+2020-03-18,cumulative,icu,total,0,3
+2020-03-19,active,cases,[0 - 9],48,61
+2020-03-19,active,cases,[10 - 19],50,65
+2020-03-19,active,cases,[20 - 29],62,76
+2020-03-19,active,cases,[30 - 39],58,72
+2020-03-19,active,cases,[40 - 49],51,65
+2020-03-19,active,cases,[50 - 59],48,61
+2020-03-19,active,cases,[60 - 69],40,52
+2020-03-19,active,cases,[70 - 79],24,34
+2020-03-19,active,cases,80+,14,21
+2020-03-19,active,cases,total,396.137456632085,411.7376408916373
+2020-03-19,active,hospital,[0 - 9],0,0
+2020-03-19,active,hospital,[10 - 19],0,1
+2020-03-19,active,hospital,[20 - 29],0,1
+2020-03-19,active,hospital,[30 - 39],0,2
+2020-03-19,active,hospital,[40 - 49],1,3
+2020-03-19,active,hospital,[50 - 59],1,4
+2020-03-19,active,hospital,[60 - 69],2,5
+2020-03-19,active,hospital,[70 - 79],2,5
+2020-03-19,active,hospital,80+,1,4
+2020-03-19,active,hospital,total,8,14
+2020-03-19,active,icu,[0 - 9],0,0
+2020-03-19,active,icu,[10 - 19],0,0
+2020-03-19,active,icu,[20 - 29],0,0
+2020-03-19,active,icu,[30 - 39],0,0
+2020-03-19,active,icu,[40 - 49],0,0
+2020-03-19,active,icu,[50 - 59],0,1
+2020-03-19,active,icu,[60 - 69],0,1
+2020-03-19,active,icu,[70 - 79],0,2
+2020-03-19,active,icu,80+,0,1
+2020-03-19,active,icu,total,1,3
+2020-03-19,cumulative,cases,[0 - 9],48,62
+2020-03-19,cumulative,cases,[10 - 19],50,63
+2020-03-19,cumulative,cases,[20 - 29],61,75
+2020-03-19,cumulative,cases,[30 - 39],58,72
+2020-03-19,cumulative,cases,[40 - 49],51,65
+2020-03-19,cumulative,cases,[50 - 59],48,62
+2020-03-19,cumulative,cases,[60 - 69],40,54
+2020-03-19,cumulative,cases,[70 - 79],25,35
+2020-03-19,cumulative,cases,80+,14,22
+2020-03-19,cumulative,cases,total,396.137456632085,411.7376408916373
+2020-03-19,cumulative,hospital,[0 - 9],0,0
+2020-03-19,cumulative,hospital,[10 - 19],0,1
+2020-03-19,cumulative,hospital,[20 - 29],0,1
+2020-03-19,cumulative,hospital,[30 - 39],0,2
+2020-03-19,cumulative,hospital,[40 - 49],1,3
+2020-03-19,cumulative,hospital,[50 - 59],1,4
+2020-03-19,cumulative,hospital,[60 - 69],2,5
+2020-03-19,cumulative,hospital,[70 - 79],2,5
+2020-03-19,cumulative,hospital,80+,1,4
+2020-03-19,cumulative,hospital,total,8,14
+2020-03-19,cumulative,icu,[0 - 9],0,0
+2020-03-19,cumulative,icu,[10 - 19],0,0
+2020-03-19,cumulative,icu,[20 - 29],0,0
+2020-03-19,cumulative,icu,[30 - 39],0,0
+2020-03-19,cumulative,icu,[40 - 49],0,0
+2020-03-19,cumulative,icu,[50 - 59],0,1
+2020-03-19,cumulative,icu,[60 - 69],0,1
+2020-03-19,cumulative,icu,[70 - 79],0,1
+2020-03-19,cumulative,icu,80+,0,1
+2020-03-19,cumulative,icu,total,1,3
+2020-03-20,active,cases,[0 - 9],56,71
+2020-03-20,active,cases,[10 - 19],58,72
+2020-03-20,active,cases,[20 - 29],72,88
+2020-03-20,active,cases,[30 - 39],68,83
+2020-03-20,active,cases,[40 - 49],60,75
+2020-03-20,active,cases,[50 - 59],56,70
+2020-03-20,active,cases,[60 - 69],47,59
+2020-03-20,active,cases,[70 - 79],29,39
+2020-03-20,active,cases,80+,16,24
+2020-03-20,active,cases,total,461.9231741971728,483.034525006305
+2020-03-20,active,hospital,[0 - 9],0,0
+2020-03-20,active,hospital,[10 - 19],0,1
+2020-03-20,active,hospital,[20 - 29],0,2
+2020-03-20,active,hospital,[30 - 39],1,3
+2020-03-20,active,hospital,[40 - 49],1,3
+2020-03-20,active,hospital,[50 - 59],1,5
+2020-03-20,active,hospital,[60 - 69],2,6
+2020-03-20,active,hospital,[70 - 79],2,5
+2020-03-20,active,hospital,80+,1,4
+2020-03-20,active,hospital,total,9,16
+2020-03-20,active,icu,[0 - 9],0,0
+2020-03-20,active,icu,[10 - 19],0,0
+2020-03-20,active,icu,[20 - 29],0,0
+2020-03-20,active,icu,[30 - 39],0,0
+2020-03-20,active,icu,[40 - 49],0,1
+2020-03-20,active,icu,[50 - 59],0,1
+2020-03-20,active,icu,[60 - 69],0,2
+2020-03-20,active,icu,[70 - 79],0,2
+2020-03-20,active,icu,80+,0,1
+2020-03-20,active,icu,total,1,3
+2020-03-20,cumulative,cases,[0 - 9],56,72
+2020-03-20,cumulative,cases,[10 - 19],59,73
+2020-03-20,cumulative,cases,[20 - 29],72,88
+2020-03-20,cumulative,cases,[30 - 39],67,83
+2020-03-20,cumulative,cases,[40 - 49],59,73
+2020-03-20,cumulative,cases,[50 - 59],56,70
+2020-03-20,cumulative,cases,[60 - 69],47,61
+2020-03-20,cumulative,cases,[70 - 79],29,40
+2020-03-20,cumulative,cases,80+,16,24
+2020-03-20,cumulative,cases,total,461.9231741971728,483.034525006305
+2020-03-20,cumulative,hospital,[0 - 9],0,0
+2020-03-20,cumulative,hospital,[10 - 19],0,1
+2020-03-20,cumulative,hospital,[20 - 29],0,2
+2020-03-20,cumulative,hospital,[30 - 39],0,3
+2020-03-20,cumulative,hospital,[40 - 49],1,3
+2020-03-20,cumulative,hospital,[50 - 59],2,5
+2020-03-20,cumulative,hospital,[60 - 69],2,6
+2020-03-20,cumulative,hospital,[70 - 79],2,5
+2020-03-20,cumulative,hospital,80+,1,4
+2020-03-20,cumulative,hospital,total,10,17
+2020-03-20,cumulative,icu,[0 - 9],0,0
+2020-03-20,cumulative,icu,[10 - 19],0,0
+2020-03-20,cumulative,icu,[20 - 29],0,0
+2020-03-20,cumulative,icu,[30 - 39],0,0
+2020-03-20,cumulative,icu,[40 - 49],0,1
+2020-03-20,cumulative,icu,[50 - 59],0,1
+2020-03-20,cumulative,icu,[60 - 69],0,1
+2020-03-20,cumulative,icu,[70 - 79],0,2
+2020-03-20,cumulative,icu,80+,0,1
+2020-03-20,cumulative,icu,total,1,3
+2020-03-21,active,cases,[0 - 9],65,82
+2020-03-21,active,cases,[10 - 19],67,82
+2020-03-21,active,cases,[20 - 29],83,101
+2020-03-21,active,cases,[30 - 39],78,96
+2020-03-21,active,cases,[40 - 49],69,84
+2020-03-21,active,cases,[50 - 59],65,80
+2020-03-21,active,cases,[60 - 69],55,68
+2020-03-21,active,cases,[70 - 79],33,46
+2020-03-21,active,cases,80+,18,27
+2020-03-21,active,cases,total,535.0124639043536,564.4797884338242
+2020-03-21,active,hospital,[0 - 9],0,1
+2020-03-21,active,hospital,[10 - 19],0,1
+2020-03-21,active,hospital,[20 - 29],0,2
+2020-03-21,active,hospital,[30 - 39],1,3
+2020-03-21,active,hospital,[40 - 49],1,3
+2020-03-21,active,hospital,[50 - 59],2,5
+2020-03-21,active,hospital,[60 - 69],3,6
+2020-03-21,active,hospital,[70 - 79],2,6
+2020-03-21,active,hospital,80+,1,5
+2020-03-21,active,hospital,total,11,18
+2020-03-21,active,icu,[0 - 9],0,0
+2020-03-21,active,icu,[10 - 19],0,0
+2020-03-21,active,icu,[20 - 29],0,0
+2020-03-21,active,icu,[30 - 39],0,0
+2020-03-21,active,icu,[40 - 49],0,1
+2020-03-21,active,icu,[50 - 59],0,1
+2020-03-21,active,icu,[60 - 69],0,2
+2020-03-21,active,icu,[70 - 79],0,2
+2020-03-21,active,icu,80+,0,2
+2020-03-21,active,icu,total,1,3
+2020-03-21,cumulative,cases,[0 - 9],65,81
+2020-03-21,cumulative,cases,[10 - 19],67,84
+2020-03-21,cumulative,cases,[20 - 29],82,100
+2020-03-21,cumulative,cases,[30 - 39],78,95
+2020-03-21,cumulative,cases,[40 - 49],69,85
+2020-03-21,cumulative,cases,[50 - 59],65,81
+2020-03-21,cumulative,cases,[60 - 69],54,69
+2020-03-21,cumulative,cases,[70 - 79],33,45
+2020-03-21,cumulative,cases,80+,18,27
+2020-03-21,cumulative,cases,total,535.0124639043536,564.4797884338242
+2020-03-21,cumulative,hospital,[0 - 9],0,0
+2020-03-21,cumulative,hospital,[10 - 19],0,1
+2020-03-21,cumulative,hospital,[20 - 29],0,2
+2020-03-21,cumulative,hospital,[30 - 39],1,3
+2020-03-21,cumulative,hospital,[40 - 49],1,4
+2020-03-21,cumulative,hospital,[50 - 59],2,5
+2020-03-21,cumulative,hospital,[60 - 69],3,7
+2020-03-21,cumulative,hospital,[70 - 79],2,6
+2020-03-21,cumulative,hospital,80+,2,5
+2020-03-21,cumulative,hospital,total,12,19
+2020-03-21,cumulative,icu,[0 - 9],0,0
+2020-03-21,cumulative,icu,[10 - 19],0,0
+2020-03-21,cumulative,icu,[20 - 29],0,0
+2020-03-21,cumulative,icu,[30 - 39],0,0
+2020-03-21,cumulative,icu,[40 - 49],0,1
+2020-03-21,cumulative,icu,[50 - 59],0,1
+2020-03-21,cumulative,icu,[60 - 69],0,2
+2020-03-21,cumulative,icu,[70 - 79],0,2
+2020-03-21,cumulative,icu,80+,0,2
+2020-03-21,cumulative,icu,total,1,4
+2020-03-22,active,cases,[0 - 9],75,92
+2020-03-22,active,cases,[10 - 19],77,94
+2020-03-22,active,cases,[20 - 29],94,113
+2020-03-22,active,cases,[30 - 39],90,110
+2020-03-22,active,cases,[40 - 49],79,97
+2020-03-22,active,cases,[50 - 59],74,91
+2020-03-22,active,cases,[60 - 69],64,79
+2020-03-22,active,cases,[70 - 79],38,51
+2020-03-22,active,cases,80+,21,30
+2020-03-22,active,cases,total,614.9713094191518,656.5656020587329
+2020-03-22,active,hospital,[0 - 9],0,0
+2020-03-22,active,hospital,[10 - 19],0,1
+2020-03-22,active,hospital,[20 - 29],0,2
+2020-03-22,active,hospital,[30 - 39],1,3
+2020-03-22,active,hospital,[40 - 49],1,4
+2020-03-22,active,hospital,[50 - 59],2,6
+2020-03-22,active,hospital,[60 - 69],3,8
+2020-03-22,active,hospital,[70 - 79],3,7
+2020-03-22,active,hospital,80+,2,5
+2020-03-22,active,hospital,total,14,21
+2020-03-22,active,icu,[0 - 9],0,0
+2020-03-22,active,icu,[10 - 19],0,0
+2020-03-22,active,icu,[20 - 29],0,0
+2020-03-22,active,icu,[30 - 39],0,0
+2020-03-22,active,icu,[40 - 49],0,1
+2020-03-22,active,icu,[50 - 59],0,1
+2020-03-22,active,icu,[60 - 69],0,2
+2020-03-22,active,icu,[70 - 79],0,2
+2020-03-22,active,icu,80+,0,2
+2020-03-22,active,icu,total,1,4
+2020-03-22,cumulative,cases,[0 - 9],75,92
+2020-03-22,cumulative,cases,[10 - 19],77,95
+2020-03-22,cumulative,cases,[20 - 29],96,115
+2020-03-22,cumulative,cases,[30 - 39],90,109
+2020-03-22,cumulative,cases,[40 - 49],79,97
+2020-03-22,cumulative,cases,[50 - 59],74,92
+2020-03-22,cumulative,cases,[60 - 69],62,79
+2020-03-22,cumulative,cases,[70 - 79],39,52
+2020-03-22,cumulative,cases,80+,21,31
+2020-03-22,cumulative,cases,total,614.9713094191518,656.5656020587329
+2020-03-22,cumulative,hospital,[0 - 9],0,0
+2020-03-22,cumulative,hospital,[10 - 19],0,1
+2020-03-22,cumulative,hospital,[20 - 29],0,2
+2020-03-22,cumulative,hospital,[30 - 39],1,3
+2020-03-22,cumulative,hospital,[40 - 49],1,4
+2020-03-22,cumulative,hospital,[50 - 59],2,6
+2020-03-22,cumulative,hospital,[60 - 69],3,8
+2020-03-22,cumulative,hospital,[70 - 79],3,7
+2020-03-22,cumulative,hospital,80+,2,5
+2020-03-22,cumulative,hospital,total,14,21
+2020-03-22,cumulative,icu,[0 - 9],0,0
+2020-03-22,cumulative,icu,[10 - 19],0,0
+2020-03-22,cumulative,icu,[20 - 29],0,0
+2020-03-22,cumulative,icu,[30 - 39],0,0
+2020-03-22,cumulative,icu,[40 - 49],0,1
+2020-03-22,cumulative,icu,[50 - 59],0,1
+2020-03-22,cumulative,icu,[60 - 69],0,2
+2020-03-22,cumulative,icu,[70 - 79],0,2
+2020-03-22,cumulative,icu,80+,0,2
+2020-03-22,cumulative,icu,total,1,4
+2020-03-23,active,cases,[0 - 9],86,104
+2020-03-23,active,cases,[10 - 19],88,109
+2020-03-23,active,cases,[20 - 29],108,129
+2020-03-23,active,cases,[30 - 39],102,123
+2020-03-23,active,cases,[40 - 49],90,110
+2020-03-23,active,cases,[50 - 59],85,104
+2020-03-23,active,cases,[60 - 69],72,89
+2020-03-23,active,cases,[70 - 79],44,58
+2020-03-23,active,cases,80+,24,34
+2020-03-23,active,cases,total,702.0775378835559,761.2891098677011
+2020-03-23,active,hospital,[0 - 9],0,0
+2020-03-23,active,hospital,[10 - 19],0,1
+2020-03-23,active,hospital,[20 - 29],0,2
+2020-03-23,active,hospital,[30 - 39],1,4
+2020-03-23,active,hospital,[40 - 49],1,4
+2020-03-23,active,hospital,[50 - 59],3,7
+2020-03-23,active,hospital,[60 - 69],4,8
+2020-03-23,active,hospital,[70 - 79],4,8
+2020-03-23,active,hospital,80+,2,6
+2020-03-23,active,hospital,total,16,24
+2020-03-23,active,icu,[0 - 9],0,0
+2020-03-23,active,icu,[10 - 19],0,0
+2020-03-23,active,icu,[20 - 29],0,0
+2020-03-23,active,icu,[30 - 39],0,1
+2020-03-23,active,icu,[40 - 49],0,1
+2020-03-23,active,icu,[50 - 59],0,1
+2020-03-23,active,icu,[60 - 69],0,2
+2020-03-23,active,icu,[70 - 79],0,2
+2020-03-23,active,icu,80+,0,2
+2020-03-23,active,icu,total,1,4
+2020-03-23,cumulative,cases,[0 - 9],86,106
+2020-03-23,cumulative,cases,[10 - 19],89,108
+2020-03-23,cumulative,cases,[20 - 29],108,129
+2020-03-23,cumulative,cases,[30 - 39],103,123
+2020-03-23,cumulative,cases,[40 - 49],90,112
+2020-03-23,cumulative,cases,[50 - 59],85,104
+2020-03-23,cumulative,cases,[60 - 69],72,90
+2020-03-23,cumulative,cases,[70 - 79],44,57
+2020-03-23,cumulative,cases,80+,24,34
+2020-03-23,cumulative,cases,total,702.0775378835559,761.2891098677011
+2020-03-23,cumulative,hospital,[0 - 9],0,1
+2020-03-23,cumulative,hospital,[10 - 19],0,1
+2020-03-23,cumulative,hospital,[20 - 29],0,2
+2020-03-23,cumulative,hospital,[30 - 39],1,4
+2020-03-23,cumulative,hospital,[40 - 49],1,4
+2020-03-23,cumulative,hospital,[50 - 59],3,7
+2020-03-23,cumulative,hospital,[60 - 69],4,8
+2020-03-23,cumulative,hospital,[70 - 79],4,8
+2020-03-23,cumulative,hospital,80+,2,6
+2020-03-23,cumulative,hospital,total,16,24
+2020-03-23,cumulative,icu,[0 - 9],0,0
+2020-03-23,cumulative,icu,[10 - 19],0,0
+2020-03-23,cumulative,icu,[20 - 29],0,0
+2020-03-23,cumulative,icu,[30 - 39],0,0
+2020-03-23,cumulative,icu,[40 - 49],0,1
+2020-03-23,cumulative,icu,[50 - 59],0,1
+2020-03-23,cumulative,icu,[60 - 69],0,2
+2020-03-23,cumulative,icu,[70 - 79],0,2
+2020-03-23,cumulative,icu,80+,0,2
+2020-03-23,cumulative,icu,total,1,5
+2020-03-24,active,cases,[0 - 9],94,116
+2020-03-24,active,cases,[10 - 19],97,118
+2020-03-24,active,cases,[20 - 29],120,143
+2020-03-24,active,cases,[30 - 39],113,137
+2020-03-24,active,cases,[40 - 49],99,122
+2020-03-24,active,cases,[50 - 59],93,115
+2020-03-24,active,cases,[60 - 69],79,98
+2020-03-24,active,cases,[70 - 79],48,63
+2020-03-24,active,cases,80+,27,38
+2020-03-24,active,cases,total,773.1183522556199,857.1682456087585
+2020-03-24,active,hospital,[0 - 9],0,1
+2020-03-24,active,hospital,[10 - 19],0,1
+2020-03-24,active,hospital,[20 - 29],0,2
+2020-03-24,active,hospital,[30 - 39],1,4
+2020-03-24,active,hospital,[40 - 49],2,5
+2020-03-24,active,hospital,[50 - 59],3,7
+2020-03-24,active,hospital,[60 - 69],4,9
+2020-03-24,active,hospital,[70 - 79],4,9
+2020-03-24,active,hospital,80+,2,6
+2020-03-24,active,hospital,total,18,26
+2020-03-24,active,icu,[0 - 9],0,0
+2020-03-24,active,icu,[10 - 19],0,0
+2020-03-24,active,icu,[20 - 29],0,0
+2020-03-24,active,icu,[30 - 39],0,1
+2020-03-24,active,icu,[40 - 49],0,1
+2020-03-24,active,icu,[50 - 59],0,1
+2020-03-24,active,icu,[60 - 69],0,2
+2020-03-24,active,icu,[70 - 79],0,2
+2020-03-24,active,icu,80+,0,2
+2020-03-24,active,icu,total,2,5
+2020-03-24,cumulative,cases,[0 - 9],97,119
+2020-03-24,cumulative,cases,[10 - 19],99,123
+2020-03-24,cumulative,cases,[20 - 29],123,149
+2020-03-24,cumulative,cases,[30 - 39],117,141
+2020-03-24,cumulative,cases,[40 - 49],102,125
+2020-03-24,cumulative,cases,[50 - 59],96,120
+2020-03-24,cumulative,cases,[60 - 69],82,100
+2020-03-24,cumulative,cases,[70 - 79],50,65
+2020-03-24,cumulative,cases,80+,27,39
+2020-03-24,cumulative,cases,total,795.7926061970938,879.5989675279604
+2020-03-24,cumulative,hospital,[0 - 9],0,1
+2020-03-24,cumulative,hospital,[10 - 19],0,1
+2020-03-24,cumulative,hospital,[20 - 29],0,2
+2020-03-24,cumulative,hospital,[30 - 39],1,4
+2020-03-24,cumulative,hospital,[40 - 49],2,5
+2020-03-24,cumulative,hospital,[50 - 59],4,8
+2020-03-24,cumulative,hospital,[60 - 69],5,10
+2020-03-24,cumulative,hospital,[70 - 79],4,9
+2020-03-24,cumulative,hospital,80+,3,7
+2020-03-24,cumulative,hospital,total,20,29
+2020-03-24,cumulative,icu,[0 - 9],0,0
+2020-03-24,cumulative,icu,[10 - 19],0,0
+2020-03-24,cumulative,icu,[20 - 29],0,0
+2020-03-24,cumulative,icu,[30 - 39],0,1
+2020-03-24,cumulative,icu,[40 - 49],0,1
+2020-03-24,cumulative,icu,[50 - 59],0,1
+2020-03-24,cumulative,icu,[60 - 69],0,2
+2020-03-24,cumulative,icu,[70 - 79],0,3
+2020-03-24,cumulative,icu,80+,0,2
+2020-03-24,cumulative,icu,total,2,5
+2020-03-25,active,cases,[0 - 9],106,130
+2020-03-25,active,cases,[10 - 19],110,132
+2020-03-25,active,cases,[20 - 29],134,165
+2020-03-25,active,cases,[30 - 39],127,156
+2020-03-25,active,cases,[40 - 49],111,138
+2020-03-25,active,cases,[50 - 59],104,128
+2020-03-25,active,cases,[60 - 69],89,111
+2020-03-25,active,cases,[70 - 79],54,71
+2020-03-25,active,cases,80+,30,41
+2020-03-25,active,cases,total,867.0796242743279,982.8579101680729
+2020-03-25,active,hospital,[0 - 9],0,1
+2020-03-25,active,hospital,[10 - 19],0,1
+2020-03-25,active,hospital,[20 - 29],0,3
+2020-03-25,active,hospital,[30 - 39],1,4
+2020-03-25,active,hospital,[40 - 49],2,6
+2020-03-25,active,hospital,[50 - 59],4,8
+2020-03-25,active,hospital,[60 - 69],5,10
+2020-03-25,active,hospital,[70 - 79],5,9
+2020-03-25,active,hospital,80+,3,7
+2020-03-25,active,hospital,total,21,31
+2020-03-25,active,icu,[0 - 9],0,0
+2020-03-25,active,icu,[10 - 19],0,0
+2020-03-25,active,icu,[20 - 29],0,0
+2020-03-25,active,icu,[30 - 39],0,1
+2020-03-25,active,icu,[40 - 49],0,1
+2020-03-25,active,icu,[50 - 59],0,2
+2020-03-25,active,icu,[60 - 69],0,2
+2020-03-25,active,icu,[70 - 79],0,3
+2020-03-25,active,icu,80+,0,2
+2020-03-25,active,icu,total,2,5
+2020-03-25,cumulative,cases,[0 - 9],109,134
+2020-03-25,cumulative,cases,[10 - 19],112,137
+2020-03-25,cumulative,cases,[20 - 29],138,169
+2020-03-25,cumulative,cases,[30 - 39],132,160
+2020-03-25,cumulative,cases,[40 - 49],114,142
+2020-03-25,cumulative,cases,[50 - 59],106,131
+2020-03-25,cumulative,cases,[60 - 69],92,112
+2020-03-25,cumulative,cases,[70 - 79],56,74
+2020-03-25,cumulative,cases,80+,31,44
+2020-03-25,cumulative,cases,total,894.8011410429633,1009.7909418824345
+2020-03-25,cumulative,hospital,[0 - 9],0,1
+2020-03-25,cumulative,hospital,[10 - 19],0,1
+2020-03-25,cumulative,hospital,[20 - 29],0,3
+2020-03-25,cumulative,hospital,[30 - 39],1,4
+2020-03-25,cumulative,hospital,[40 - 49],2,5
+2020-03-25,cumulative,hospital,[50 - 59],4,9
+2020-03-25,cumulative,hospital,[60 - 69],6,11
+2020-03-25,cumulative,hospital,[70 - 79],5,10
+2020-03-25,cumulative,hospital,80+,3,7
+2020-03-25,cumulative,hospital,total,23,33
+2020-03-25,cumulative,icu,[0 - 9],0,0
+2020-03-25,cumulative,icu,[10 - 19],0,0
+2020-03-25,cumulative,icu,[20 - 29],0,0
+2020-03-25,cumulative,icu,[30 - 39],0,1
+2020-03-25,cumulative,icu,[40 - 49],0,1
+2020-03-25,cumulative,icu,[50 - 59],0,1
+2020-03-25,cumulative,icu,[60 - 69],0,2
+2020-03-25,cumulative,icu,[70 - 79],1,3
+2020-03-25,cumulative,icu,80+,0,2
+2020-03-25,cumulative,icu,total,2,6
+2020-03-26,active,cases,[0 - 9],118,146
+2020-03-26,active,cases,[10 - 19],121,148
+2020-03-26,active,cases,[20 - 29],147,181
+2020-03-26,active,cases,[30 - 39],142,173
+2020-03-26,active,cases,[40 - 49],124,157
+2020-03-26,active,cases,[50 - 59],116,143
+2020-03-26,active,cases,[60 - 69],99,125
+2020-03-26,active,cases,[70 - 79],61,78
+2020-03-26,active,cases,80+,33,46
+2020-03-26,active,cases,total,963.374550375817,1117.7499811103937
+2020-03-26,active,hospital,[0 - 9],0,1
+2020-03-26,active,hospital,[10 - 19],0,1
+2020-03-26,active,hospital,[20 - 29],1,3
+2020-03-26,active,hospital,[30 - 39],2,5
+2020-03-26,active,hospital,[40 - 49],2,6
+2020-03-26,active,hospital,[50 - 59],4,9
+2020-03-26,active,hospital,[60 - 69],6,12
+2020-03-26,active,hospital,[70 - 79],5,11
+2020-03-26,active,hospital,80+,3,8
+2020-03-26,active,hospital,total,25,35
+2020-03-26,active,icu,[0 - 9],0,0
+2020-03-26,active,icu,[10 - 19],0,0
+2020-03-26,active,icu,[20 - 29],0,0
+2020-03-26,active,icu,[30 - 39],0,1
+2020-03-26,active,icu,[40 - 49],0,1
+2020-03-26,active,icu,[50 - 59],0,2
+2020-03-26,active,icu,[60 - 69],0,2
+2020-03-26,active,icu,[70 - 79],1,3
+2020-03-26,active,icu,80+,0,2
+2020-03-26,active,icu,total,2,6
+2020-03-26,cumulative,cases,[0 - 9],122,149
+2020-03-26,cumulative,cases,[10 - 19],126,157
+2020-03-26,cumulative,cases,[20 - 29],153,189
+2020-03-26,cumulative,cases,[30 - 39],145,180
+2020-03-26,cumulative,cases,[40 - 49],128,157
+2020-03-26,cumulative,cases,[50 - 59],120,148
+2020-03-26,cumulative,cases,[60 - 69],102,128
+2020-03-26,cumulative,cases,[70 - 79],62,81
+2020-03-26,cumulative,cases,80+,34,48
+2020-03-26,cumulative,cases,total,995.7519380321168,1150.2615850786349
+2020-03-26,cumulative,hospital,[0 - 9],0,1
+2020-03-26,cumulative,hospital,[10 - 19],0,1
+2020-03-26,cumulative,hospital,[20 - 29],1,3
+2020-03-26,cumulative,hospital,[30 - 39],2,5
+2020-03-26,cumulative,hospital,[40 - 49],2,6
+2020-03-26,cumulative,hospital,[50 - 59],5,10
+2020-03-26,cumulative,hospital,[60 - 69],7,13
+2020-03-26,cumulative,hospital,[70 - 79],6,11
+2020-03-26,cumulative,hospital,80+,4,8
+2020-03-26,cumulative,hospital,total,27,37
+2020-03-26,cumulative,icu,[0 - 9],0,0
+2020-03-26,cumulative,icu,[10 - 19],0,0
+2020-03-26,cumulative,icu,[20 - 29],0,0
+2020-03-26,cumulative,icu,[30 - 39],0,1
+2020-03-26,cumulative,icu,[40 - 49],0,1
+2020-03-26,cumulative,icu,[50 - 59],0,2
+2020-03-26,cumulative,icu,[60 - 69],0,3
+2020-03-26,cumulative,icu,[70 - 79],1,3
+2020-03-26,cumulative,icu,80+,0,2
+2020-03-26,cumulative,icu,total,2,6
+2020-03-27,active,cases,[0 - 9],129,164
+2020-03-27,active,cases,[10 - 19],133,167
+2020-03-27,active,cases,[20 - 29],163,203
+2020-03-27,active,cases,[30 - 39],155,195
+2020-03-27,active,cases,[40 - 49],136,171
+2020-03-27,active,cases,[50 - 59],128,162
+2020-03-27,active,cases,[60 - 69],109,137
+2020-03-27,active,cases,[70 - 79],67,87
+2020-03-27,active,cases,80+,37,52
+2020-03-27,active,cases,total,1059.2522683812226,1265.9536926575663
+2020-03-27,active,hospital,[0 - 9],0,1
+2020-03-27,active,hospital,[10 - 19],0,1
+2020-03-27,active,hospital,[20 - 29],1,3
+2020-03-27,active,hospital,[30 - 39],2,5
+2020-03-27,active,hospital,[40 - 49],2,6
+2020-03-27,active,hospital,[50 - 59],5,10
+2020-03-27,active,hospital,[60 - 69],7,13
+2020-03-27,active,hospital,[70 - 79],6,12
+2020-03-27,active,hospital,80+,4,9
+2020-03-27,active,hospital,total,28,40
+2020-03-27,active,icu,[0 - 9],0,0
+2020-03-27,active,icu,[10 - 19],0,0
+2020-03-27,active,icu,[20 - 29],0,0
+2020-03-27,active,icu,[30 - 39],0,1
+2020-03-27,active,icu,[40 - 49],0,1
+2020-03-27,active,icu,[50 - 59],0,2
+2020-03-27,active,icu,[60 - 69],0,3
+2020-03-27,active,icu,[70 - 79],1,3
+2020-03-27,active,icu,80+,0,3
+2020-03-27,active,icu,total,2,7
+2020-03-27,cumulative,cases,[0 - 9],134,169
+2020-03-27,cumulative,cases,[10 - 19],139,172
+2020-03-27,cumulative,cases,[20 - 29],169,209
+2020-03-27,cumulative,cases,[30 - 39],161,199
+2020-03-27,cumulative,cases,[40 - 49],141,176
+2020-03-27,cumulative,cases,[50 - 59],132,165
+2020-03-27,cumulative,cases,[60 - 69],113,142
+2020-03-27,cumulative,cases,[70 - 79],69,91
+2020-03-27,cumulative,cases,80+,38,53
+2020-03-27,cumulative,cases,total,1099.0351986847081,1305.379370909928
+2020-03-27,cumulative,hospital,[0 - 9],0,1
+2020-03-27,cumulative,hospital,[10 - 19],0,1
+2020-03-27,cumulative,hospital,[20 - 29],1,3
+2020-03-27,cumulative,hospital,[30 - 39],2,5
+2020-03-27,cumulative,hospital,[40 - 49],3,7
+2020-03-27,cumulative,hospital,[50 - 59],5,11
+2020-03-27,cumulative,hospital,[60 - 69],8,13
+2020-03-27,cumulative,hospital,[70 - 79],7,13
+2020-03-27,cumulative,hospital,80+,4,9
+2020-03-27,cumulative,hospital,total,31,43
+2020-03-27,cumulative,icu,[0 - 9],0,0
+2020-03-27,cumulative,icu,[10 - 19],0,0
+2020-03-27,cumulative,icu,[20 - 29],0,0
+2020-03-27,cumulative,icu,[30 - 39],0,1
+2020-03-27,cumulative,icu,[40 - 49],0,1
+2020-03-27,cumulative,icu,[50 - 59],0,2
+2020-03-27,cumulative,icu,[60 - 69],1,3
+2020-03-27,cumulative,icu,[70 - 79],1,3
+2020-03-27,cumulative,icu,80+,1,3
+2020-03-27,cumulative,icu,total,3,7
+2020-03-28,active,cases,[0 - 9],140,182
+2020-03-28,active,cases,[10 - 19],144,185
+2020-03-28,active,cases,[20 - 29],177,230
+2020-03-28,active,cases,[30 - 39],168,214
+2020-03-28,active,cases,[40 - 49],148,193
+2020-03-28,active,cases,[50 - 59],140,179
+2020-03-28,active,cases,[60 - 69],120,153
+2020-03-28,active,cases,[70 - 79],72,96
+2020-03-28,active,cases,80+,39,57
+2020-03-28,active,cases,total,1154.177999699827,1422.5876480980949
+2020-03-28,active,hospital,[0 - 9],0,1
+2020-03-28,active,hospital,[10 - 19],0,1
+2020-03-28,active,hospital,[20 - 29],1,3
+2020-03-28,active,hospital,[30 - 39],2,6
+2020-03-28,active,hospital,[40 - 49],3,7
+2020-03-28,active,hospital,[50 - 59],6,12
+2020-03-28,active,hospital,[60 - 69],8,15
+2020-03-28,active,hospital,[70 - 79],7,14
+2020-03-28,active,hospital,80+,5,9
+2020-03-28,active,hospital,total,33,46
+2020-03-28,active,icu,[0 - 9],0,0
+2020-03-28,active,icu,[10 - 19],0,0
+2020-03-28,active,icu,[20 - 29],0,0
+2020-03-28,active,icu,[30 - 39],0,1
+2020-03-28,active,icu,[40 - 49],0,1
+2020-03-28,active,icu,[50 - 59],0,2
+2020-03-28,active,icu,[60 - 69],1,3
+2020-03-28,active,icu,[70 - 79],1,4
+2020-03-28,active,icu,80+,1,3
+2020-03-28,active,icu,total,3,7
+2020-03-28,cumulative,cases,[0 - 9],147,185
+2020-03-28,cumulative,cases,[10 - 19],151,195
+2020-03-28,cumulative,cases,[20 - 29],185,235
+2020-03-28,cumulative,cases,[30 - 39],177,223
+2020-03-28,cumulative,cases,[40 - 49],154,196
+2020-03-28,cumulative,cases,[50 - 59],145,186
+2020-03-28,cumulative,cases,[60 - 69],123,160
+2020-03-28,cumulative,cases,[70 - 79],75,99
+2020-03-28,cumulative,cases,80+,41,58
+2020-03-28,cumulative,cases,total,1202.106810612632,1469.971727696796
+2020-03-28,cumulative,hospital,[0 - 9],0,1
+2020-03-28,cumulative,hospital,[10 - 19],0,1
+2020-03-28,cumulative,hospital,[20 - 29],1,3
+2020-03-28,cumulative,hospital,[30 - 39],2,6
+2020-03-28,cumulative,hospital,[40 - 49],3,8
+2020-03-28,cumulative,hospital,[50 - 59],6,12
+2020-03-28,cumulative,hospital,[60 - 69],9,16
+2020-03-28,cumulative,hospital,[70 - 79],8,13
+2020-03-28,cumulative,hospital,80+,5,10
+2020-03-28,cumulative,hospital,total,35,48
+2020-03-28,cumulative,icu,[0 - 9],0,0
+2020-03-28,cumulative,icu,[10 - 19],0,0
+2020-03-28,cumulative,icu,[20 - 29],0,0
+2020-03-28,cumulative,icu,[30 - 39],0,1
+2020-03-28,cumulative,icu,[40 - 49],0,1
+2020-03-28,cumulative,icu,[50 - 59],0,2
+2020-03-28,cumulative,icu,[60 - 69],1,3
+2020-03-28,cumulative,icu,[70 - 79],1,4
+2020-03-28,cumulative,icu,80+,1,3
+2020-03-28,cumulative,icu,total,3,8
+2020-03-29,active,cases,[0 - 9],152,201
+2020-03-29,active,cases,[10 - 19],156,204
+2020-03-29,active,cases,[20 - 29],191,253
+2020-03-29,active,cases,[30 - 39],183,241
+2020-03-29,active,cases,[40 - 49],161,211
+2020-03-29,active,cases,[50 - 59],150,198
+2020-03-29,active,cases,[60 - 69],128,173
+2020-03-29,active,cases,[70 - 79],78,107
+2020-03-29,active,cases,80+,43,62
+2020-03-29,active,cases,total,1244.574403649767,1585.0854387922882
+2020-03-29,active,hospital,[0 - 9],0,1
+2020-03-29,active,hospital,[10 - 19],0,1
+2020-03-29,active,hospital,[20 - 29],1,4
+2020-03-29,active,hospital,[30 - 39],3,6
+2020-03-29,active,hospital,[40 - 49],3,8
+2020-03-29,active,hospital,[50 - 59],7,12
+2020-03-29,active,hospital,[60 - 69],9,16
+2020-03-29,active,hospital,[70 - 79],8,15
+2020-03-29,active,hospital,80+,5,11
+2020-03-29,active,hospital,total,38,51
+2020-03-29,active,icu,[0 - 9],0,0
+2020-03-29,active,icu,[10 - 19],0,0
+2020-03-29,active,icu,[20 - 29],0,0
+2020-03-29,active,icu,[30 - 39],0,1
+2020-03-29,active,icu,[40 - 49],0,1
+2020-03-29,active,icu,[50 - 59],0,2
+2020-03-29,active,icu,[60 - 69],1,3
+2020-03-29,active,icu,[70 - 79],1,4
+2020-03-29,active,icu,80+,1,3
+2020-03-29,active,icu,total,3,8
+2020-03-29,cumulative,cases,[0 - 9],159,208
+2020-03-29,cumulative,cases,[10 - 19],164,214
+2020-03-29,cumulative,cases,[20 - 29],201,263
+2020-03-29,cumulative,cases,[30 - 39],191,247
+2020-03-29,cumulative,cases,[40 - 49],168,218
+2020-03-29,cumulative,cases,[50 - 59],156,205
+2020-03-29,cumulative,cases,[60 - 69],133,177
+2020-03-29,cumulative,cases,[70 - 79],82,111
+2020-03-29,cumulative,cases,80+,45,63
+2020-03-29,cumulative,cases,total,1302.3267554615923,1643.2997714100272
+2020-03-29,cumulative,hospital,[0 - 9],0,1
+2020-03-29,cumulative,hospital,[10 - 19],0,2
+2020-03-29,cumulative,hospital,[20 - 29],1,3
+2020-03-29,cumulative,hospital,[30 - 39],3,6
+2020-03-29,cumulative,hospital,[40 - 49],4,8
+2020-03-29,cumulative,hospital,[50 - 59],7,13
+2020-03-29,cumulative,hospital,[60 - 69],10,18
+2020-03-29,cumulative,hospital,[70 - 79],9,16
+2020-03-29,cumulative,hospital,80+,6,11
+2020-03-29,cumulative,hospital,total,41,54
+2020-03-29,cumulative,icu,[0 - 9],0,0
+2020-03-29,cumulative,icu,[10 - 19],0,0
+2020-03-29,cumulative,icu,[20 - 29],0,0
+2020-03-29,cumulative,icu,[30 - 39],0,1
+2020-03-29,cumulative,icu,[40 - 49],0,1
+2020-03-29,cumulative,icu,[50 - 59],0,2
+2020-03-29,cumulative,icu,[60 - 69],1,4
+2020-03-29,cumulative,icu,[70 - 79],1,4
+2020-03-29,cumulative,icu,80+,1,3
+2020-03-29,cumulative,icu,total,4,9
+2020-03-30,active,cases,[0 - 9],164,222
+2020-03-30,active,cases,[10 - 19],167,225
+2020-03-30,active,cases,[20 - 29],206,276
+2020-03-30,active,cases,[30 - 39],195,260
+2020-03-30,active,cases,[40 - 49],171,233
+2020-03-30,active,cases,[50 - 59],160,216
+2020-03-30,active,cases,[60 - 69],136,189
+2020-03-30,active,cases,[70 - 79],84,116
+2020-03-30,active,cases,80+,46,68
+2020-03-30,active,cases,total,1328.4967785989584,1752.6472253215725
+2020-03-30,active,hospital,[0 - 9],0,1
+2020-03-30,active,hospital,[10 - 19],0,2
+2020-03-30,active,hospital,[20 - 29],1,4
+2020-03-30,active,hospital,[30 - 39],3,7
+2020-03-30,active,hospital,[40 - 49],4,9
+2020-03-30,active,hospital,[50 - 59],8,14
+2020-03-30,active,hospital,[60 - 69],11,19
+2020-03-30,active,hospital,[70 - 79],10,17
+2020-03-30,active,hospital,80+,6,12
+2020-03-30,active,hospital,total,43,57
+2020-03-30,active,icu,[0 - 9],0,0
+2020-03-30,active,icu,[10 - 19],0,0
+2020-03-30,active,icu,[20 - 29],0,0
+2020-03-30,active,icu,[30 - 39],0,1
+2020-03-30,active,icu,[40 - 49],0,1
+2020-03-30,active,icu,[50 - 59],0,2
+2020-03-30,active,icu,[60 - 69],1,4
+2020-03-30,active,icu,[70 - 79],1,4
+2020-03-30,active,icu,80+,1,3
+2020-03-30,active,icu,total,4,9
+2020-03-30,cumulative,cases,[0 - 9],172,227
+2020-03-30,cumulative,cases,[10 - 19],174,236
+2020-03-30,cumulative,cases,[20 - 29],217,287
+2020-03-30,cumulative,cases,[30 - 39],204,275
+2020-03-30,cumulative,cases,[40 - 49],181,245
+2020-03-30,cumulative,cases,[50 - 59],168,227
+2020-03-30,cumulative,cases,[60 - 69],143,190
+2020-03-30,cumulative,cases,[70 - 79],88,119
+2020-03-30,cumulative,cases,80+,48,69
+2020-03-30,cumulative,cases,total,1397.8698186030965,1818.4071810450366
+2020-03-30,cumulative,hospital,[0 - 9],0,1
+2020-03-30,cumulative,hospital,[10 - 19],0,1
+2020-03-30,cumulative,hospital,[20 - 29],1,4
+2020-03-30,cumulative,hospital,[30 - 39],3,7
+2020-03-30,cumulative,hospital,[40 - 49],4,9
+2020-03-30,cumulative,hospital,[50 - 59],8,15
+2020-03-30,cumulative,hospital,[60 - 69],12,19
+2020-03-30,cumulative,hospital,[70 - 79],11,17
+2020-03-30,cumulative,hospital,80+,6,12
+2020-03-30,cumulative,hospital,total,47,61
+2020-03-30,cumulative,icu,[0 - 9],0,0
+2020-03-30,cumulative,icu,[10 - 19],0,0
+2020-03-30,cumulative,icu,[20 - 29],0,0
+2020-03-30,cumulative,icu,[30 - 39],0,1
+2020-03-30,cumulative,icu,[40 - 49],0,1
+2020-03-30,cumulative,icu,[50 - 59],0,2
+2020-03-30,cumulative,icu,[60 - 69],1,4
+2020-03-30,cumulative,icu,[70 - 79],2,5
+2020-03-30,cumulative,icu,80+,1,4
+2020-03-30,cumulative,icu,total,5,10
+2020-03-31,active,cases,[0 - 9],172,241
+2020-03-31,active,cases,[10 - 19],176,246
+2020-03-31,active,cases,[20 - 29],215,302
+2020-03-31,active,cases,[30 - 39],206,286
+2020-03-31,active,cases,[40 - 49],182,254
+2020-03-31,active,cases,[50 - 59],169,236
+2020-03-31,active,cases,[60 - 69],145,202
+2020-03-31,active,cases,[70 - 79],88,127
+2020-03-31,active,cases,80+,49,71
+2020-03-31,active,cases,total,1402.9688491030522,1914.650090347781
+2020-03-31,active,hospital,[0 - 9],0,1
+2020-03-31,active,hospital,[10 - 19],0,1
+2020-03-31,active,hospital,[20 - 29],1,4
+2020-03-31,active,hospital,[30 - 39],3,8
+2020-03-31,active,hospital,[40 - 49],4,10
+2020-03-31,active,hospital,[50 - 59],8,16
+2020-03-31,active,hospital,[60 - 69],12,20
+2020-03-31,active,hospital,[70 - 79],10,18
+2020-03-31,active,hospital,80+,6,12
+2020-03-31,active,hospital,total,46,62
+2020-03-31,active,icu,[0 - 9],0,0
+2020-03-31,active,icu,[10 - 19],0,0
+2020-03-31,active,icu,[20 - 29],0,0
+2020-03-31,active,icu,[30 - 39],0,1
+2020-03-31,active,icu,[40 - 49],0,1
+2020-03-31,active,icu,[50 - 59],0,2
+2020-03-31,active,icu,[60 - 69],1,4
+2020-03-31,active,icu,[70 - 79],1,5
+2020-03-31,active,icu,80+,1,4
+2020-03-31,active,icu,total,4,10
+2020-03-31,cumulative,cases,[0 - 9],182,253
+2020-03-31,cumulative,cases,[10 - 19],187,260
+2020-03-31,cumulative,cases,[20 - 29],233,314
+2020-03-31,cumulative,cases,[30 - 39],216,298
+2020-03-31,cumulative,cases,[40 - 49],192,260
+2020-03-31,cumulative,cases,[50 - 59],180,249
+2020-03-31,cumulative,cases,[60 - 69],152,212
+2020-03-31,cumulative,cases,[70 - 79],93,132
+2020-03-31,cumulative,cases,80+,51,73
+2020-03-31,cumulative,cases,total,1486.295648953071,1996.6734706807233
+2020-03-31,cumulative,hospital,[0 - 9],0,1
+2020-03-31,cumulative,hospital,[10 - 19],0,2
+2020-03-31,cumulative,hospital,[20 - 29],1,4
+2020-03-31,cumulative,hospital,[30 - 39],4,8
+2020-03-31,cumulative,hospital,[40 - 49],5,10
+2020-03-31,cumulative,hospital,[50 - 59],10,16
+2020-03-31,cumulative,hospital,[60 - 69],13,22
+2020-03-31,cumulative,hospital,[70 - 79],12,20
+2020-03-31,cumulative,hospital,80+,7,13
+2020-03-31,cumulative,hospital,total,54,70
+2020-03-31,cumulative,icu,[0 - 9],0,0
+2020-03-31,cumulative,icu,[10 - 19],0,0
+2020-03-31,cumulative,icu,[20 - 29],0,0
+2020-03-31,cumulative,icu,[30 - 39],0,1
+2020-03-31,cumulative,icu,[40 - 49],0,1
+2020-03-31,cumulative,icu,[50 - 59],0,3
+2020-03-31,cumulative,icu,[60 - 69],1,4
+2020-03-31,cumulative,icu,[70 - 79],2,5
+2020-03-31,cumulative,icu,80+,1,4
+2020-03-31,cumulative,icu,total,5,11
+2020-04-01,active,cases,[0 - 9],181,260
+2020-04-01,active,cases,[10 - 19],185,267
+2020-04-01,active,cases,[20 - 29],227,327
+2020-04-01,active,cases,[30 - 39],216,307
+2020-04-01,active,cases,[40 - 49],189,274
+2020-04-01,active,cases,[50 - 59],178,259
+2020-04-01,active,cases,[60 - 69],150,218
+2020-04-01,active,cases,[70 - 79],92,135
+2020-04-01,active,cases,80+,51,76
+2020-04-01,active,cases,total,1471.5053330144112,2078.1208033045377
+2020-04-01,active,hospital,[0 - 9],0,1
+2020-04-01,active,hospital,[10 - 19],0,2
+2020-04-01,active,hospital,[20 - 29],1,4
+2020-04-01,active,hospital,[30 - 39],3,8
+2020-04-01,active,hospital,[40 - 49],5,10
+2020-04-01,active,hospital,[50 - 59],9,17
+2020-04-01,active,hospital,[60 - 69],13,21
+2020-04-01,active,hospital,[70 - 79],11,19
+2020-04-01,active,hospital,80+,7,13
+2020-04-01,active,hospital,total,51,69
+2020-04-01,active,icu,[0 - 9],0,0
+2020-04-01,active,icu,[10 - 19],0,0
+2020-04-01,active,icu,[20 - 29],0,0
+2020-04-01,active,icu,[30 - 39],0,1
+2020-04-01,active,icu,[40 - 49],0,1
+2020-04-01,active,icu,[50 - 59],0,3
+2020-04-01,active,icu,[60 - 69],1,4
+2020-04-01,active,icu,[70 - 79],2,5
+2020-04-01,active,icu,80+,1,4
+2020-04-01,active,icu,total,5,10
+2020-04-01,cumulative,cases,[0 - 9],193,273
+2020-04-01,cumulative,cases,[10 - 19],198,283
+2020-04-01,cumulative,cases,[20 - 29],243,346
+2020-04-01,cumulative,cases,[30 - 39],229,324
+2020-04-01,cumulative,cases,[40 - 49],203,284
+2020-04-01,cumulative,cases,[50 - 59],191,266
+2020-04-01,cumulative,cases,[60 - 69],161,228
+2020-04-01,cumulative,cases,[70 - 79],98,141
+2020-04-01,cumulative,cases,80+,54,82
+2020-04-01,cumulative,cases,total,1570.9183300384145,2174.8578345945048
+2020-04-01,cumulative,hospital,[0 - 9],0,1
+2020-04-01,cumulative,hospital,[10 - 19],0,2
+2020-04-01,cumulative,hospital,[20 - 29],1,5
+2020-04-01,cumulative,hospital,[30 - 39],4,9
+2020-04-01,cumulative,hospital,[40 - 49],5,11
+2020-04-01,cumulative,hospital,[50 - 59],11,18
+2020-04-01,cumulative,hospital,[60 - 69],15,23
+2020-04-01,cumulative,hospital,[70 - 79],13,22
+2020-04-01,cumulative,hospital,80+,8,14
+2020-04-01,cumulative,hospital,total,60,77
+2020-04-01,cumulative,icu,[0 - 9],0,0
+2020-04-01,cumulative,icu,[10 - 19],0,0
+2020-04-01,cumulative,icu,[20 - 29],0,0
+2020-04-01,cumulative,icu,[30 - 39],0,1
+2020-04-01,cumulative,icu,[40 - 49],0,1
+2020-04-01,cumulative,icu,[50 - 59],1,3
+2020-04-01,cumulative,icu,[60 - 69],2,5
+2020-04-01,cumulative,icu,[70 - 79],2,6
+2020-04-01,cumulative,icu,80+,1,4
+2020-04-01,cumulative,icu,total,6,12
+2020-04-02,active,cases,[0 - 9],188,281
+2020-04-02,active,cases,[10 - 19],193,288
+2020-04-02,active,cases,[20 - 29],235,349
+2020-04-02,active,cases,[30 - 39],224,328
+2020-04-02,active,cases,[40 - 49],196,293
+2020-04-02,active,cases,[50 - 59],185,274
+2020-04-02,active,cases,[60 - 69],157,244
+2020-04-02,active,cases,[70 - 79],96,144
+2020-04-02,active,cases,80+,53,81
+2020-04-02,active,cases,total,1528.585311794272,2235.2771243997413
+2020-04-02,active,hospital,[0 - 9],0,1
+2020-04-02,active,hospital,[10 - 19],0,2
+2020-04-02,active,hospital,[20 - 29],1,5
+2020-04-02,active,hospital,[30 - 39],4,9
+2020-04-02,active,hospital,[40 - 49],5,11
+2020-04-02,active,hospital,[50 - 59],10,18
+2020-04-02,active,hospital,[60 - 69],14,24
+2020-04-02,active,hospital,[70 - 79],13,22
+2020-04-02,active,hospital,80+,8,15
+2020-04-02,active,hospital,total,56,77
+2020-04-02,active,icu,[0 - 9],0,0
+2020-04-02,active,icu,[10 - 19],0,0
+2020-04-02,active,icu,[20 - 29],0,0
+2020-04-02,active,icu,[30 - 39],0,1
+2020-04-02,active,icu,[40 - 49],0,1
+2020-04-02,active,icu,[50 - 59],0,3
+2020-04-02,active,icu,[60 - 69],1,5
+2020-04-02,active,icu,[70 - 79],2,5
+2020-04-02,active,icu,80+,1,4
+2020-04-02,active,icu,total,5,12
+2020-04-02,cumulative,cases,[0 - 9],202,291
+2020-04-02,cumulative,cases,[10 - 19],207,304
+2020-04-02,cumulative,cases,[20 - 29],256,369
+2020-04-02,cumulative,cases,[30 - 39],241,349
+2020-04-02,cumulative,cases,[40 - 49],213,309
+2020-04-02,cumulative,cases,[50 - 59],200,290
+2020-04-02,cumulative,cases,[60 - 69],170,247
+2020-04-02,cumulative,cases,[70 - 79],103,153
+2020-04-02,cumulative,cases,80+,57,88
+2020-04-02,cumulative,cases,total,1647.802648114004,2347.8862718336018
+2020-04-02,cumulative,hospital,[0 - 9],0,1
+2020-04-02,cumulative,hospital,[10 - 19],0,2
+2020-04-02,cumulative,hospital,[20 - 29],2,5
+2020-04-02,cumulative,hospital,[30 - 39],4,9
+2020-04-02,cumulative,hospital,[40 - 49],6,12
+2020-04-02,cumulative,hospital,[50 - 59],12,20
+2020-04-02,cumulative,hospital,[60 - 69],17,25
+2020-04-02,cumulative,hospital,[70 - 79],15,23
+2020-04-02,cumulative,hospital,80+,9,17
+2020-04-02,cumulative,hospital,total,67,86
+2020-04-02,cumulative,icu,[0 - 9],0,0
+2020-04-02,cumulative,icu,[10 - 19],0,0
+2020-04-02,cumulative,icu,[20 - 29],0,0
+2020-04-02,cumulative,icu,[30 - 39],0,1
+2020-04-02,cumulative,icu,[40 - 49],0,1
+2020-04-02,cumulative,icu,[50 - 59],1,3
+2020-04-02,cumulative,icu,[60 - 69],2,5
+2020-04-02,cumulative,icu,[70 - 79],2,6
+2020-04-02,cumulative,icu,80+,2,5
+2020-04-02,cumulative,icu,total,7,13
+2020-04-03,active,cases,[0 - 9],192,294
+2020-04-03,active,cases,[10 - 19],199,311
+2020-04-03,active,cases,[20 - 29],245,371
+2020-04-03,active,cases,[30 - 39],231,345
+2020-04-03,active,cases,[40 - 49],202,312
+2020-04-03,active,cases,[50 - 59],192,297
+2020-04-03,active,cases,[60 - 69],163,249
+2020-04-03,active,cases,[70 - 79],99,154
+2020-04-03,active,cases,80+,54,85
+2020-04-03,active,cases,total,1575.723236228813,2372.3785954150426
+2020-04-03,active,hospital,[0 - 9],0,1
+2020-04-03,active,hospital,[10 - 19],0,2
+2020-04-03,active,hospital,[20 - 29],1,5
+2020-04-03,active,hospital,[30 - 39],4,10
+2020-04-03,active,hospital,[40 - 49],6,11
+2020-04-03,active,hospital,[50 - 59],11,19
+2020-04-03,active,hospital,[60 - 69],16,25
+2020-04-03,active,hospital,[70 - 79],14,23
+2020-04-03,active,hospital,80+,9,16
+2020-04-03,active,hospital,total,62,84
+2020-04-03,active,icu,[0 - 9],0,0
+2020-04-03,active,icu,[10 - 19],0,0
+2020-04-03,active,icu,[20 - 29],0,0
+2020-04-03,active,icu,[30 - 39],0,1
+2020-04-03,active,icu,[40 - 49],0,1
+2020-04-03,active,icu,[50 - 59],1,3
+2020-04-03,active,icu,[60 - 69],1,5
+2020-04-03,active,icu,[70 - 79],2,6
+2020-04-03,active,icu,80+,1,4
+2020-04-03,active,icu,total,6,12
+2020-04-03,cumulative,cases,[0 - 9],211,314
+2020-04-03,cumulative,cases,[10 - 19],216,318
+2020-04-03,cumulative,cases,[20 - 29],268,403
+2020-04-03,cumulative,cases,[30 - 39],252,372
+2020-04-03,cumulative,cases,[40 - 49],222,332
+2020-04-03,cumulative,cases,[50 - 59],207,311
+2020-04-03,cumulative,cases,[60 - 69],177,265
+2020-04-03,cumulative,cases,[70 - 79],108,163
+2020-04-03,cumulative,cases,80+,59,91
+2020-04-03,cumulative,cases,total,1717.590871210354,2511.8507594312164
+2020-04-03,cumulative,hospital,[0 - 9],0,1
+2020-04-03,cumulative,hospital,[10 - 19],0,2
+2020-04-03,cumulative,hospital,[20 - 29],2,5
+2020-04-03,cumulative,hospital,[30 - 39],5,10
+2020-04-03,cumulative,hospital,[40 - 49],7,13
+2020-04-03,cumulative,hospital,[50 - 59],13,21
+2020-04-03,cumulative,hospital,[60 - 69],18,29
+2020-04-03,cumulative,hospital,[70 - 79],16,26
+2020-04-03,cumulative,hospital,80+,10,18
+2020-04-03,cumulative,hospital,total,74,95
+2020-04-03,cumulative,icu,[0 - 9],0,0
+2020-04-03,cumulative,icu,[10 - 19],0,0
+2020-04-03,cumulative,icu,[20 - 29],0,0
+2020-04-03,cumulative,icu,[30 - 39],0,1
+2020-04-03,cumulative,icu,[40 - 49],0,2
+2020-04-03,cumulative,icu,[50 - 59],1,3
+2020-04-03,cumulative,icu,[60 - 69],2,6
+2020-04-03,cumulative,icu,[70 - 79],3,7
+2020-04-03,cumulative,icu,80+,2,5
+2020-04-03,cumulative,icu,total,8,15
+2020-04-04,active,cases,[0 - 9],198,320
+2020-04-04,active,cases,[10 - 19],203,326
+2020-04-04,active,cases,[20 - 29],249,390
+2020-04-04,active,cases,[30 - 39],236,375
+2020-04-04,active,cases,[40 - 49],207,332
+2020-04-04,active,cases,[50 - 59],195,306
+2020-04-04,active,cases,[60 - 69],167,259
+2020-04-04,active,cases,[70 - 79],102,167
+2020-04-04,active,cases,80+,56,92
+2020-04-04,active,cases,total,1608.1267681531724,2499.647064521529
+2020-04-04,active,hospital,[0 - 9],0,1
+2020-04-04,active,hospital,[10 - 19],0,2
+2020-04-04,active,hospital,[20 - 29],2,5
+2020-04-04,active,hospital,[30 - 39],4,10
+2020-04-04,active,hospital,[40 - 49],6,12
+2020-04-04,active,hospital,[50 - 59],12,21
+2020-04-04,active,hospital,[60 - 69],17,28
+2020-04-04,active,hospital,[70 - 79],15,25
+2020-04-04,active,hospital,80+,9,18
+2020-04-04,active,hospital,total,66,92
+2020-04-04,active,icu,[0 - 9],0,0
+2020-04-04,active,icu,[10 - 19],0,0
+2020-04-04,active,icu,[20 - 29],0,0
+2020-04-04,active,icu,[30 - 39],0,1
+2020-04-04,active,icu,[40 - 49],0,1
+2020-04-04,active,icu,[50 - 59],1,3
+2020-04-04,active,icu,[60 - 69],1,5
+2020-04-04,active,icu,[70 - 79],2,6
+2020-04-04,active,icu,80+,1,5
+2020-04-04,active,icu,total,7,13
+2020-04-04,cumulative,cases,[0 - 9],219,339
+2020-04-04,cumulative,cases,[10 - 19],224,343
+2020-04-04,cumulative,cases,[20 - 29],276,415
+2020-04-04,cumulative,cases,[30 - 39],260,391
+2020-04-04,cumulative,cases,[40 - 49],230,355
+2020-04-04,cumulative,cases,[50 - 59],215,332
+2020-04-04,cumulative,cases,[60 - 69],182,282
+2020-04-04,cumulative,cases,[70 - 79],111,174
+2020-04-04,cumulative,cases,80+,62,98
+2020-04-04,cumulative,cases,total,1780.0865301012523,2663.382882556089
+2020-04-04,cumulative,hospital,[0 - 9],0,1
+2020-04-04,cumulative,hospital,[10 - 19],0,2
+2020-04-04,cumulative,hospital,[20 - 29],2,5
+2020-04-04,cumulative,hospital,[30 - 39],6,11
+2020-04-04,cumulative,hospital,[40 - 49],7,13
+2020-04-04,cumulative,hospital,[50 - 59],15,24
+2020-04-04,cumulative,hospital,[60 - 69],20,30
+2020-04-04,cumulative,hospital,[70 - 79],18,28
+2020-04-04,cumulative,hospital,80+,11,18
+2020-04-04,cumulative,hospital,total,81,107
+2020-04-04,cumulative,icu,[0 - 9],0,0
+2020-04-04,cumulative,icu,[10 - 19],0,0
+2020-04-04,cumulative,icu,[20 - 29],0,0
+2020-04-04,cumulative,icu,[30 - 39],0,1
+2020-04-04,cumulative,icu,[40 - 49],0,2
+2020-04-04,cumulative,icu,[50 - 59],1,4
+2020-04-04,cumulative,icu,[60 - 69],2,6
+2020-04-04,cumulative,icu,[70 - 79],3,8
+2020-04-04,cumulative,icu,80+,2,6
+2020-04-04,cumulative,icu,total,10,17
+2020-04-05,active,cases,[0 - 9],199,319
+2020-04-05,active,cases,[10 - 19],206,330
+2020-04-05,active,cases,[20 - 29],252,414
+2020-04-05,active,cases,[30 - 39],238,390
+2020-04-05,active,cases,[40 - 49],212,353
+2020-04-05,active,cases,[50 - 59],195,329
+2020-04-05,active,cases,[60 - 69],167,279
+2020-04-05,active,cases,[70 - 79],102,173
+2020-04-05,active,cases,80+,57,96
+2020-04-05,active,cases,total,1629.4594660666553,2612.4591374101697
+2020-04-05,active,hospital,[0 - 9],0,1
+2020-04-05,active,hospital,[10 - 19],0,2
+2020-04-05,active,hospital,[20 - 29],2,6
+2020-04-05,active,hospital,[30 - 39],5,11
+2020-04-05,active,hospital,[40 - 49],6,13
+2020-04-05,active,hospital,[50 - 59],13,23
+2020-04-05,active,hospital,[60 - 69],17,29
+2020-04-05,active,hospital,[70 - 79],16,28
+2020-04-05,active,hospital,80+,10,18
+2020-04-05,active,hospital,total,70,102
+2020-04-05,active,icu,[0 - 9],0,0
+2020-04-05,active,icu,[10 - 19],0,0
+2020-04-05,active,icu,[20 - 29],0,0
+2020-04-05,active,icu,[30 - 39],0,1
+2020-04-05,active,icu,[40 - 49],0,2
+2020-04-05,active,icu,[50 - 59],1,3
+2020-04-05,active,icu,[60 - 69],2,6
+2020-04-05,active,icu,[70 - 79],2,7
+2020-04-05,active,icu,80+,2,6
+2020-04-05,active,icu,total,7,14
+2020-04-05,cumulative,cases,[0 - 9],225,353
+2020-04-05,cumulative,cases,[10 - 19],233,359
+2020-04-05,cumulative,cases,[20 - 29],285,439
+2020-04-05,cumulative,cases,[30 - 39],270,415
+2020-04-05,cumulative,cases,[40 - 49],235,363
+2020-04-05,cumulative,cases,[50 - 59],221,354
+2020-04-05,cumulative,cases,[60 - 69],189,304
+2020-04-05,cumulative,cases,[70 - 79],115,187
+2020-04-05,cumulative,cases,80+,63,103
+2020-04-05,cumulative,cases,total,1835.802298690533,2813.7139833598635
+2020-04-05,cumulative,hospital,[0 - 9],0,1
+2020-04-05,cumulative,hospital,[10 - 19],0,2
+2020-04-05,cumulative,hospital,[20 - 29],2,6
+2020-04-05,cumulative,hospital,[30 - 39],6,12
+2020-04-05,cumulative,hospital,[40 - 49],8,16
+2020-04-05,cumulative,hospital,[50 - 59],16,25
+2020-04-05,cumulative,hospital,[60 - 69],22,34
+2020-04-05,cumulative,hospital,[70 - 79],20,30
+2020-04-05,cumulative,hospital,80+,12,20
+2020-04-05,cumulative,hospital,total,88,117
+2020-04-05,cumulative,icu,[0 - 9],0,0
+2020-04-05,cumulative,icu,[10 - 19],0,0
+2020-04-05,cumulative,icu,[20 - 29],0,0
+2020-04-05,cumulative,icu,[30 - 39],0,1
+2020-04-05,cumulative,icu,[40 - 49],0,2
+2020-04-05,cumulative,icu,[50 - 59],1,4
+2020-04-05,cumulative,icu,[60 - 69],3,7
+2020-04-05,cumulative,icu,[70 - 79],3,8
+2020-04-05,cumulative,icu,80+,2,7
+2020-04-05,cumulative,icu,total,11,18
+2020-04-06,active,cases,[0 - 9],200,341
+2020-04-06,active,cases,[10 - 19],208,348
+2020-04-06,active,cases,[20 - 29],253,430
+2020-04-06,active,cases,[30 - 39],241,404
+2020-04-06,active,cases,[40 - 49],211,362
+2020-04-06,active,cases,[50 - 59],198,330
+2020-04-06,active,cases,[60 - 69],168,283
+2020-04-06,active,cases,[70 - 79],103,174
+2020-04-06,active,cases,80+,56,101
+2020-04-06,active,cases,total,1640.4476978011846,2724.8972434203392
+2020-04-06,active,hospital,[0 - 9],0,1
+2020-04-06,active,hospital,[10 - 19],0,2
+2020-04-06,active,hospital,[20 - 29],2,6
+2020-04-06,active,hospital,[30 - 39],5,11
+2020-04-06,active,hospital,[40 - 49],7,14
+2020-04-06,active,hospital,[50 - 59],13,24
+2020-04-06,active,hospital,[60 - 69],19,32
+2020-04-06,active,hospital,[70 - 79],16,28
+2020-04-06,active,hospital,80+,10,20
+2020-04-06,active,hospital,total,73,109
+2020-04-06,active,icu,[0 - 9],0,0
+2020-04-06,active,icu,[10 - 19],0,0
+2020-04-06,active,icu,[20 - 29],0,1
+2020-04-06,active,icu,[30 - 39],0,1
+2020-04-06,active,icu,[40 - 49],0,2
+2020-04-06,active,icu,[50 - 59],1,4
+2020-04-06,active,icu,[60 - 69],2,6
+2020-04-06,active,icu,[70 - 79],2,7
+2020-04-06,active,icu,80+,2,5
+2020-04-06,active,icu,total,7,15
+2020-04-06,cumulative,cases,[0 - 9],230,364
+2020-04-06,cumulative,cases,[10 - 19],235,381
+2020-04-06,cumulative,cases,[20 - 29],291,474
+2020-04-06,cumulative,cases,[30 - 39],279,443
+2020-04-06,cumulative,cases,[40 - 49],242,393
+2020-04-06,cumulative,cases,[50 - 59],227,365
+2020-04-06,cumulative,cases,[60 - 69],194,306
+2020-04-06,cumulative,cases,[70 - 79],118,189
+2020-04-06,cumulative,cases,80+,65,108
+2020-04-06,cumulative,cases,total,1883.8374722184533,2957.527568201251
+2020-04-06,cumulative,hospital,[0 - 9],0,1
+2020-04-06,cumulative,hospital,[10 - 19],0,2
+2020-04-06,cumulative,hospital,[20 - 29],2,6
+2020-04-06,cumulative,hospital,[30 - 39],6,12
+2020-04-06,cumulative,hospital,[40 - 49],8,16
+2020-04-06,cumulative,hospital,[50 - 59],17,27
+2020-04-06,cumulative,hospital,[60 - 69],23,36
+2020-04-06,cumulative,hospital,[70 - 79],21,33
+2020-04-06,cumulative,hospital,80+,13,21
+2020-04-06,cumulative,hospital,total,93,128
+2020-04-06,cumulative,icu,[0 - 9],0,0
+2020-04-06,cumulative,icu,[10 - 19],0,0
+2020-04-06,cumulative,icu,[20 - 29],0,0
+2020-04-06,cumulative,icu,[30 - 39],0,1
+2020-04-06,cumulative,icu,[40 - 49],0,2
+2020-04-06,cumulative,icu,[50 - 59],1,4
+2020-04-06,cumulative,icu,[60 - 69],3,7
+2020-04-06,cumulative,icu,[70 - 79],4,9
+2020-04-06,cumulative,icu,80+,3,6
+2020-04-06,cumulative,icu,total,11,19
+2020-04-07,active,cases,[0 - 9],199,348
+2020-04-07,active,cases,[10 - 19],207,355
+2020-04-07,active,cases,[20 - 29],254,447
+2020-04-07,active,cases,[30 - 39],240,417
+2020-04-07,active,cases,[40 - 49],212,371
+2020-04-07,active,cases,[50 - 59],199,350
+2020-04-07,active,cases,[60 - 69],167,291
+2020-04-07,active,cases,[70 - 79],104,183
+2020-04-07,active,cases,80+,57,101
+2020-04-07,active,cases,total,1637.7739581485876,2811.9478273103264
+2020-04-07,active,hospital,[0 - 9],0,1
+2020-04-07,active,hospital,[10 - 19],0,2
+2020-04-07,active,hospital,[20 - 29],2,6
+2020-04-07,active,hospital,[30 - 39],5,12
+2020-04-07,active,hospital,[40 - 49],7,15
+2020-04-07,active,hospital,[50 - 59],14,26
+2020-04-07,active,hospital,[60 - 69],19,32
+2020-04-07,active,hospital,[70 - 79],17,30
+2020-04-07,active,hospital,80+,10,21
+2020-04-07,active,hospital,total,76,117
+2020-04-07,active,icu,[0 - 9],0,0
+2020-04-07,active,icu,[10 - 19],0,0
+2020-04-07,active,icu,[20 - 29],0,1
+2020-04-07,active,icu,[30 - 39],0,1
+2020-04-07,active,icu,[40 - 49],0,2
+2020-04-07,active,icu,[50 - 59],1,4
+2020-04-07,active,icu,[60 - 69],2,6
+2020-04-07,active,icu,[70 - 79],2,7
+2020-04-07,active,icu,80+,2,6
+2020-04-07,active,icu,total,8,16
+2020-04-07,cumulative,cases,[0 - 9],236,387
+2020-04-07,cumulative,cases,[10 - 19],243,392
+2020-04-07,cumulative,cases,[20 - 29],298,493
+2020-04-07,cumulative,cases,[30 - 39],281,457
+2020-04-07,cumulative,cases,[40 - 49],249,405
+2020-04-07,cumulative,cases,[50 - 59],233,374
+2020-04-07,cumulative,cases,[60 - 69],198,324
+2020-04-07,cumulative,cases,[70 - 79],121,204
+2020-04-07,cumulative,cases,80+,67,110
+2020-04-07,cumulative,cases,total,1925.3190437535334,3087.894454554151
+2020-04-07,cumulative,hospital,[0 - 9],0,1
+2020-04-07,cumulative,hospital,[10 - 19],0,2
+2020-04-07,cumulative,hospital,[20 - 29],3,7
+2020-04-07,cumulative,hospital,[30 - 39],7,13
+2020-04-07,cumulative,hospital,[40 - 49],9,16
+2020-04-07,cumulative,hospital,[50 - 59],19,30
+2020-04-07,cumulative,hospital,[60 - 69],25,40
+2020-04-07,cumulative,hospital,[70 - 79],22,36
+2020-04-07,cumulative,hospital,80+,14,23
+2020-04-07,cumulative,hospital,total,100,142
+2020-04-07,cumulative,icu,[0 - 9],0,0
+2020-04-07,cumulative,icu,[10 - 19],0,0
+2020-04-07,cumulative,icu,[20 - 29],0,1
+2020-04-07,cumulative,icu,[30 - 39],0,1
+2020-04-07,cumulative,icu,[40 - 49],0,2
+2020-04-07,cumulative,icu,[50 - 59],1,5
+2020-04-07,cumulative,icu,[60 - 69],3,7
+2020-04-07,cumulative,icu,[70 - 79],4,9
+2020-04-07,cumulative,icu,80+,3,7
+2020-04-07,cumulative,icu,total,13,21
+2020-04-08,active,cases,[0 - 9],199,370
+2020-04-08,active,cases,[10 - 19],204,372
+2020-04-08,active,cases,[20 - 29],251,444
+2020-04-08,active,cases,[30 - 39],239,438
+2020-04-08,active,cases,[40 - 49],209,375
+2020-04-08,active,cases,[50 - 59],194,352
+2020-04-08,active,cases,[60 - 69],166,297
+2020-04-08,active,cases,[70 - 79],102,184
+2020-04-08,active,cases,80+,56,106
+2020-04-08,active,cases,total,1623.6235299007872,2878.340635341449
+2020-04-08,active,hospital,[0 - 9],0,1
+2020-04-08,active,hospital,[10 - 19],0,2
+2020-04-08,active,hospital,[20 - 29],2,6
+2020-04-08,active,hospital,[30 - 39],5,13
+2020-04-08,active,hospital,[40 - 49],7,15
+2020-04-08,active,hospital,[50 - 59],14,27
+2020-04-08,active,hospital,[60 - 69],19,35
+2020-04-08,active,hospital,[70 - 79],18,31
+2020-04-08,active,hospital,80+,10,20
+2020-04-08,active,hospital,total,75,124
+2020-04-08,active,icu,[0 - 9],0,0
+2020-04-08,active,icu,[10 - 19],0,0
+2020-04-08,active,icu,[20 - 29],0,0
+2020-04-08,active,icu,[30 - 39],0,1
+2020-04-08,active,icu,[40 - 49],0,2
+2020-04-08,active,icu,[50 - 59],1,4
+2020-04-08,active,icu,[60 - 69],2,6
+2020-04-08,active,icu,[70 - 79],2,7
+2020-04-08,active,icu,80+,2,6
+2020-04-08,active,icu,total,8,16
+2020-04-08,cumulative,cases,[0 - 9],238,398
+2020-04-08,cumulative,cases,[10 - 19],247,409
+2020-04-08,cumulative,cases,[20 - 29],305,507
+2020-04-08,cumulative,cases,[30 - 39],286,471
+2020-04-08,cumulative,cases,[40 - 49],252,413
+2020-04-08,cumulative,cases,[50 - 59],235,392
+2020-04-08,cumulative,cases,[60 - 69],202,333
+2020-04-08,cumulative,cases,[70 - 79],123,206
+2020-04-08,cumulative,cases,80+,69,115
+2020-04-08,cumulative,cases,total,1960.4181893189307,3205.4350390410727
+2020-04-08,cumulative,hospital,[0 - 9],0,1
+2020-04-08,cumulative,hospital,[10 - 19],0,2
+2020-04-08,cumulative,hospital,[20 - 29],3,7
+2020-04-08,cumulative,hospital,[30 - 39],7,14
+2020-04-08,cumulative,hospital,[40 - 49],10,18
+2020-04-08,cumulative,hospital,[50 - 59],19,32
+2020-04-08,cumulative,hospital,[60 - 69],26,42
+2020-04-08,cumulative,hospital,[70 - 79],24,38
+2020-04-08,cumulative,hospital,80+,15,25
+2020-04-08,cumulative,hospital,total,106,154
+2020-04-08,cumulative,icu,[0 - 9],0,0
+2020-04-08,cumulative,icu,[10 - 19],0,0
+2020-04-08,cumulative,icu,[20 - 29],0,1
+2020-04-08,cumulative,icu,[30 - 39],0,1
+2020-04-08,cumulative,icu,[40 - 49],0,2
+2020-04-08,cumulative,icu,[50 - 59],1,5
+2020-04-08,cumulative,icu,[60 - 69],4,8
+2020-04-08,cumulative,icu,[70 - 79],5,9
+2020-04-08,cumulative,icu,80+,3,7
+2020-04-08,cumulative,icu,total,14,24
+2020-04-09,active,cases,[0 - 9],195,363
+2020-04-09,active,cases,[10 - 19],199,367
+2020-04-09,active,cases,[20 - 29],249,455
+2020-04-09,active,cases,[30 - 39],233,436
+2020-04-09,active,cases,[40 - 49],204,390
+2020-04-09,active,cases,[50 - 59],192,364
+2020-04-09,active,cases,[60 - 69],164,305
+2020-04-09,active,cases,[70 - 79],100,190
+2020-04-09,active,cases,80+,54,103
+2020-04-09,active,cases,total,1594.03397293054,2923.531767985452
+2020-04-09,active,hospital,[0 - 9],0,1
+2020-04-09,active,hospital,[10 - 19],0,2
+2020-04-09,active,hospital,[20 - 29],2,7
+2020-04-09,active,hospital,[30 - 39],5,12
+2020-04-09,active,hospital,[40 - 49],7,16
+2020-04-09,active,hospital,[50 - 59],14,28
+2020-04-09,active,hospital,[60 - 69],19,38
+2020-04-09,active,hospital,[70 - 79],17,33
+2020-04-09,active,hospital,80+,11,22
+2020-04-09,active,hospital,total,77,133
+2020-04-09,active,icu,[0 - 9],0,0
+2020-04-09,active,icu,[10 - 19],0,0
+2020-04-09,active,icu,[20 - 29],0,0
+2020-04-09,active,icu,[30 - 39],0,1
+2020-04-09,active,icu,[40 - 49],0,2
+2020-04-09,active,icu,[50 - 59],1,4
+2020-04-09,active,icu,[60 - 69],2,6
+2020-04-09,active,icu,[70 - 79],2,8
+2020-04-09,active,icu,80+,2,6
+2020-04-09,active,icu,total,8,18
+2020-04-09,cumulative,cases,[0 - 9],244,405
+2020-04-09,cumulative,cases,[10 - 19],249,426
+2020-04-09,cumulative,cases,[20 - 29],310,519
+2020-04-09,cumulative,cases,[30 - 39],292,492
+2020-04-09,cumulative,cases,[40 - 49],256,427
+2020-04-09,cumulative,cases,[50 - 59],242,407
+2020-04-09,cumulative,cases,[60 - 69],204,351
+2020-04-09,cumulative,cases,[70 - 79],125,214
+2020-04-09,cumulative,cases,80+,70,120
+2020-04-09,cumulative,cases,total,1990.7056356294913,3310.2563034589875
+2020-04-09,cumulative,hospital,[0 - 9],0,1
+2020-04-09,cumulative,hospital,[10 - 19],0,2
+2020-04-09,cumulative,hospital,[20 - 29],3,7
+2020-04-09,cumulative,hospital,[30 - 39],8,15
+2020-04-09,cumulative,hospital,[40 - 49],10,19
+2020-04-09,cumulative,hospital,[50 - 59],20,33
+2020-04-09,cumulative,hospital,[60 - 69],28,45
+2020-04-09,cumulative,hospital,[70 - 79],25,40
+2020-04-09,cumulative,hospital,80+,16,27
+2020-04-09,cumulative,hospital,total,110,165
+2020-04-09,cumulative,icu,[0 - 9],0,0
+2020-04-09,cumulative,icu,[10 - 19],0,0
+2020-04-09,cumulative,icu,[20 - 29],0,0
+2020-04-09,cumulative,icu,[30 - 39],0,1
+2020-04-09,cumulative,icu,[40 - 49],0,2
+2020-04-09,cumulative,icu,[50 - 59],2,5
+2020-04-09,cumulative,icu,[60 - 69],4,8
+2020-04-09,cumulative,icu,[70 - 79],5,11
+2020-04-09,cumulative,icu,80+,3,8
+2020-04-09,cumulative,icu,total,15,25
+2020-04-10,active,cases,[0 - 9],192,362
+2020-04-10,active,cases,[10 - 19],197,382
+2020-04-10,active,cases,[20 - 29],242,462
+2020-04-10,active,cases,[30 - 39],229,446
+2020-04-10,active,cases,[40 - 49],200,376
+2020-04-10,active,cases,[50 - 59],188,367
+2020-04-10,active,cases,[60 - 69],159,306
+2020-04-10,active,cases,[70 - 79],98,191
+2020-04-10,active,cases,80+,54,108
+2020-04-10,active,cases,total,1553.2312471208609,2946.967752202857
+2020-04-10,active,hospital,[0 - 9],0,1
+2020-04-10,active,hospital,[10 - 19],0,2
+2020-04-10,active,hospital,[20 - 29],2,7
+2020-04-10,active,hospital,[30 - 39],5,13
+2020-04-10,active,hospital,[40 - 49],7,17
+2020-04-10,active,hospital,[50 - 59],14,28
+2020-04-10,active,hospital,[60 - 69],19,37
+2020-04-10,active,hospital,[70 - 79],17,34
+2020-04-10,active,hospital,80+,10,23
+2020-04-10,active,hospital,total,75,133
+2020-04-10,active,icu,[0 - 9],0,0
+2020-04-10,active,icu,[10 - 19],0,0
+2020-04-10,active,icu,[20 - 29],0,1
+2020-04-10,active,icu,[30 - 39],0,1
+2020-04-10,active,icu,[40 - 49],0,2
+2020-04-10,active,icu,[50 - 59],1,4
+2020-04-10,active,icu,[60 - 69],2,6
+2020-04-10,active,icu,[70 - 79],2,8
+2020-04-10,active,icu,80+,1,7
+2020-04-10,active,icu,total,8,18
+2020-04-10,cumulative,cases,[0 - 9],248,429
+2020-04-10,cumulative,cases,[10 - 19],255,428
+2020-04-10,cumulative,cases,[20 - 29],312,526
+2020-04-10,cumulative,cases,[30 - 39],294,502
+2020-04-10,cumulative,cases,[40 - 49],259,441
+2020-04-10,cumulative,cases,[50 - 59],243,421
+2020-04-10,cumulative,cases,[60 - 69],206,358
+2020-04-10,cumulative,cases,[70 - 79],127,223
+2020-04-10,cumulative,cases,80+,69,127
+2020-04-10,cumulative,cases,total,2015.7058475141926,3402.8250558757527
+2020-04-10,cumulative,hospital,[0 - 9],0,1
+2020-04-10,cumulative,hospital,[10 - 19],0,3
+2020-04-10,cumulative,hospital,[20 - 29],3,7
+2020-04-10,cumulative,hospital,[30 - 39],8,15
+2020-04-10,cumulative,hospital,[40 - 49],11,20
+2020-04-10,cumulative,hospital,[50 - 59],21,36
+2020-04-10,cumulative,hospital,[60 - 69],29,47
+2020-04-10,cumulative,hospital,[70 - 79],26,44
+2020-04-10,cumulative,hospital,80+,16,28
+2020-04-10,cumulative,hospital,total,117,177
+2020-04-10,cumulative,icu,[0 - 9],0,0
+2020-04-10,cumulative,icu,[10 - 19],0,0
+2020-04-10,cumulative,icu,[20 - 29],0,1
+2020-04-10,cumulative,icu,[30 - 39],0,1
+2020-04-10,cumulative,icu,[40 - 49],0,2
+2020-04-10,cumulative,icu,[50 - 59],2,5
+2020-04-10,cumulative,icu,[60 - 69],4,9
+2020-04-10,cumulative,icu,[70 - 79],5,11
+2020-04-10,cumulative,icu,80+,4,8
+2020-04-10,cumulative,icu,total,16,27
+2020-04-11,active,cases,[0 - 9],183,363
+2020-04-11,active,cases,[10 - 19],188,374
+2020-04-11,active,cases,[20 - 29],233,470
+2020-04-11,active,cases,[30 - 39],220,437
+2020-04-11,active,cases,[40 - 49],196,385
+2020-04-11,active,cases,[50 - 59],183,358
+2020-04-11,active,cases,[60 - 69],154,303
+2020-04-11,active,cases,[70 - 79],93,192
+2020-04-11,active,cases,80+,53,103
+2020-04-11,active,cases,total,1500.7732680249,2948.3792472969485
+2020-04-11,active,hospital,[0 - 9],0,1
+2020-04-11,active,hospital,[10 - 19],0,3
+2020-04-11,active,hospital,[20 - 29],2,7
+2020-04-11,active,hospital,[30 - 39],5,13
+2020-04-11,active,hospital,[40 - 49],7,16
+2020-04-11,active,hospital,[50 - 59],13,29
+2020-04-11,active,hospital,[60 - 69],19,38
+2020-04-11,active,hospital,[70 - 79],16,35
+2020-04-11,active,hospital,80+,10,24
+2020-04-11,active,hospital,total,73,142
+2020-04-11,active,icu,[0 - 9],0,0
+2020-04-11,active,icu,[10 - 19],0,0
+2020-04-11,active,icu,[20 - 29],0,0
+2020-04-11,active,icu,[30 - 39],0,1
+2020-04-11,active,icu,[40 - 49],0,2
+2020-04-11,active,icu,[50 - 59],1,4
+2020-04-11,active,icu,[60 - 69],2,6
+2020-04-11,active,icu,[70 - 79],2,8
+2020-04-11,active,icu,80+,1,6
+2020-04-11,active,icu,total,7,18
+2020-04-11,cumulative,cases,[0 - 9],247,433
+2020-04-11,cumulative,cases,[10 - 19],261,454
+2020-04-11,cumulative,cases,[20 - 29],316,540
+2020-04-11,cumulative,cases,[30 - 39],298,506
+2020-04-11,cumulative,cases,[40 - 49],261,453
+2020-04-11,cumulative,cases,[50 - 59],245,432
+2020-04-11,cumulative,cases,[60 - 69],210,364
+2020-04-11,cumulative,cases,[70 - 79],130,217
+2020-04-11,cumulative,cases,80+,72,124
+2020-04-11,cumulative,cases,total,2038.8362144219197,3483.8702250117626
+2020-04-11,cumulative,hospital,[0 - 9],0,1
+2020-04-11,cumulative,hospital,[10 - 19],0,3
+2020-04-11,cumulative,hospital,[20 - 29],3,8
+2020-04-11,cumulative,hospital,[30 - 39],8,16
+2020-04-11,cumulative,hospital,[40 - 49],11,21
+2020-04-11,cumulative,hospital,[50 - 59],22,36
+2020-04-11,cumulative,hospital,[60 - 69],30,49
+2020-04-11,cumulative,hospital,[70 - 79],27,45
+2020-04-11,cumulative,hospital,80+,17,29
+2020-04-11,cumulative,hospital,total,120,189
+2020-04-11,cumulative,icu,[0 - 9],0,0
+2020-04-11,cumulative,icu,[10 - 19],0,0
+2020-04-11,cumulative,icu,[20 - 29],0,1
+2020-04-11,cumulative,icu,[30 - 39],0,2
+2020-04-11,cumulative,icu,[40 - 49],0,2
+2020-04-11,cumulative,icu,[50 - 59],2,5
+2020-04-11,cumulative,icu,[60 - 69],4,9
+2020-04-11,cumulative,icu,[70 - 79],5,11
+2020-04-11,cumulative,icu,80+,4,9
+2020-04-11,cumulative,icu,total,17,28
+2020-04-12,active,cases,[0 - 9],177,367
+2020-04-12,active,cases,[10 - 19],181,378
+2020-04-12,active,cases,[20 - 29],222,446
+2020-04-12,active,cases,[30 - 39],214,424
+2020-04-12,active,cases,[40 - 49],187,385
+2020-04-12,active,cases,[50 - 59],174,355
+2020-04-12,active,cases,[60 - 69],149,298
+2020-04-12,active,cases,[70 - 79],92,182
+2020-04-12,active,cases,80+,50,103
+2020-04-12,active,cases,total,1436.7808106229575,2927.750427879821
+2020-04-12,active,hospital,[0 - 9],0,1
+2020-04-12,active,hospital,[10 - 19],0,3
+2020-04-12,active,hospital,[20 - 29],2,7
+2020-04-12,active,hospital,[30 - 39],5,13
+2020-04-12,active,hospital,[40 - 49],6,17
+2020-04-12,active,hospital,[50 - 59],12,29
+2020-04-12,active,hospital,[60 - 69],17,38
+2020-04-12,active,hospital,[70 - 79],15,36
+2020-04-12,active,hospital,80+,9,23
+2020-04-12,active,hospital,total,68,140
+2020-04-12,active,icu,[0 - 9],0,0
+2020-04-12,active,icu,[10 - 19],0,0
+2020-04-12,active,icu,[20 - 29],0,0
+2020-04-12,active,icu,[30 - 39],0,1
+2020-04-12,active,icu,[40 - 49],0,2
+2020-04-12,active,icu,[50 - 59],1,4
+2020-04-12,active,icu,[60 - 69],1,7
+2020-04-12,active,icu,[70 - 79],2,8
+2020-04-12,active,icu,80+,1,6
+2020-04-12,active,icu,total,7,18
+2020-04-12,cumulative,cases,[0 - 9],254,446
+2020-04-12,cumulative,cases,[10 - 19],260,447
+2020-04-12,cumulative,cases,[20 - 29],320,556
+2020-04-12,cumulative,cases,[30 - 39],302,528
+2020-04-12,cumulative,cases,[40 - 49],263,464
+2020-04-12,cumulative,cases,[50 - 59],250,442
+2020-04-12,cumulative,cases,[60 - 69],211,364
+2020-04-12,cumulative,cases,[70 - 79],130,229
+2020-04-12,cumulative,cases,80+,71,130
+2020-04-12,cumulative,cases,total,2056.6472690228456,3554.291341955455
+2020-04-12,cumulative,hospital,[0 - 9],0,1
+2020-04-12,cumulative,hospital,[10 - 19],1,3
+2020-04-12,cumulative,hospital,[20 - 29],3,9
+2020-04-12,cumulative,hospital,[30 - 39],8,16
+2020-04-12,cumulative,hospital,[40 - 49],12,22
+2020-04-12,cumulative,hospital,[50 - 59],22,39
+2020-04-12,cumulative,hospital,[60 - 69],31,52
+2020-04-12,cumulative,hospital,[70 - 79],28,49
+2020-04-12,cumulative,hospital,80+,17,32
+2020-04-12,cumulative,hospital,total,123,194
+2020-04-12,cumulative,icu,[0 - 9],0,0
+2020-04-12,cumulative,icu,[10 - 19],0,0
+2020-04-12,cumulative,icu,[20 - 29],0,1
+2020-04-12,cumulative,icu,[30 - 39],0,2
+2020-04-12,cumulative,icu,[40 - 49],0,2
+2020-04-12,cumulative,icu,[50 - 59],2,5
+2020-04-12,cumulative,icu,[60 - 69],5,10
+2020-04-12,cumulative,icu,[70 - 79],6,12
+2020-04-12,cumulative,icu,80+,4,9
+2020-04-12,cumulative,icu,total,18,30
+2020-04-13,active,cases,[0 - 9],168,360
+2020-04-13,active,cases,[10 - 19],173,367
+2020-04-13,active,cases,[20 - 29],211,446
+2020-04-13,active,cases,[30 - 39],201,424
+2020-04-13,active,cases,[40 - 49],175,376
+2020-04-13,active,cases,[50 - 59],168,347
+2020-04-13,active,cases,[60 - 69],142,294
+2020-04-13,active,cases,[70 - 79],86,184
+2020-04-13,active,cases,80+,47,105
+2020-04-13,active,cases,total,1363.8751858271235,2885.3170676114496
+2020-04-13,active,hospital,[0 - 9],0,1
+2020-04-13,active,hospital,[10 - 19],0,3
+2020-04-13,active,hospital,[20 - 29],2,6
+2020-04-13,active,hospital,[30 - 39],4,13
+2020-04-13,active,hospital,[40 - 49],6,17
+2020-04-13,active,hospital,[50 - 59],12,30
+2020-04-13,active,hospital,[60 - 69],16,40
+2020-04-13,active,hospital,[70 - 79],14,35
+2020-04-13,active,hospital,80+,9,23
+2020-04-13,active,hospital,total,65,137
+2020-04-13,active,icu,[0 - 9],0,0
+2020-04-13,active,icu,[10 - 19],0,0
+2020-04-13,active,icu,[20 - 29],0,0
+2020-04-13,active,icu,[30 - 39],0,1
+2020-04-13,active,icu,[40 - 49],0,2
+2020-04-13,active,icu,[50 - 59],0,4
+2020-04-13,active,icu,[60 - 69],1,6
+2020-04-13,active,icu,[70 - 79],2,9
+2020-04-13,active,icu,80+,1,6
+2020-04-13,active,icu,total,6,18
+2020-04-13,cumulative,cases,[0 - 9],256,446
+2020-04-13,cumulative,cases,[10 - 19],260,467
+2020-04-13,cumulative,cases,[20 - 29],320,573
+2020-04-13,cumulative,cases,[30 - 39],302,528
+2020-04-13,cumulative,cases,[40 - 49],269,479
+2020-04-13,cumulative,cases,[50 - 59],251,440
+2020-04-13,cumulative,cases,[60 - 69],214,377
+2020-04-13,cumulative,cases,[70 - 79],131,227
+2020-04-13,cumulative,cases,80+,72,134
+2020-04-13,cumulative,cases,total,2072.6342613152474,3615.079810778855
+2020-04-13,cumulative,hospital,[0 - 9],0,2
+2020-04-13,cumulative,hospital,[10 - 19],1,3
+2020-04-13,cumulative,hospital,[20 - 29],3,8
+2020-04-13,cumulative,hospital,[30 - 39],9,18
+2020-04-13,cumulative,hospital,[40 - 49],12,22
+2020-04-13,cumulative,hospital,[50 - 59],23,41
+2020-04-13,cumulative,hospital,[60 - 69],32,55
+2020-04-13,cumulative,hospital,[70 - 79],28,49
+2020-04-13,cumulative,hospital,80+,18,32
+2020-04-13,cumulative,hospital,total,126,204
+2020-04-13,cumulative,icu,[0 - 9],0,0
+2020-04-13,cumulative,icu,[10 - 19],0,0
+2020-04-13,cumulative,icu,[20 - 29],0,1
+2020-04-13,cumulative,icu,[30 - 39],0,2
+2020-04-13,cumulative,icu,[40 - 49],0,3
+2020-04-13,cumulative,icu,[50 - 59],2,6
+2020-04-13,cumulative,icu,[60 - 69],5,10
+2020-04-13,cumulative,icu,[70 - 79],6,13
+2020-04-13,cumulative,icu,80+,4,10
+2020-04-13,cumulative,icu,total,19,31
+2020-04-14,active,cases,[0 - 9],158,342
+2020-04-14,active,cases,[10 - 19],162,361
+2020-04-14,active,cases,[20 - 29],199,427
+2020-04-14,active,cases,[30 - 39],187,433
+2020-04-14,active,cases,[40 - 49],166,353
+2020-04-14,active,cases,[50 - 59],156,347
+2020-04-14,active,cases,[60 - 69],131,286
+2020-04-14,active,cases,[70 - 79],81,182
+2020-04-14,active,cases,80+,45,94
+2020-04-14,active,cases,total,1281.6771050478585,2821.5937280430962
+2020-04-14,active,hospital,[0 - 9],0,1
+2020-04-14,active,hospital,[10 - 19],0,3
+2020-04-14,active,hospital,[20 - 29],1,7
+2020-04-14,active,hospital,[30 - 39],4,13
+2020-04-14,active,hospital,[40 - 49],6,16
+2020-04-14,active,hospital,[50 - 59],11,28
+2020-04-14,active,hospital,[60 - 69],15,39
+2020-04-14,active,hospital,[70 - 79],13,36
+2020-04-14,active,hospital,80+,9,23
+2020-04-14,active,hospital,total,58,136
+2020-04-14,active,icu,[0 - 9],0,0
+2020-04-14,active,icu,[10 - 19],0,0
+2020-04-14,active,icu,[20 - 29],0,1
+2020-04-14,active,icu,[30 - 39],0,1
+2020-04-14,active,icu,[40 - 49],0,2
+2020-04-14,active,icu,[50 - 59],0,4
+2020-04-14,active,icu,[60 - 69],1,6
+2020-04-14,active,icu,[70 - 79],1,8
+2020-04-14,active,icu,80+,1,6
+2020-04-14,active,icu,total,5,16
+2020-04-14,cumulative,cases,[0 - 9],256,455
+2020-04-14,cumulative,cases,[10 - 19],264,467
+2020-04-14,cumulative,cases,[20 - 29],321,576
+2020-04-14,cumulative,cases,[30 - 39],307,545
+2020-04-14,cumulative,cases,[40 - 49],267,472
+2020-04-14,cumulative,cases,[50 - 59],252,448
+2020-04-14,cumulative,cases,[60 - 69],216,384
+2020-04-14,cumulative,cases,[70 - 79],132,228
+2020-04-14,cumulative,cases,80+,72,128
+2020-04-14,cumulative,cases,total,2084.03743594903,3667.2559300953194
+2020-04-14,cumulative,hospital,[0 - 9],0,2
+2020-04-14,cumulative,hospital,[10 - 19],0,3
+2020-04-14,cumulative,hospital,[20 - 29],3,8
+2020-04-14,cumulative,hospital,[30 - 39],9,18
+2020-04-14,cumulative,hospital,[40 - 49],12,23
+2020-04-14,cumulative,hospital,[50 - 59],24,42
+2020-04-14,cumulative,hospital,[60 - 69],33,56
+2020-04-14,cumulative,hospital,[70 - 79],29,52
+2020-04-14,cumulative,hospital,80+,18,33
+2020-04-14,cumulative,hospital,total,129,214
+2020-04-14,cumulative,icu,[0 - 9],0,0
+2020-04-14,cumulative,icu,[10 - 19],0,0
+2020-04-14,cumulative,icu,[20 - 29],0,1
+2020-04-14,cumulative,icu,[30 - 39],0,2
+2020-04-14,cumulative,icu,[40 - 49],0,2
+2020-04-14,cumulative,icu,[50 - 59],2,6
+2020-04-14,cumulative,icu,[60 - 69],5,10
+2020-04-14,cumulative,icu,[70 - 79],7,13
+2020-04-14,cumulative,icu,80+,4,10
+2020-04-14,cumulative,icu,total,19,33
+2020-04-15,active,cases,[0 - 9],147,329
+2020-04-15,active,cases,[10 - 19],151,345
+2020-04-15,active,cases,[20 - 29],186,438
+2020-04-15,active,cases,[30 - 39],176,404
+2020-04-15,active,cases,[40 - 49],154,350
+2020-04-15,active,cases,[50 - 59],145,334
+2020-04-15,active,cases,[60 - 69],123,291
+2020-04-15,active,cases,[70 - 79],75,176
+2020-04-15,active,cases,80+,42,100
+2020-04-15,active,cases,total,1192.5173120264485,2741.866920266004
+2020-04-15,active,hospital,[0 - 9],0,1
+2020-04-15,active,hospital,[10 - 19],0,3
+2020-04-15,active,hospital,[20 - 29],1,6
+2020-04-15,active,hospital,[30 - 39],4,14
+2020-04-15,active,hospital,[40 - 49],5,16
+2020-04-15,active,hospital,[50 - 59],9,28
+2020-04-15,active,hospital,[60 - 69],13,37
+2020-04-15,active,hospital,[70 - 79],12,33
+2020-04-15,active,hospital,80+,7,21
+2020-04-15,active,hospital,total,53,133
+2020-04-15,active,icu,[0 - 9],0,0
+2020-04-15,active,icu,[10 - 19],0,0
+2020-04-15,active,icu,[20 - 29],0,1
+2020-04-15,active,icu,[30 - 39],0,1
+2020-04-15,active,icu,[40 - 49],0,2
+2020-04-15,active,icu,[50 - 59],0,4
+2020-04-15,active,icu,[60 - 69],1,6
+2020-04-15,active,icu,[70 - 79],1,8
+2020-04-15,active,icu,80+,0,6
+2020-04-15,active,icu,total,4,16
+2020-04-15,cumulative,cases,[0 - 9],254,458
+2020-04-15,cumulative,cases,[10 - 19],266,468
+2020-04-15,cumulative,cases,[20 - 29],324,586
+2020-04-15,cumulative,cases,[30 - 39],308,558
+2020-04-15,cumulative,cases,[40 - 49],271,489
+2020-04-15,cumulative,cases,[50 - 59],253,459
+2020-04-15,cumulative,cases,[60 - 69],217,389
+2020-04-15,cumulative,cases,[70 - 79],133,243
+2020-04-15,cumulative,cases,80+,72,134
+2020-04-15,cumulative,cases,total,2096.111761406674,3711.8219027518953
+2020-04-15,cumulative,hospital,[0 - 9],0,2
+2020-04-15,cumulative,hospital,[10 - 19],1,3
+2020-04-15,cumulative,hospital,[20 - 29],4,9
+2020-04-15,cumulative,hospital,[30 - 39],9,19
+2020-04-15,cumulative,hospital,[40 - 49],12,24
+2020-04-15,cumulative,hospital,[50 - 59],24,44
+2020-04-15,cumulative,hospital,[60 - 69],34,58
+2020-04-15,cumulative,hospital,[70 - 79],29,55
+2020-04-15,cumulative,hospital,80+,18,34
+2020-04-15,cumulative,hospital,total,132,231
+2020-04-15,cumulative,icu,[0 - 9],0,0
+2020-04-15,cumulative,icu,[10 - 19],0,0
+2020-04-15,cumulative,icu,[20 - 29],0,1
+2020-04-15,cumulative,icu,[30 - 39],0,2
+2020-04-15,cumulative,icu,[40 - 49],0,2
+2020-04-15,cumulative,icu,[50 - 59],2,6
+2020-04-15,cumulative,icu,[60 - 69],5,11
+2020-04-15,cumulative,icu,[70 - 79],7,14
+2020-04-15,cumulative,icu,80+,5,10
+2020-04-15,cumulative,icu,total,20,36
+2020-04-16,active,cases,[0 - 9],134,326
+2020-04-16,active,cases,[10 - 19],141,347
+2020-04-16,active,cases,[20 - 29],170,411
+2020-04-16,active,cases,[30 - 39],163,382
+2020-04-16,active,cases,[40 - 49],141,340
+2020-04-16,active,cases,[50 - 59],134,323
+2020-04-16,active,cases,[60 - 69],114,272
+2020-04-16,active,cases,[70 - 79],69,169
+2020-04-16,active,cases,80+,38,92
+2020-04-16,active,cases,total,1099.0802330430456,2634.0434857978157
+2020-04-16,active,hospital,[0 - 9],0,1
+2020-04-16,active,hospital,[10 - 19],0,2
+2020-04-16,active,hospital,[20 - 29],1,6
+2020-04-16,active,hospital,[30 - 39],3,13
+2020-04-16,active,hospital,[40 - 49],4,15
+2020-04-16,active,hospital,[50 - 59],8,27
+2020-04-16,active,hospital,[60 - 69],11,37
+2020-04-16,active,hospital,[70 - 79],10,33
+2020-04-16,active,hospital,80+,6,21
+2020-04-16,active,hospital,total,44,128
+2020-04-16,active,icu,[0 - 9],0,0
+2020-04-16,active,icu,[10 - 19],0,0
+2020-04-16,active,icu,[20 - 29],0,0
+2020-04-16,active,icu,[30 - 39],0,1
+2020-04-16,active,icu,[40 - 49],0,2
+2020-04-16,active,icu,[50 - 59],0,4
+2020-04-16,active,icu,[60 - 69],0,6
+2020-04-16,active,icu,[70 - 79],0,7
+2020-04-16,active,icu,80+,0,6
+2020-04-16,active,icu,total,4,16
+2020-04-16,cumulative,cases,[0 - 9],259,458
+2020-04-16,cumulative,cases,[10 - 19],264,473
+2020-04-16,cumulative,cases,[20 - 29],324,599
+2020-04-16,cumulative,cases,[30 - 39],308,547
+2020-04-16,cumulative,cases,[40 - 49],272,489
+2020-04-16,cumulative,cases,[50 - 59],255,465
+2020-04-16,cumulative,cases,[60 - 69],217,383
+2020-04-16,cumulative,cases,[70 - 79],133,243
+2020-04-16,cumulative,cases,80+,73,132
+2020-04-16,cumulative,cases,total,2106.512857436823,3749.72934358758
+2020-04-16,cumulative,hospital,[0 - 9],0,2
+2020-04-16,cumulative,hospital,[10 - 19],1,3
+2020-04-16,cumulative,hospital,[20 - 29],4,9
+2020-04-16,cumulative,hospital,[30 - 39],9,19
+2020-04-16,cumulative,hospital,[40 - 49],13,25
+2020-04-16,cumulative,hospital,[50 - 59],25,44
+2020-04-16,cumulative,hospital,[60 - 69],34,61
+2020-04-16,cumulative,hospital,[70 - 79],30,53
+2020-04-16,cumulative,hospital,80+,19,35
+2020-04-16,cumulative,hospital,total,134,227
+2020-04-16,cumulative,icu,[0 - 9],0,0
+2020-04-16,cumulative,icu,[10 - 19],0,0
+2020-04-16,cumulative,icu,[20 - 29],0,1
+2020-04-16,cumulative,icu,[30 - 39],0,2
+2020-04-16,cumulative,icu,[40 - 49],0,2
+2020-04-16,cumulative,icu,[50 - 59],2,6
+2020-04-16,cumulative,icu,[60 - 69],5,11
+2020-04-16,cumulative,icu,[70 - 79],7,14
+2020-04-16,cumulative,icu,80+,5,11
+2020-04-16,cumulative,icu,total,20,35
+2020-04-17,active,cases,[0 - 9],124,319
+2020-04-17,active,cases,[10 - 19],128,319
+2020-04-17,active,cases,[20 - 29],156,395
+2020-04-17,active,cases,[30 - 39],150,366
+2020-04-17,active,cases,[40 - 49],130,336
+2020-04-17,active,cases,[50 - 59],123,310
+2020-04-17,active,cases,[60 - 69],103,263
+2020-04-17,active,cases,[70 - 79],64,163
+2020-04-17,active,cases,80+,35,90
+2020-04-17,active,cases,total,1003.949693473246,2513.1351937697127
+2020-04-17,active,hospital,[0 - 9],0,1
+2020-04-17,active,hospital,[10 - 19],0,2
+2020-04-17,active,hospital,[20 - 29],1,6
+2020-04-17,active,hospital,[30 - 39],2,11
+2020-04-17,active,hospital,[40 - 49],3,15
+2020-04-17,active,hospital,[50 - 59],6,26
+2020-04-17,active,hospital,[60 - 69],9,33
+2020-04-17,active,hospital,[70 - 79],8,31
+2020-04-17,active,hospital,80+,5,21
+2020-04-17,active,hospital,total,36,126
+2020-04-17,active,icu,[0 - 9],0,0
+2020-04-17,active,icu,[10 - 19],0,0
+2020-04-17,active,icu,[20 - 29],0,0
+2020-04-17,active,icu,[30 - 39],0,1
+2020-04-17,active,icu,[40 - 49],0,2
+2020-04-17,active,icu,[50 - 59],0,3
+2020-04-17,active,icu,[60 - 69],0,5
+2020-04-17,active,icu,[70 - 79],0,7
+2020-04-17,active,icu,80+,0,5
+2020-04-17,active,icu,total,3,13
+2020-04-17,cumulative,cases,[0 - 9],260,463
+2020-04-17,cumulative,cases,[10 - 19],267,476
+2020-04-17,cumulative,cases,[20 - 29],328,595
+2020-04-17,cumulative,cases,[30 - 39],313,567
+2020-04-17,cumulative,cases,[40 - 49],273,495
+2020-04-17,cumulative,cases,[50 - 59],256,463
+2020-04-17,cumulative,cases,[60 - 69],216,387
+2020-04-17,cumulative,cases,[70 - 79],132,246
+2020-04-17,cumulative,cases,80+,73,133
+2020-04-17,cumulative,cases,total,2113.569187919576,3781.8589225308338
+2020-04-17,cumulative,hospital,[0 - 9],0,2
+2020-04-17,cumulative,hospital,[10 - 19],1,3
+2020-04-17,cumulative,hospital,[20 - 29],4,9
+2020-04-17,cumulative,hospital,[30 - 39],10,19
+2020-04-17,cumulative,hospital,[40 - 49],13,26
+2020-04-17,cumulative,hospital,[50 - 59],25,47
+2020-04-17,cumulative,hospital,[60 - 69],35,63
+2020-04-17,cumulative,hospital,[70 - 79],31,57
+2020-04-17,cumulative,hospital,80+,19,37
+2020-04-17,cumulative,hospital,total,137,238
+2020-04-17,cumulative,icu,[0 - 9],0,0
+2020-04-17,cumulative,icu,[10 - 19],0,0
+2020-04-17,cumulative,icu,[20 - 29],0,1
+2020-04-17,cumulative,icu,[30 - 39],0,2
+2020-04-17,cumulative,icu,[40 - 49],0,2
+2020-04-17,cumulative,icu,[50 - 59],2,7
+2020-04-17,cumulative,icu,[60 - 69],5,11
+2020-04-17,cumulative,icu,[70 - 79],7,15
+2020-04-17,cumulative,icu,80+,5,11
+2020-04-17,cumulative,icu,total,21,37
+2020-04-18,active,cases,[0 - 9],113,297
+2020-04-18,active,cases,[10 - 19],114,307
+2020-04-18,active,cases,[20 - 29],144,370
+2020-04-18,active,cases,[30 - 39],135,358
+2020-04-18,active,cases,[40 - 49],119,312
+2020-04-18,active,cases,[50 - 59],111,292
+2020-04-18,active,cases,[60 - 69],93,244
+2020-04-18,active,cases,[70 - 79],58,152
+2020-04-18,active,cases,80+,31,87
+2020-04-18,active,cases,total,908.8675828388191,2376.8654776845424
+2020-04-18,active,hospital,[0 - 9],0,1
+2020-04-18,active,hospital,[10 - 19],0,2
+2020-04-18,active,hospital,[20 - 29],1,6
+2020-04-18,active,hospital,[30 - 39],2,11
+2020-04-18,active,hospital,[40 - 49],3,15
+2020-04-18,active,hospital,[50 - 59],5,23
+2020-04-18,active,hospital,[60 - 69],6,31
+2020-04-18,active,hospital,[70 - 79],6,29
+2020-04-18,active,hospital,80+,4,20
+2020-04-18,active,hospital,total,29,110
+2020-04-18,active,icu,[0 - 9],0,0
+2020-04-18,active,icu,[10 - 19],0,0
+2020-04-18,active,icu,[20 - 29],0,0
+2020-04-18,active,icu,[30 - 39],0,1
+2020-04-18,active,icu,[40 - 49],0,2
+2020-04-18,active,icu,[50 - 59],0,3
+2020-04-18,active,icu,[60 - 69],0,5
+2020-04-18,active,icu,[70 - 79],0,6
+2020-04-18,active,icu,80+,0,5
+2020-04-18,active,icu,total,2,12
+2020-04-18,cumulative,cases,[0 - 9],259,468
+2020-04-18,cumulative,cases,[10 - 19],269,500
+2020-04-18,cumulative,cases,[20 - 29],326,587
+2020-04-18,cumulative,cases,[30 - 39],311,565
+2020-04-18,cumulative,cases,[40 - 49],273,505
+2020-04-18,cumulative,cases,[50 - 59],255,460
+2020-04-18,cumulative,cases,[60 - 69],218,406
+2020-04-18,cumulative,cases,[70 - 79],133,243
+2020-04-18,cumulative,cases,80+,73,138
+2020-04-18,cumulative,cases,total,2119.4161912072486,3809.0095297214357
+2020-04-18,cumulative,hospital,[0 - 9],0,2
+2020-04-18,cumulative,hospital,[10 - 19],1,3
+2020-04-18,cumulative,hospital,[20 - 29],4,9
+2020-04-18,cumulative,hospital,[30 - 39],10,20
+2020-04-18,cumulative,hospital,[40 - 49],13,25
+2020-04-18,cumulative,hospital,[50 - 59],26,47
+2020-04-18,cumulative,hospital,[60 - 69],35,63
+2020-04-18,cumulative,hospital,[70 - 79],32,56
+2020-04-18,cumulative,hospital,80+,19,37
+2020-04-18,cumulative,hospital,total,140,236
+2020-04-18,cumulative,icu,[0 - 9],0,0
+2020-04-18,cumulative,icu,[10 - 19],0,0
+2020-04-18,cumulative,icu,[20 - 29],0,1
+2020-04-18,cumulative,icu,[30 - 39],0,2
+2020-04-18,cumulative,icu,[40 - 49],0,3
+2020-04-18,cumulative,icu,[50 - 59],2,7
+2020-04-18,cumulative,icu,[60 - 69],6,13
+2020-04-18,cumulative,icu,[70 - 79],7,15
+2020-04-18,cumulative,icu,80+,5,12
+2020-04-18,cumulative,icu,total,21,40
+2020-04-19,active,cases,[0 - 9],101,276
+2020-04-19,active,cases,[10 - 19],104,278
+2020-04-19,active,cases,[20 - 29],126,353
+2020-04-19,active,cases,[30 - 39],120,319
+2020-04-19,active,cases,[40 - 49],107,287
+2020-04-19,active,cases,[50 - 59],100,270
+2020-04-19,active,cases,[60 - 69],85,232
+2020-04-19,active,cases,[70 - 79],52,145
+2020-04-19,active,cases,80+,29,80
+2020-04-19,active,cases,total,816.507929116394,2227.876239668945
+2020-04-19,active,hospital,[0 - 9],0,1
+2020-04-19,active,hospital,[10 - 19],0,2
+2020-04-19,active,hospital,[20 - 29],0,5
+2020-04-19,active,hospital,[30 - 39],1,10
+2020-04-19,active,hospital,[40 - 49],1,13
+2020-04-19,active,hospital,[50 - 59],3,21
+2020-04-19,active,hospital,[60 - 69],4,28
+2020-04-19,active,hospital,[70 - 79],3,23
+2020-04-19,active,hospital,80+,2,17
+2020-04-19,active,hospital,total,21,94
+2020-04-19,active,icu,[0 - 9],0,0
+2020-04-19,active,icu,[10 - 19],0,0
+2020-04-19,active,icu,[20 - 29],0,0
+2020-04-19,active,icu,[30 - 39],0,1
+2020-04-19,active,icu,[40 - 49],0,1
+2020-04-19,active,icu,[50 - 59],0,3
+2020-04-19,active,icu,[60 - 69],0,5
+2020-04-19,active,icu,[70 - 79],0,5
+2020-04-19,active,icu,80+,0,4
+2020-04-19,active,icu,total,2,11
+2020-04-19,cumulative,cases,[0 - 9],260,489
+2020-04-19,cumulative,cases,[10 - 19],268,488
+2020-04-19,cumulative,cases,[20 - 29],331,595
+2020-04-19,cumulative,cases,[30 - 39],310,563
+2020-04-19,cumulative,cases,[40 - 49],274,502
+2020-04-19,cumulative,cases,[50 - 59],257,469
+2020-04-19,cumulative,cases,[60 - 69],219,397
+2020-04-19,cumulative,cases,[70 - 79],133,244
+2020-04-19,cumulative,cases,80+,73,135
+2020-04-19,cumulative,cases,total,2124.2559755396856,3831.8944887508046
+2020-04-19,cumulative,hospital,[0 - 9],0,1
+2020-04-19,cumulative,hospital,[10 - 19],1,3
+2020-04-19,cumulative,hospital,[20 - 29],4,9
+2020-04-19,cumulative,hospital,[30 - 39],10,20
+2020-04-19,cumulative,hospital,[40 - 49],13,26
+2020-04-19,cumulative,hospital,[50 - 59],25,47
+2020-04-19,cumulative,hospital,[60 - 69],35,62
+2020-04-19,cumulative,hospital,[70 - 79],32,57
+2020-04-19,cumulative,hospital,80+,19,38
+2020-04-19,cumulative,hospital,total,140,245
+2020-04-19,cumulative,icu,[0 - 9],0,0
+2020-04-19,cumulative,icu,[10 - 19],0,0
+2020-04-19,cumulative,icu,[20 - 29],0,1
+2020-04-19,cumulative,icu,[30 - 39],0,2
+2020-04-19,cumulative,icu,[40 - 49],0,3
+2020-04-19,cumulative,icu,[50 - 59],2,6
+2020-04-19,cumulative,icu,[60 - 69],5,13
+2020-04-19,cumulative,icu,[70 - 79],7,15
+2020-04-19,cumulative,icu,80+,5,12
+2020-04-19,cumulative,icu,total,21,40
+2020-04-20,active,cases,[0 - 9],90,264
+2020-04-20,active,cases,[10 - 19],92,264
+2020-04-20,active,cases,[20 - 29],114,319
+2020-04-20,active,cases,[30 - 39],106,316
+2020-04-20,active,cases,[40 - 49],95,266
+2020-04-20,active,cases,[50 - 59],88,253
+2020-04-20,active,cases,[60 - 69],74,216
+2020-04-20,active,cases,[70 - 79],45,136
+2020-04-20,active,cases,80+,25,75
+2020-04-20,active,cases,total,725.8991674609347,2082.6959536198483
+2020-04-20,active,hospital,[0 - 9],0,1
+2020-04-20,active,hospital,[10 - 19],0,2
+2020-04-20,active,hospital,[20 - 29],0,5
+2020-04-20,active,hospital,[30 - 39],0,10
+2020-04-20,active,hospital,[40 - 49],0,12
+2020-04-20,active,hospital,[50 - 59],1,17
+2020-04-20,active,hospital,[60 - 69],1,23
+2020-04-20,active,hospital,[70 - 79],1,23
+2020-04-20,active,hospital,80+,0,16
+2020-04-20,active,hospital,total,15,82
+2020-04-20,active,icu,[0 - 9],0,0
+2020-04-20,active,icu,[10 - 19],0,0
+2020-04-20,active,icu,[20 - 29],0,0
+2020-04-20,active,icu,[30 - 39],0,1
+2020-04-20,active,icu,[40 - 49],0,1
+2020-04-20,active,icu,[50 - 59],0,3
+2020-04-20,active,icu,[60 - 69],0,4
+2020-04-20,active,icu,[70 - 79],0,4
+2020-04-20,active,icu,80+,0,4
+2020-04-20,active,icu,total,1,9
+2020-04-20,cumulative,cases,[0 - 9],260,476
+2020-04-20,cumulative,cases,[10 - 19],267,490
+2020-04-20,cumulative,cases,[20 - 29],331,606
+2020-04-20,cumulative,cases,[30 - 39],313,572
+2020-04-20,cumulative,cases,[40 - 49],277,493
+2020-04-20,cumulative,cases,[50 - 59],256,471
+2020-04-20,cumulative,cases,[60 - 69],216,398
+2020-04-20,cumulative,cases,[70 - 79],135,244
+2020-04-20,cumulative,cases,80+,74,136
+2020-04-20,cumulative,cases,total,2128.6505619294644,3851.142686162687
+2020-04-20,cumulative,hospital,[0 - 9],0,2
+2020-04-20,cumulative,hospital,[10 - 19],1,3
+2020-04-20,cumulative,hospital,[20 - 29],4,9
+2020-04-20,cumulative,hospital,[30 - 39],10,20
+2020-04-20,cumulative,hospital,[40 - 49],13,26
+2020-04-20,cumulative,hospital,[50 - 59],26,46
+2020-04-20,cumulative,hospital,[60 - 69],36,64
+2020-04-20,cumulative,hospital,[70 - 79],32,58
+2020-04-20,cumulative,hospital,80+,19,37
+2020-04-20,cumulative,hospital,total,141,246
+2020-04-20,cumulative,icu,[0 - 9],0,0
+2020-04-20,cumulative,icu,[10 - 19],0,0
+2020-04-20,cumulative,icu,[20 - 29],0,1
+2020-04-20,cumulative,icu,[30 - 39],0,2
+2020-04-20,cumulative,icu,[40 - 49],0,3
+2020-04-20,cumulative,icu,[50 - 59],2,6
+2020-04-20,cumulative,icu,[60 - 69],5,12
+2020-04-20,cumulative,icu,[70 - 79],8,16
+2020-04-20,cumulative,icu,80+,5,11
+2020-04-20,cumulative,icu,total,22,39
+2020-04-21,active,cases,[0 - 9],78,240
+2020-04-21,active,cases,[10 - 19],81,243
+2020-04-21,active,cases,[20 - 29],99,284
+2020-04-21,active,cases,[30 - 39],94,285
+2020-04-21,active,cases,[40 - 49],83,246
+2020-04-21,active,cases,[50 - 59],78,231
+2020-04-21,active,cases,[60 - 69],66,202
+2020-04-21,active,cases,[70 - 79],40,122
+2020-04-21,active,cases,80+,22,69
+2020-04-21,active,cases,total,638.7144580396516,1931.707346721388
+2020-04-21,active,hospital,[0 - 9],0,1
+2020-04-21,active,hospital,[10 - 19],0,2
+2020-04-21,active,hospital,[20 - 29],0,5
+2020-04-21,active,hospital,[30 - 39],0,9
+2020-04-21,active,hospital,[40 - 49],0,10
+2020-04-21,active,hospital,[50 - 59],0,16
+2020-04-21,active,hospital,[60 - 69],0,23
+2020-04-21,active,hospital,[70 - 79],0,21
+2020-04-21,active,hospital,80+,0,12
+2020-04-21,active,hospital,total,10,72
+2020-04-21,active,icu,[0 - 9],0,0
+2020-04-21,active,icu,[10 - 19],0,0
+2020-04-21,active,icu,[20 - 29],0,0
+2020-04-21,active,icu,[30 - 39],0,1
+2020-04-21,active,icu,[40 - 49],0,1
+2020-04-21,active,icu,[50 - 59],0,2
+2020-04-21,active,icu,[60 - 69],0,3
+2020-04-21,active,icu,[70 - 79],0,3
+2020-04-21,active,icu,80+,0,3
+2020-04-21,active,icu,total,1,8
+2020-04-21,cumulative,cases,[0 - 9],262,489
+2020-04-21,cumulative,cases,[10 - 19],269,492
+2020-04-21,cumulative,cases,[20 - 29],327,610
+2020-04-21,cumulative,cases,[30 - 39],313,568
+2020-04-21,cumulative,cases,[40 - 49],275,504
+2020-04-21,cumulative,cases,[50 - 59],259,484
+2020-04-21,cumulative,cases,[60 - 69],218,401
+2020-04-21,cumulative,cases,[70 - 79],134,249
+2020-04-21,cumulative,cases,80+,74,136
+2020-04-21,cumulative,cases,total,2133.000542570033,3871.3947180998402
+2020-04-21,cumulative,hospital,[0 - 9],0,1
+2020-04-21,cumulative,hospital,[10 - 19],1,3
+2020-04-21,cumulative,hospital,[20 - 29],4,9
+2020-04-21,cumulative,hospital,[30 - 39],10,20
+2020-04-21,cumulative,hospital,[40 - 49],13,25
+2020-04-21,cumulative,hospital,[50 - 59],25,49
+2020-04-21,cumulative,hospital,[60 - 69],36,66
+2020-04-21,cumulative,hospital,[70 - 79],31,57
+2020-04-21,cumulative,hospital,80+,20,37
+2020-04-21,cumulative,hospital,total,140,249
+2020-04-21,cumulative,icu,[0 - 9],0,0
+2020-04-21,cumulative,icu,[10 - 19],0,0
+2020-04-21,cumulative,icu,[20 - 29],0,1
+2020-04-21,cumulative,icu,[30 - 39],0,2
+2020-04-21,cumulative,icu,[40 - 49],0,3
+2020-04-21,cumulative,icu,[50 - 59],3,7
+2020-04-21,cumulative,icu,[60 - 69],6,13
+2020-04-21,cumulative,icu,[70 - 79],8,16
+2020-04-21,cumulative,icu,80+,5,12
+2020-04-21,cumulative,icu,total,23,42
+2020-04-22,active,cases,[0 - 9],70,219
+2020-04-22,active,cases,[10 - 19],70,222
+2020-04-22,active,cases,[20 - 29],87,270
+2020-04-22,active,cases,[30 - 39],82,260
+2020-04-22,active,cases,[40 - 49],73,224
+2020-04-22,active,cases,[50 - 59],68,214
+2020-04-22,active,cases,[60 - 69],57,178
+2020-04-22,active,cases,[70 - 79],35,112
+2020-04-22,active,cases,80+,20,62
+2020-04-22,active,cases,total,555.2607964917029,1754.4873146844689
+2020-04-22,active,hospital,[0 - 9],0,1
+2020-04-22,active,hospital,[10 - 19],0,2
+2020-04-22,active,hospital,[20 - 29],0,5
+2020-04-22,active,hospital,[30 - 39],0,7
+2020-04-22,active,hospital,[40 - 49],0,9
+2020-04-22,active,hospital,[50 - 59],0,12
+2020-04-22,active,hospital,[60 - 69],0,18
+2020-04-22,active,hospital,[70 - 79],0,16
+2020-04-22,active,hospital,80+,0,12
+2020-04-22,active,hospital,total,7,54
+2020-04-22,active,icu,[0 - 9],0,0
+2020-04-22,active,icu,[10 - 19],0,0
+2020-04-22,active,icu,[20 - 29],0,0
+2020-04-22,active,icu,[30 - 39],0,1
+2020-04-22,active,icu,[40 - 49],0,1
+2020-04-22,active,icu,[50 - 59],0,2
+2020-04-22,active,icu,[60 - 69],0,3
+2020-04-22,active,icu,[70 - 79],0,2
+2020-04-22,active,icu,80+,0,3
+2020-04-22,active,icu,total,0,6
+2020-04-22,cumulative,cases,[0 - 9],260,491
+2020-04-22,cumulative,cases,[10 - 19],271,495
+2020-04-22,cumulative,cases,[20 - 29],329,599
+2020-04-22,cumulative,cases,[30 - 39],313,570
+2020-04-22,cumulative,cases,[40 - 49],276,504
+2020-04-22,cumulative,cases,[50 - 59],258,478
+2020-04-22,cumulative,cases,[60 - 69],220,396
+2020-04-22,cumulative,cases,[70 - 79],135,251
+2020-04-22,cumulative,cases,80+,73,139
+2020-04-22,cumulative,cases,total,2135.2993706991233,3889.6866203729774
+2020-04-22,cumulative,hospital,[0 - 9],0,2
+2020-04-22,cumulative,hospital,[10 - 19],1,3
+2020-04-22,cumulative,hospital,[20 - 29],4,9
+2020-04-22,cumulative,hospital,[30 - 39],10,21
+2020-04-22,cumulative,hospital,[40 - 49],13,25
+2020-04-22,cumulative,hospital,[50 - 59],26,50
+2020-04-22,cumulative,hospital,[60 - 69],36,69
+2020-04-22,cumulative,hospital,[70 - 79],32,62
+2020-04-22,cumulative,hospital,80+,20,39
+2020-04-22,cumulative,hospital,total,142,261
+2020-04-22,cumulative,icu,[0 - 9],0,0
+2020-04-22,cumulative,icu,[10 - 19],0,0
+2020-04-22,cumulative,icu,[20 - 29],0,1
+2020-04-22,cumulative,icu,[30 - 39],0,2
+2020-04-22,cumulative,icu,[40 - 49],0,3
+2020-04-22,cumulative,icu,[50 - 59],3,7
+2020-04-22,cumulative,icu,[60 - 69],6,12
+2020-04-22,cumulative,icu,[70 - 79],8,16
+2020-04-22,cumulative,icu,80+,5,12
+2020-04-22,cumulative,icu,total,22,41
+2020-04-23,active,cases,[0 - 9],59,193
+2020-04-23,active,cases,[10 - 19],62,202
+2020-04-23,active,cases,[20 - 29],75,238
+2020-04-23,active,cases,[30 - 39],73,238
+2020-04-23,active,cases,[40 - 49],63,215
+2020-04-23,active,cases,[50 - 59],59,192
+2020-04-23,active,cases,[60 - 69],50,158
+2020-04-23,active,cases,[70 - 79],29,103
+2020-04-23,active,cases,80+,17,56
+2020-04-23,active,cases,total,481.6221089347671,1579.474483760293
+2020-04-23,active,hospital,[0 - 9],0,1
+2020-04-23,active,hospital,[10 - 19],0,2
+2020-04-23,active,hospital,[20 - 29],0,4
+2020-04-23,active,hospital,[30 - 39],0,7
+2020-04-23,active,hospital,[40 - 49],0,7
+2020-04-23,active,hospital,[50 - 59],0,13
+2020-04-23,active,hospital,[60 - 69],0,13
+2020-04-23,active,hospital,[70 - 79],0,10
+2020-04-23,active,hospital,80+,0,10
+2020-04-23,active,hospital,total,4,40
+2020-04-23,active,icu,[0 - 9],0,0
+2020-04-23,active,icu,[10 - 19],0,0
+2020-04-23,active,icu,[20 - 29],0,0
+2020-04-23,active,icu,[30 - 39],0,1
+2020-04-23,active,icu,[40 - 49],0,1
+2020-04-23,active,icu,[50 - 59],0,2
+2020-04-23,active,icu,[60 - 69],0,2
+2020-04-23,active,icu,[70 - 79],0,2
+2020-04-23,active,icu,80+,0,2
+2020-04-23,active,icu,total,0,4
+2020-04-23,cumulative,cases,[0 - 9],263,490
+2020-04-23,cumulative,cases,[10 - 19],269,487
+2020-04-23,cumulative,cases,[20 - 29],333,609
+2020-04-23,cumulative,cases,[30 - 39],312,575
+2020-04-23,cumulative,cases,[40 - 49],273,511
+2020-04-23,cumulative,cases,[50 - 59],257,483
+2020-04-23,cumulative,cases,[60 - 69],220,409
+2020-04-23,cumulative,cases,[70 - 79],134,251
+2020-04-23,cumulative,cases,80+,75,138
+2020-04-23,cumulative,cases,total,2137.1865744741594,3905.201040473048
+2020-04-23,cumulative,hospital,[0 - 9],0,2
+2020-04-23,cumulative,hospital,[10 - 19],1,3
+2020-04-23,cumulative,hospital,[20 - 29],4,9
+2020-04-23,cumulative,hospital,[30 - 39],10,21
+2020-04-23,cumulative,hospital,[40 - 49],13,27
+2020-04-23,cumulative,hospital,[50 - 59],26,50
+2020-04-23,cumulative,hospital,[60 - 69],36,66
+2020-04-23,cumulative,hospital,[70 - 79],32,60
+2020-04-23,cumulative,hospital,80+,20,38
+2020-04-23,cumulative,hospital,total,140,259
+2020-04-23,cumulative,icu,[0 - 9],0,0
+2020-04-23,cumulative,icu,[10 - 19],0,0
+2020-04-23,cumulative,icu,[20 - 29],0,1
+2020-04-23,cumulative,icu,[30 - 39],0,2
+2020-04-23,cumulative,icu,[40 - 49],0,3
+2020-04-23,cumulative,icu,[50 - 59],3,7
+2020-04-23,cumulative,icu,[60 - 69],6,13
+2020-04-23,cumulative,icu,[70 - 79],8,16
+2020-04-23,cumulative,icu,80+,5,12
+2020-04-23,cumulative,icu,total,23,41
+2020-04-24,active,cases,[0 - 9],52,174
+2020-04-24,active,cases,[10 - 19],51,184
+2020-04-24,active,cases,[20 - 29],66,221
+2020-04-24,active,cases,[30 - 39],62,208
+2020-04-24,active,cases,[40 - 49],53,185
+2020-04-24,active,cases,[50 - 59],50,173
+2020-04-24,active,cases,[60 - 69],43,151
+2020-04-24,active,cases,[70 - 79],26,88
+2020-04-24,active,cases,80+,15,50
+2020-04-24,active,cases,total,413.6057008300793,1426.783796472906
+2020-04-24,active,hospital,[0 - 9],0,1
+2020-04-24,active,hospital,[10 - 19],0,2
+2020-04-24,active,hospital,[20 - 29],0,4
+2020-04-24,active,hospital,[30 - 39],0,6
+2020-04-24,active,hospital,[40 - 49],0,5
+2020-04-24,active,hospital,[50 - 59],0,8
+2020-04-24,active,hospital,[60 - 69],0,10
+2020-04-24,active,hospital,[70 - 79],0,9
+2020-04-24,active,hospital,80+,0,8
+2020-04-24,active,hospital,total,2,28
+2020-04-24,active,icu,[0 - 9],0,0
+2020-04-24,active,icu,[10 - 19],0,0
+2020-04-24,active,icu,[20 - 29],0,0
+2020-04-24,active,icu,[30 - 39],0,1
+2020-04-24,active,icu,[40 - 49],0,1
+2020-04-24,active,icu,[50 - 59],0,1
+2020-04-24,active,icu,[60 - 69],0,1
+2020-04-24,active,icu,[70 - 79],0,1
+2020-04-24,active,icu,80+,0,2
+2020-04-24,active,icu,total,0,3
+2020-04-24,cumulative,cases,[0 - 9],261,492
+2020-04-24,cumulative,cases,[10 - 19],270,499
+2020-04-24,cumulative,cases,[20 - 29],331,608
+2020-04-24,cumulative,cases,[30 - 39],315,570
+2020-04-24,cumulative,cases,[40 - 49],276,499
+2020-04-24,cumulative,cases,[50 - 59],258,474
+2020-04-24,cumulative,cases,[60 - 69],220,400
+2020-04-24,cumulative,cases,[70 - 79],135,246
+2020-04-24,cumulative,cases,80+,74,139
+2020-04-24,cumulative,cases,total,2138.7353122343843,3918.3419067109976
+2020-04-24,cumulative,hospital,[0 - 9],0,2
+2020-04-24,cumulative,hospital,[10 - 19],1,3
+2020-04-24,cumulative,hospital,[20 - 29],4,9
+2020-04-24,cumulative,hospital,[30 - 39],10,21
+2020-04-24,cumulative,hospital,[40 - 49],13,27
+2020-04-24,cumulative,hospital,[50 - 59],26,51
+2020-04-24,cumulative,hospital,[60 - 69],36,69
+2020-04-24,cumulative,hospital,[70 - 79],32,61
+2020-04-24,cumulative,hospital,80+,20,39
+2020-04-24,cumulative,hospital,total,142,262
+2020-04-24,cumulative,icu,[0 - 9],0,0
+2020-04-24,cumulative,icu,[10 - 19],0,0
+2020-04-24,cumulative,icu,[20 - 29],0,1
+2020-04-24,cumulative,icu,[30 - 39],0,2
+2020-04-24,cumulative,icu,[40 - 49],1,3
+2020-04-24,cumulative,icu,[50 - 59],2,7
+2020-04-24,cumulative,icu,[60 - 69],6,13
+2020-04-24,cumulative,icu,[70 - 79],8,16
+2020-04-24,cumulative,icu,80+,5,13
+2020-04-24,cumulative,icu,total,23,44
+2020-04-25,active,cases,[0 - 9],44,160
+2020-04-25,active,cases,[10 - 19],45,167
+2020-04-25,active,cases,[20 - 29],55,200
+2020-04-25,active,cases,[30 - 39],53,184
+2020-04-25,active,cases,[40 - 49],46,163
+2020-04-25,active,cases,[50 - 59],44,151
+2020-04-25,active,cases,[60 - 69],37,130
+2020-04-25,active,cases,[70 - 79],22,82
+2020-04-25,active,cases,80+,12,44
+2020-04-25,active,cases,total,355.0427978517407,1278.7985969857946
+2020-04-25,active,hospital,[0 - 9],0,1
+2020-04-25,active,hospital,[10 - 19],0,2
+2020-04-25,active,hospital,[20 - 29],0,4
+2020-04-25,active,hospital,[30 - 39],0,5
+2020-04-25,active,hospital,[40 - 49],0,4
+2020-04-25,active,hospital,[50 - 59],0,6
+2020-04-25,active,hospital,[60 - 69],0,4
+2020-04-25,active,hospital,[70 - 79],0,5
+2020-04-25,active,hospital,80+,0,5
+2020-04-25,active,hospital,total,1,18
+2020-04-25,active,icu,[0 - 9],0,0
+2020-04-25,active,icu,[10 - 19],0,0
+2020-04-25,active,icu,[20 - 29],0,0
+2020-04-25,active,icu,[30 - 39],0,1
+2020-04-25,active,icu,[40 - 49],0,1
+2020-04-25,active,icu,[50 - 59],0,1
+2020-04-25,active,icu,[60 - 69],0,1
+2020-04-25,active,icu,[70 - 79],0,0
+2020-04-25,active,icu,80+,0,1
+2020-04-25,active,icu,total,0,3
+2020-04-25,cumulative,cases,[0 - 9],262,487
+2020-04-25,cumulative,cases,[10 - 19],268,496
+2020-04-25,cumulative,cases,[20 - 29],333,612
+2020-04-25,cumulative,cases,[30 - 39],312,592
+2020-04-25,cumulative,cases,[40 - 49],276,509
+2020-04-25,cumulative,cases,[50 - 59],260,479
+2020-04-25,cumulative,cases,[60 - 69],221,414
+2020-04-25,cumulative,cases,[70 - 79],136,246
+2020-04-25,cumulative,cases,80+,74,135
+2020-04-25,cumulative,cases,total,2140.0059192441895,3929.459586370106
+2020-04-25,cumulative,hospital,[0 - 9],0,2
+2020-04-25,cumulative,hospital,[10 - 19],1,3
+2020-04-25,cumulative,hospital,[20 - 29],4,9
+2020-04-25,cumulative,hospital,[30 - 39],10,21
+2020-04-25,cumulative,hospital,[40 - 49],13,27
+2020-04-25,cumulative,hospital,[50 - 59],26,50
+2020-04-25,cumulative,hospital,[60 - 69],36,69
+2020-04-25,cumulative,hospital,[70 - 79],32,63
+2020-04-25,cumulative,hospital,80+,20,39
+2020-04-25,cumulative,hospital,total,141,264
+2020-04-25,cumulative,icu,[0 - 9],0,0
+2020-04-25,cumulative,icu,[10 - 19],0,0
+2020-04-25,cumulative,icu,[20 - 29],0,1
+2020-04-25,cumulative,icu,[30 - 39],0,2
+2020-04-25,cumulative,icu,[40 - 49],0,3
+2020-04-25,cumulative,icu,[50 - 59],3,7
+2020-04-25,cumulative,icu,[60 - 69],6,14
+2020-04-25,cumulative,icu,[70 - 79],8,16
+2020-04-25,cumulative,icu,80+,5,12
+2020-04-25,cumulative,icu,total,23,46
+2020-04-26,active,cases,[0 - 9],36,137
+2020-04-26,active,cases,[10 - 19],39,145
+2020-04-26,active,cases,[20 - 29],47,179
+2020-04-26,active,cases,[30 - 39],45,167
+2020-04-26,active,cases,[40 - 49],39,146
+2020-04-26,active,cases,[50 - 59],37,137
+2020-04-26,active,cases,[60 - 69],31,110
+2020-04-26,active,cases,[70 - 79],19,71
+2020-04-26,active,cases,80+,11,40
+2020-04-26,active,cases,total,302.80770264665216,1137.6916157695255
+2020-04-26,active,hospital,[0 - 9],0,1
+2020-04-26,active,hospital,[10 - 19],0,2
+2020-04-26,active,hospital,[20 - 29],0,3
+2020-04-26,active,hospital,[30 - 39],0,3
+2020-04-26,active,hospital,[40 - 49],0,3
+2020-04-26,active,hospital,[50 - 59],0,2
+2020-04-26,active,hospital,[60 - 69],0,3
+2020-04-26,active,hospital,[70 - 79],0,4
+2020-04-26,active,hospital,80+,0,3
+2020-04-26,active,hospital,total,1,13
+2020-04-26,active,icu,[0 - 9],0,0
+2020-04-26,active,icu,[10 - 19],0,0
+2020-04-26,active,icu,[20 - 29],0,0
+2020-04-26,active,icu,[30 - 39],0,1
+2020-04-26,active,icu,[40 - 49],0,1
+2020-04-26,active,icu,[50 - 59],0,0
+2020-04-26,active,icu,[60 - 69],0,0
+2020-04-26,active,icu,[70 - 79],0,0
+2020-04-26,active,icu,80+,0,1
+2020-04-26,active,icu,total,0,2
+2020-04-26,cumulative,cases,[0 - 9],263,488
+2020-04-26,cumulative,cases,[10 - 19],270,488
+2020-04-26,cumulative,cases,[20 - 29],331,628
+2020-04-26,cumulative,cases,[30 - 39],313,587
+2020-04-26,cumulative,cases,[40 - 49],275,507
+2020-04-26,cumulative,cases,[50 - 59],260,486
+2020-04-26,cumulative,cases,[60 - 69],220,406
+2020-04-26,cumulative,cases,[70 - 79],136,249
+2020-04-26,cumulative,cases,80+,74,140
+2020-04-26,cumulative,cases,total,2141.2150799084234,3938.8564454005646
+2020-04-26,cumulative,hospital,[0 - 9],0,2
+2020-04-26,cumulative,hospital,[10 - 19],1,3
+2020-04-26,cumulative,hospital,[20 - 29],4,10
+2020-04-26,cumulative,hospital,[30 - 39],10,21
+2020-04-26,cumulative,hospital,[40 - 49],13,28
+2020-04-26,cumulative,hospital,[50 - 59],26,48
+2020-04-26,cumulative,hospital,[60 - 69],36,67
+2020-04-26,cumulative,hospital,[70 - 79],32,63
+2020-04-26,cumulative,hospital,80+,20,39
+2020-04-26,cumulative,hospital,total,142,263
+2020-04-26,cumulative,icu,[0 - 9],0,0
+2020-04-26,cumulative,icu,[10 - 19],0,0
+2020-04-26,cumulative,icu,[20 - 29],0,1
+2020-04-26,cumulative,icu,[30 - 39],0,2
+2020-04-26,cumulative,icu,[40 - 49],0,3
+2020-04-26,cumulative,icu,[50 - 59],2,7
+2020-04-26,cumulative,icu,[60 - 69],6,13
+2020-04-26,cumulative,icu,[70 - 79],8,16
+2020-04-26,cumulative,icu,80+,5,12
+2020-04-26,cumulative,icu,total,23,43
+2020-04-27,active,cases,[0 - 9],31,120
+2020-04-27,active,cases,[10 - 19],33,125
+2020-04-27,active,cases,[20 - 29],40,153
+2020-04-27,active,cases,[30 - 39],38,142
+2020-04-27,active,cases,[40 - 49],34,127
+2020-04-27,active,cases,[50 - 59],31,117
+2020-04-27,active,cases,[60 - 69],26,105
+2020-04-27,active,cases,[70 - 79],16,66
+2020-04-27,active,cases,80+,9,33
+2020-04-27,active,cases,total,257.3786730839938,1005.1574149447893
+2020-04-27,active,hospital,[0 - 9],0,1
+2020-04-27,active,hospital,[10 - 19],0,1
+2020-04-27,active,hospital,[20 - 29],0,3
+2020-04-27,active,hospital,[30 - 39],0,2
+2020-04-27,active,hospital,[40 - 49],0,2
+2020-04-27,active,hospital,[50 - 59],0,1
+2020-04-27,active,hospital,[60 - 69],0,0
+2020-04-27,active,hospital,[70 - 79],0,0
+2020-04-27,active,hospital,80+,0,2
+2020-04-27,active,hospital,total,0,7
+2020-04-27,active,icu,[0 - 9],0,0
+2020-04-27,active,icu,[10 - 19],0,0
+2020-04-27,active,icu,[20 - 29],0,0
+2020-04-27,active,icu,[30 - 39],0,0
+2020-04-27,active,icu,[40 - 49],0,0
+2020-04-27,active,icu,[50 - 59],0,0
+2020-04-27,active,icu,[60 - 69],0,0
+2020-04-27,active,icu,[70 - 79],0,0
+2020-04-27,active,icu,80+,0,1
+2020-04-27,active,icu,total,0,2
+2020-04-27,cumulative,cases,[0 - 9],262,482
+2020-04-27,cumulative,cases,[10 - 19],271,495
+2020-04-27,cumulative,cases,[20 - 29],334,597
+2020-04-27,cumulative,cases,[30 - 39],314,587
+2020-04-27,cumulative,cases,[40 - 49],277,522
+2020-04-27,cumulative,cases,[50 - 59],259,477
+2020-04-27,cumulative,cases,[60 - 69],222,415
+2020-04-27,cumulative,cases,[70 - 79],135,255
+2020-04-27,cumulative,cases,80+,74,141
+2020-04-27,cumulative,cases,total,2142.258726504177,3946.792321731677
+2020-04-27,cumulative,hospital,[0 - 9],0,2
+2020-04-27,cumulative,hospital,[10 - 19],1,3
+2020-04-27,cumulative,hospital,[20 - 29],4,10
+2020-04-27,cumulative,hospital,[30 - 39],10,21
+2020-04-27,cumulative,hospital,[40 - 49],14,27
+2020-04-27,cumulative,hospital,[50 - 59],26,52
+2020-04-27,cumulative,hospital,[60 - 69],36,71
+2020-04-27,cumulative,hospital,[70 - 79],32,61
+2020-04-27,cumulative,hospital,80+,20,41
+2020-04-27,cumulative,hospital,total,144,263
+2020-04-27,cumulative,icu,[0 - 9],0,0
+2020-04-27,cumulative,icu,[10 - 19],0,0
+2020-04-27,cumulative,icu,[20 - 29],0,1
+2020-04-27,cumulative,icu,[30 - 39],0,2
+2020-04-27,cumulative,icu,[40 - 49],0,3
+2020-04-27,cumulative,icu,[50 - 59],3,7
+2020-04-27,cumulative,icu,[60 - 69],6,13
+2020-04-27,cumulative,icu,[70 - 79],8,16
+2020-04-27,cumulative,icu,80+,5,13
+2020-04-27,cumulative,icu,total,23,44
+2020-04-28,active,cases,[0 - 9],27,108
+2020-04-28,active,cases,[10 - 19],27,106
+2020-04-28,active,cases,[20 - 29],34,132
+2020-04-28,active,cases,[30 - 39],32,129
+2020-04-28,active,cases,[40 - 49],28,115
+2020-04-28,active,cases,[50 - 59],27,105
+2020-04-28,active,cases,[60 - 69],22,88
+2020-04-28,active,cases,[70 - 79],14,52
+2020-04-28,active,cases,80+,8,29
+2020-04-28,active,cases,total,216.77829354465166,880.6245217281421
+2020-04-28,active,hospital,[0 - 9],0,1
+2020-04-28,active,hospital,[10 - 19],0,1
+2020-04-28,active,hospital,[20 - 29],0,2
+2020-04-28,active,hospital,[30 - 39],0,2
+2020-04-28,active,hospital,[40 - 49],0,1
+2020-04-28,active,hospital,[50 - 59],0,0
+2020-04-28,active,hospital,[60 - 69],0,0
+2020-04-28,active,hospital,[70 - 79],0,0
+2020-04-28,active,hospital,80+,0,1
+2020-04-28,active,hospital,total,0,5
+2020-04-28,active,icu,[0 - 9],0,0
+2020-04-28,active,icu,[10 - 19],0,0
+2020-04-28,active,icu,[20 - 29],0,0
+2020-04-28,active,icu,[30 - 39],0,0
+2020-04-28,active,icu,[40 - 49],0,0
+2020-04-28,active,icu,[50 - 59],0,0
+2020-04-28,active,icu,[60 - 69],0,0
+2020-04-28,active,icu,[70 - 79],0,0
+2020-04-28,active,icu,80+,0,0
+2020-04-28,active,icu,total,0,1
+2020-04-28,cumulative,cases,[0 - 9],263,498
+2020-04-28,cumulative,cases,[10 - 19],271,499
+2020-04-28,cumulative,cases,[20 - 29],331,617
+2020-04-28,cumulative,cases,[30 - 39],317,578
+2020-04-28,cumulative,cases,[40 - 49],276,514
+2020-04-28,cumulative,cases,[50 - 59],257,480
+2020-04-28,cumulative,cases,[60 - 69],222,419
+2020-04-28,cumulative,cases,[70 - 79],134,253
+2020-04-28,cumulative,cases,80+,75,138
+2020-04-28,cumulative,cases,total,2143.1190103104223,3953.4897193562592
+2020-04-28,cumulative,hospital,[0 - 9],0,2
+2020-04-28,cumulative,hospital,[10 - 19],1,3
+2020-04-28,cumulative,hospital,[20 - 29],4,9
+2020-04-28,cumulative,hospital,[30 - 39],10,20
+2020-04-28,cumulative,hospital,[40 - 49],13,28
+2020-04-28,cumulative,hospital,[50 - 59],26,51
+2020-04-28,cumulative,hospital,[60 - 69],36,68
+2020-04-28,cumulative,hospital,[70 - 79],33,63
+2020-04-28,cumulative,hospital,80+,20,40
+2020-04-28,cumulative,hospital,total,144,258
+2020-04-28,cumulative,icu,[0 - 9],0,0
+2020-04-28,cumulative,icu,[10 - 19],0,0
+2020-04-28,cumulative,icu,[20 - 29],0,1
+2020-04-28,cumulative,icu,[30 - 39],0,2
+2020-04-28,cumulative,icu,[40 - 49],0,3
+2020-04-28,cumulative,icu,[50 - 59],2,7
+2020-04-28,cumulative,icu,[60 - 69],6,14
+2020-04-28,cumulative,icu,[70 - 79],8,17
+2020-04-28,cumulative,icu,80+,6,13
+2020-04-28,cumulative,icu,total,23,46
+2020-04-29,active,cases,[0 - 9],23,90
+2020-04-29,active,cases,[10 - 19],24,89
+2020-04-29,active,cases,[20 - 29],28,114
+2020-04-29,active,cases,[30 - 39],27,110
+2020-04-29,active,cases,[40 - 49],23,91
+2020-04-29,active,cases,[50 - 59],22,92
+2020-04-29,active,cases,[60 - 69],19,75
+2020-04-29,active,cases,[70 - 79],12,49
+2020-04-29,active,cases,80+,6,27
+2020-04-29,active,cases,total,183.16961406592122,756.1291113142875
+2020-04-29,active,hospital,[0 - 9],0,1
+2020-04-29,active,hospital,[10 - 19],0,1
+2020-04-29,active,hospital,[20 - 29],0,2
+2020-04-29,active,hospital,[30 - 39],0,1
+2020-04-29,active,hospital,[40 - 49],0,1
+2020-04-29,active,hospital,[50 - 59],0,0
+2020-04-29,active,hospital,[60 - 69],0,0
+2020-04-29,active,hospital,[70 - 79],0,0
+2020-04-29,active,hospital,80+,0,0
+2020-04-29,active,hospital,total,0,4
+2020-04-29,active,icu,[0 - 9],0,0
+2020-04-29,active,icu,[10 - 19],0,0
+2020-04-29,active,icu,[20 - 29],0,0
+2020-04-29,active,icu,[30 - 39],0,0
+2020-04-29,active,icu,[40 - 49],0,0
+2020-04-29,active,icu,[50 - 59],0,0
+2020-04-29,active,icu,[60 - 69],0,0
+2020-04-29,active,icu,[70 - 79],0,0
+2020-04-29,active,icu,80+,0,0
+2020-04-29,active,icu,total,0,1
+2020-04-29,cumulative,cases,[0 - 9],262,500
+2020-04-29,cumulative,cases,[10 - 19],273,511
+2020-04-29,cumulative,cases,[20 - 29],329,604
+2020-04-29,cumulative,cases,[30 - 39],314,573
+2020-04-29,cumulative,cases,[40 - 49],276,511
+2020-04-29,cumulative,cases,[50 - 59],260,470
+2020-04-29,cumulative,cases,[60 - 69],223,418
+2020-04-29,cumulative,cases,[70 - 79],135,249
+2020-04-29,cumulative,cases,80+,75,137
+2020-04-29,cumulative,cases,total,2143.828036153969,3959.1386110423846
+2020-04-29,cumulative,hospital,[0 - 9],0,2
+2020-04-29,cumulative,hospital,[10 - 19],1,3
+2020-04-29,cumulative,hospital,[20 - 29],4,9
+2020-04-29,cumulative,hospital,[30 - 39],10,21
+2020-04-29,cumulative,hospital,[40 - 49],14,28
+2020-04-29,cumulative,hospital,[50 - 59],27,53
+2020-04-29,cumulative,hospital,[60 - 69],37,70
+2020-04-29,cumulative,hospital,[70 - 79],33,63
+2020-04-29,cumulative,hospital,80+,20,39
+2020-04-29,cumulative,hospital,total,143,262
+2020-04-29,cumulative,icu,[0 - 9],0,0
+2020-04-29,cumulative,icu,[10 - 19],0,0
+2020-04-29,cumulative,icu,[20 - 29],0,1
+2020-04-29,cumulative,icu,[30 - 39],0,2
+2020-04-29,cumulative,icu,[40 - 49],0,3
+2020-04-29,cumulative,icu,[50 - 59],2,7
+2020-04-29,cumulative,icu,[60 - 69],6,14
+2020-04-29,cumulative,icu,[70 - 79],8,18
+2020-04-29,cumulative,icu,80+,5,13
+2020-04-29,cumulative,icu,total,23,45
+2020-04-30,active,cases,[0 - 9],19,81
+2020-04-30,active,cases,[10 - 19],20,88
+2020-04-30,active,cases,[20 - 29],24,98
+2020-04-30,active,cases,[30 - 39],23,93
+2020-04-30,active,cases,[40 - 49],20,81
+2020-04-30,active,cases,[50 - 59],18,77
+2020-04-30,active,cases,[60 - 69],16,67
+2020-04-30,active,cases,[70 - 79],9,38
+2020-04-30,active,cases,80+,5,22
+2020-04-30,active,cases,total,153.79323297403926,645.7235226272423
+2020-04-30,active,hospital,[0 - 9],0,1
+2020-04-30,active,hospital,[10 - 19],0,1
+2020-04-30,active,hospital,[20 - 29],0,2
+2020-04-30,active,hospital,[30 - 39],0,1
+2020-04-30,active,hospital,[40 - 49],0,0
+2020-04-30,active,hospital,[50 - 59],0,0
+2020-04-30,active,hospital,[60 - 69],0,0
+2020-04-30,active,hospital,[70 - 79],0,0
+2020-04-30,active,hospital,80+,0,0
+2020-04-30,active,hospital,total,0,3
+2020-04-30,active,icu,[0 - 9],0,0
+2020-04-30,active,icu,[10 - 19],0,0
+2020-04-30,active,icu,[20 - 29],0,0
+2020-04-30,active,icu,[30 - 39],0,0
+2020-04-30,active,icu,[40 - 49],0,0
+2020-04-30,active,icu,[50 - 59],0,0
+2020-04-30,active,icu,[60 - 69],0,0
+2020-04-30,active,icu,[70 - 79],0,0
+2020-04-30,active,icu,80+,0,0
+2020-04-30,active,icu,total,0,0
+2020-04-30,cumulative,cases,[0 - 9],260,487
+2020-04-30,cumulative,cases,[10 - 19],272,495
+2020-04-30,cumulative,cases,[20 - 29],335,620
+2020-04-30,cumulative,cases,[30 - 39],316,585
+2020-04-30,cumulative,cases,[40 - 49],278,513
+2020-04-30,cumulative,cases,[50 - 59],260,484
+2020-04-30,cumulative,cases,[60 - 69],221,405
+2020-04-30,cumulative,cases,[70 - 79],135,252
+2020-04-30,cumulative,cases,80+,75,137
+2020-04-30,cumulative,cases,total,2144.4123233409546,3963.9007947183877
+2020-04-30,cumulative,hospital,[0 - 9],0,2
+2020-04-30,cumulative,hospital,[10 - 19],1,3
+2020-04-30,cumulative,hospital,[20 - 29],4,10
+2020-04-30,cumulative,hospital,[30 - 39],10,22
+2020-04-30,cumulative,hospital,[40 - 49],13,28
+2020-04-30,cumulative,hospital,[50 - 59],27,51
+2020-04-30,cumulative,hospital,[60 - 69],37,71
+2020-04-30,cumulative,hospital,[70 - 79],33,61
+2020-04-30,cumulative,hospital,80+,20,41
+2020-04-30,cumulative,hospital,total,146,268
+2020-04-30,cumulative,icu,[0 - 9],0,0
+2020-04-30,cumulative,icu,[10 - 19],0,0
+2020-04-30,cumulative,icu,[20 - 29],0,1
+2020-04-30,cumulative,icu,[30 - 39],0,2
+2020-04-30,cumulative,icu,[40 - 49],1,3
+2020-04-30,cumulative,icu,[50 - 59],3,7
+2020-04-30,cumulative,icu,[60 - 69],6,14
+2020-04-30,cumulative,icu,[70 - 79],8,17
+2020-04-30,cumulative,icu,80+,5,13
+2020-04-30,cumulative,icu,total,23,45
+2020-05-01,active,cases,[0 - 9],16,68
+2020-05-01,active,cases,[10 - 19],16,68
+2020-05-01,active,cases,[20 - 29],20,90
+2020-05-01,active,cases,[30 - 39],18,78
+2020-05-01,active,cases,[40 - 49],17,67
+2020-05-01,active,cases,[50 - 59],15,67
+2020-05-01,active,cases,[60 - 69],13,57
+2020-05-01,active,cases,[70 - 79],8,34
+2020-05-01,active,cases,80+,4,20
+2020-05-01,active,cases,total,128.2523650222065,548.8159109424469
+2020-05-01,active,hospital,[0 - 9],0,1
+2020-05-01,active,hospital,[10 - 19],0,1
+2020-05-01,active,hospital,[20 - 29],0,2
+2020-05-01,active,hospital,[30 - 39],0,0
+2020-05-01,active,hospital,[40 - 49],0,0
+2020-05-01,active,hospital,[50 - 59],0,0
+2020-05-01,active,hospital,[60 - 69],0,0
+2020-05-01,active,hospital,[70 - 79],0,0
+2020-05-01,active,hospital,80+,0,0
+2020-05-01,active,hospital,total,0,3
+2020-05-01,active,icu,[0 - 9],0,0
+2020-05-01,active,icu,[10 - 19],0,0
+2020-05-01,active,icu,[20 - 29],0,0
+2020-05-01,active,icu,[30 - 39],0,0
+2020-05-01,active,icu,[40 - 49],0,0
+2020-05-01,active,icu,[50 - 59],0,0
+2020-05-01,active,icu,[60 - 69],0,0
+2020-05-01,active,icu,[70 - 79],0,0
+2020-05-01,active,icu,80+,0,0
+2020-05-01,active,icu,total,0,0
+2020-05-01,cumulative,cases,[0 - 9],262,472
+2020-05-01,cumulative,cases,[10 - 19],271,509
+2020-05-01,cumulative,cases,[20 - 29],330,599
+2020-05-01,cumulative,cases,[30 - 39],317,590
+2020-05-01,cumulative,cases,[40 - 49],278,515
+2020-05-01,cumulative,cases,[50 - 59],259,491
+2020-05-01,cumulative,cases,[60 - 69],221,413
+2020-05-01,cumulative,cases,[70 - 79],135,251
+2020-05-01,cumulative,cases,80+,74,136
+2020-05-01,cumulative,cases,total,2144.893765918118,3967.913787644473
+2020-05-01,cumulative,hospital,[0 - 9],0,2
+2020-05-01,cumulative,hospital,[10 - 19],1,3
+2020-05-01,cumulative,hospital,[20 - 29],4,10
+2020-05-01,cumulative,hospital,[30 - 39],10,22
+2020-05-01,cumulative,hospital,[40 - 49],13,28
+2020-05-01,cumulative,hospital,[50 - 59],27,53
+2020-05-01,cumulative,hospital,[60 - 69],36,71
+2020-05-01,cumulative,hospital,[70 - 79],33,66
+2020-05-01,cumulative,hospital,80+,20,40
+2020-05-01,cumulative,hospital,total,145,270
+2020-05-01,cumulative,icu,[0 - 9],0,0
+2020-05-01,cumulative,icu,[10 - 19],0,0
+2020-05-01,cumulative,icu,[20 - 29],0,1
+2020-05-01,cumulative,icu,[30 - 39],0,2
+2020-05-01,cumulative,icu,[40 - 49],0,3
+2020-05-01,cumulative,icu,[50 - 59],3,7
+2020-05-01,cumulative,icu,[60 - 69],6,13
+2020-05-01,cumulative,icu,[70 - 79],8,16
+2020-05-01,cumulative,icu,80+,5,12
+2020-05-01,cumulative,icu,total,23,44
+2020-05-02,active,cases,[0 - 9],13,60
+2020-05-02,active,cases,[10 - 19],14,59
+2020-05-02,active,cases,[20 - 29],17,72
+2020-05-02,active,cases,[30 - 39],16,69
+2020-05-02,active,cases,[40 - 49],14,58
+2020-05-02,active,cases,[50 - 59],13,57
+2020-05-02,active,cases,[60 - 69],11,47
+2020-05-02,active,cases,[70 - 79],7,31
+2020-05-02,active,cases,80+,4,18
+2020-05-02,active,cases,total,107.51507492225892,467.3718240112257
+2020-05-02,active,hospital,[0 - 9],0,1
+2020-05-02,active,hospital,[10 - 19],0,1
+2020-05-02,active,hospital,[20 - 29],0,1
+2020-05-02,active,hospital,[30 - 39],0,0
+2020-05-02,active,hospital,[40 - 49],0,0
+2020-05-02,active,hospital,[50 - 59],0,0
+2020-05-02,active,hospital,[60 - 69],0,0
+2020-05-02,active,hospital,[70 - 79],0,0
+2020-05-02,active,hospital,80+,0,0
+2020-05-02,active,hospital,total,0,2
+2020-05-02,active,icu,[0 - 9],0,0
+2020-05-02,active,icu,[10 - 19],0,0
+2020-05-02,active,icu,[20 - 29],0,0
+2020-05-02,active,icu,[30 - 39],0,0
+2020-05-02,active,icu,[40 - 49],0,0
+2020-05-02,active,icu,[50 - 59],0,0
+2020-05-02,active,icu,[60 - 69],0,0
+2020-05-02,active,icu,[70 - 79],0,0
+2020-05-02,active,icu,80+,0,0
+2020-05-02,active,icu,total,0,0
+2020-05-02,cumulative,cases,[0 - 9],262,493
+2020-05-02,cumulative,cases,[10 - 19],271,488
+2020-05-02,cumulative,cases,[20 - 29],333,625
+2020-05-02,cumulative,cases,[30 - 39],316,580
+2020-05-02,cumulative,cases,[40 - 49],276,520
+2020-05-02,cumulative,cases,[50 - 59],258,485
+2020-05-02,cumulative,cases,[60 - 69],222,414
+2020-05-02,cumulative,cases,[70 - 79],135,252
+2020-05-02,cumulative,cases,80+,74,136
+2020-05-02,cumulative,cases,total,2145.2904315633305,3971.2942680103597
+2020-05-02,cumulative,hospital,[0 - 9],0,2
+2020-05-02,cumulative,hospital,[10 - 19],1,3
+2020-05-02,cumulative,hospital,[20 - 29],4,10
+2020-05-02,cumulative,hospital,[30 - 39],10,22
+2020-05-02,cumulative,hospital,[40 - 49],14,28
+2020-05-02,cumulative,hospital,[50 - 59],26,53
+2020-05-02,cumulative,hospital,[60 - 69],37,70
+2020-05-02,cumulative,hospital,[70 - 79],32,58
+2020-05-02,cumulative,hospital,80+,20,40
+2020-05-02,cumulative,hospital,total,145,268
+2020-05-02,cumulative,icu,[0 - 9],0,0
+2020-05-02,cumulative,icu,[10 - 19],0,0
+2020-05-02,cumulative,icu,[20 - 29],0,1
+2020-05-02,cumulative,icu,[30 - 39],0,2
+2020-05-02,cumulative,icu,[40 - 49],0,3
+2020-05-02,cumulative,icu,[50 - 59],3,7
+2020-05-02,cumulative,icu,[60 - 69],6,14
+2020-05-02,cumulative,icu,[70 - 79],8,17
+2020-05-02,cumulative,icu,80+,5,13
+2020-05-02,cumulative,icu,total,23,47

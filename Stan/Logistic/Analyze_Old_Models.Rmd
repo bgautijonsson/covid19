@@ -1,0 +1,106 @@
+---
+title: "Hierarchical Logistic Growth Curves"
+author: "Brynjólfur Gauti Jónsson"
+date: "3/24/2020"
+output: 
+    html_document:
+        theme: flatly
+        toc: true
+        toc_float: true
+        code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = F, 
+                      fig.asp = 0.621, out.width = "100%", fig.width = 8)
+```
+
+```{r}
+library(tidyverse); library(knitr); library(kableExtra); library(broom); library(cowplot); 
+library(rstan); library(tidybayes); library(scales); library(gganimate)
+
+theme_set(theme_classic(base_size = 12) + 
+            background_grid(color.major = "grey90", 
+                            color.minor = "grey95", 
+                            minor = "xy", major = "xy") +
+            theme(legend.position = "none"))
+
+daily_cases <- function(alpha, beta, maximum, t) {
+  z <- alpha + beta * t
+  beta * maximum * exp(-z) / (exp(-z) + 1)^2
+}
+
+saved_dates <- list.files("Past_Models") %>% 
+  str_match("(2020-03-[0-9]{2})\\.") %>% 
+  .[, 2] %>% unique
+```
+
+```{r}
+
+chosen_country = "Swedens"
+
+results <- list()
+for (i in seq_along(saved_dates)[-(1:2)]) {
+  m <- str_c("Past_Models/Model_", saved_dates[i], ".rds") %>% 
+    read_rds
+  d <- str_c("Past_Models/Stan_Data_", saved_dates[i], ".csv") %>% 
+    read_csv
+  
+  plot_dat <- d %>% filter(country == chosen_country)
+  id <- unique(plot_dat$country_id)
+  pop <- unique(plot_dat$pop)
+  start_cases <- min(plot_dat$total_cases)
+  days_in_data <- max(plot_dat$days)
+  number_na <- 40 - days_in_data
+  
+  results[[i]] <- spread_draws(m, alpha[country], beta[country], maximum[country]) %>% 
+    ungroup %>% 
+    filter(country == id) %>% 
+    mutate(iter = row_number()) %>% 
+    select(iter, alpha, beta, maximum) %>% 
+    expand_grid(days = seq(1, 40)) %>% 
+    mutate(linear = alpha + beta * days,
+           daily_rate = daily_cases(alpha, beta, maximum, days),
+           daily_cases = rpois(n(), daily_rate * pop)) %>% 
+    group_by(iter) %>% 
+    mutate(cases = as.numeric(cumsum(daily_cases)) + start_cases) %>% 
+    ungroup %>% 
+    select(iter, days, cumulative_cases = cases) %>% 
+    mutate(date = days + min(plot_dat$date)) %>% 
+    group_by(date) %>% 
+    summarise(median = median(cumulative_cases),
+              lower = quantile(cumulative_cases, 0.025),
+              upper = quantile(cumulative_cases, 0.975)) %>% 
+    mutate(pred_date = saved_dates[i],
+           observed = c(plot_dat$total_cases[-1], rep(NA, number_na)))
+}
+
+results <- results %>% 
+  reduce(bind_rows) %>% 
+  group_by(date) %>% 
+  mutate(observed = max(observed, na.rm = T),
+         observed = ifelse(observed < 0, NA, observed)) %>% 
+  ungroup
+
+p <- results %>% 
+  mutate(pred_date = lubridate::ymd(pred_date)) %>% 
+  ggplot(aes(date, median, group = pred_date)) +
+  geom_line() +
+  geom_line(aes(y = upper), lty = 2) +
+  geom_line(aes(y = lower), lty = 2) +
+  geom_point(aes(y = observed, col = date <= pred_date), size = 3) +
+  scale_colour_manual(values = c("grey", "black")) +
+  scale_y_log10(breaks = c(1, 3, 10, 30, 100, 300, 1000, 3000, 10000,
+                           30000, 100000, 300000, 1000000)) +
+  labs(title = "Logistic model fit to current data using past data",
+       subtitle = "Data up to date: {frame_time}") +
+  theme(axis.title = element_blank()) +
+  transition_time(pred_date) +
+  ease_aes()
+anim_save(str_c(chosen_country, "_past_fits.gif"), p)
+```
+
+```{r}
+
+```
+

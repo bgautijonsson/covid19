@@ -1,0 +1,304 @@
+---
+title: "COVID19 á Íslandi"
+subtitle: "Spálíkan fyrir fjölda tilfella og álag á heilbrigðisþjónustu"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    theme: flatly
+    toc: true
+    toc_float: true
+    toc_depth: 4
+---
+
+```{r setup, context = "setup", include=FALSE, results = "hide"}
+knitr::opts_chunk$set(echo = FALSE, warning = F, message = F, fig.asp = 0.621, out.width = "100%", fig.width = 8)
+
+library(tidyverse); library(cowplot); library(kableExtra); library(scales); 
+library(lubridate); library(broom); library(ggtext)
+theme_set(theme_classic(base_size = 12) + 
+            background_grid(color.major = "grey90", 
+                            color.minor = "grey95", 
+                            minor = "xy", major = "xy") +
+            theme(legend.position = "none"))
+select <- dplyr::select
+Sys.setlocale("LC_TIME", "is_IS")
+source("../Make_Stan_Data.R")
+```
+
+```{r data}
+data_path <- str_c("../Output/Iceland_Predictions/Iceland_Predictions_", Sys.Date(), ".csv")
+d <- read_csv(data_path)
+fig_out_path <- str_c(as.character(Sys.Date()), "/Figures/")
+make_fig_path <- function(name) str_c(fig_out_path, name)
+
+iceland_d <- read_csv("../Input/ECDC_Data.csv") %>% 
+  filter(country == "Iceland")
+```
+
+# Samantekt
+
+Spáin hefur breyst frá því 22. mars enda hafa færri smit greinst síðustu daga.
+
+**Helstu niðurstöður spálíkansins með gögnum til og með 24. mars eru eftirfarandi:**
+
+* Gert er ráð fyrir því að á meðan faraldurinn gengur yfir muni rúmlega 1500 manns á Íslandi verið greindir með COVID-19, en talan gæti náð nær 2300 manns skv. svartsýnustu spá.
+
+* Gert er ráð fyrir að fjöldi greindra einstaklinga með virkan sjúkdóm nái hámarki í fyrstu viku apríl og verði sennilega um 1200 manns, en gæti náð 1600 manns skv. svartsýnustu spá.
+
+* Gert er ráð fyrir að á meðan að faraldurinn gengur yfir muni rúmlega 100 manns þarfnast innlagnar á sjúkrahúsi, en gæti náð hátt í 160 manns skv. svartsýnustu spá. 
+
+* Mesta álag á heilbrigðisþjónustu vegna sjúkrahúsinnlagna verður fyrir miðjan apríl en þá er gert ráð fyrir að tæplega 60 einstaklingar geti verið inniliggjandi á sama tíma, en svartsýnasta spá er 80 einstaklingar.
+
+* Gert er ráð fyrir því að á tíma faraldursins muni um 13 einstaklingar veikjast alvarlega, þ.e. þurfa innlögn á gjörgæslu, á tímabilinu en svartsýnasta spá er 23 einstaklingar.
+
+* Mesta álag á gjörgæsludeildir gæti orðið í annarri viku apríl, en þá er búist við því að 5 manns liggi þar inni á sama tíma, en samkvæmt svartsýnustu spá gætu það verið 11 manns.
+
+Greiningarvinnan mun halda áfram og spálíkanið verður uppfært reglulega með nýjum upplýsingum. Hafa ber í huga að vegna fámennis geta tölurnar um fjölda greindra tilfella breyst mikið frá degi til dags sem hefur áhrif á niðurstöður spálíkansins. Líkanið verður þó stöðugra eftir því sem á líður.
+
+# Aðferðir og forsendur spálíkans
+
+* Við notuðum logistískt vaxtarlíkan með Poisson dreifingu á fjölda þegar greindra smita á Íslandi til að gera forspá um miðgildi (líklegustu spá) og 97,5% efri mörk (svartsýnustu spá) um uppsafnaðan fjölda greindra COVID-19 tilfella á Íslandi og virkra greindra tilfella (þar sem gert er ráð fyrir 21 veikindadegi) á næstu vikum.
+
+* Í samræmi við þekkingu á faraldsfræði smitsjúkdóma, þá gerir spálíkanið ráð fyrir að það hægi á núverandi veldisvexti greindra tilfella þar til að hann stöðvist á einhverjum tímapunkti, þar sem faraldurinn nær hámarki og virkum smitum fækkar þar á eftir.
+
+* Reikniaðferðin sem notuð er til að meta lögun vaxtarferilsins á Íslandi tekur mið af upplýsingum um COVID-19 faraldursferla í öðrum löndum (sjá viðauka) til að áætla mögulega lögun ferlisins á Ísland. Lönd sem eru komin lengra í ferlinum, t.d. Suður-Kórea, vega meira en þau sem styttra eru komin.
+
+* Þar sem allir smitaðir einstaklingar á Íslandi eru skjólstæðingar íslensks heilbrigðiskerfis, þá byggir spáin á heildarfjölda smitaðra einstaklinga á Íslandi óháð uppruna smita, hvort einstaklingar greinist í sóttkví eða ekki, gegnum skimun Heilsugæslunnar eða ÍE. Hafa skal í huga að smitaðir einstaklingar í sóttkví gætu mögulega bætt minna við veldisvöxtinn en aðrir einstaklingar.
+
+* Við notuðum fyrirliggjandi aldursdreifingu smita á Íslandi til að áætla skiptingu framtíðartilfella í aldurshópa. Síðan notuðum við upplýsingar frá Ferguson og félögum hjá Imperial College (Tafla 1) um aldurstengd hlutföll spítalainnlagna í forspá okkar um fjölda sjúklinga hérlendis sem gætu lagst inn á spítala og/eða gjörgæslu.
+
+* Hafa ber í huga að aldursdreifing smitaðra einstaklinga á Íslandi er hagstæð enn sem komið er. Ef fjöldi smita eykst meðal aldraðra einstaklinga mun það hafa veruleg áhrif á spálíkanið í átt að auknu álagi á heilbrigðiskerfið.
+
+* Allan kóða á finna á [eftirfarandi vefsíðu](https://github.com/bgautijonsson/covid19).
+
+* Tæknilega skýrslu um aðferð við þróun líkans [má finna hér](https://rpubs.com/bgautijonsson/588811).
+
+* Mælaborð sem heldur utan um þróun COVID-19 á Íslandi og annars staðar má nálgast á [vef Háskóla Íslands hér](https://covid.rhi.hi.is/shiny/dashboard/).
+
+# Niðurstöður
+
+## Greind smit
+
+### Uppsöfnuð greind smit
+
+```{r}
+d %>% 
+  filter(name == "cases", age == "total", type == "cumulative") %>% 
+  ggplot(aes(date, median)) +
+  geom_line(aes(lty = "Líklegasta spá")) +
+  geom_line(aes(y = upper, lty = "Svartsýn spá"), col = "grey50") +
+  geom_point(data = iceland_d, aes(x = date, y = total_cases), inherit.aes = F) +
+  scale_y_continuous(breaks = pretty_breaks(8)) +
+  scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
+  labs(linetype = " ") +
+  theme(axis.title = element_blank(),
+        legend.position = "top") +
+  ggsave(make_fig_path("cases_cumul_total.png"), width = 8, height = 0.621 * 8, scale = 1.5)
+```
+
+### Virk greind smit á hverjum degi
+
+```{r}
+d %>% 
+  filter(name == "cases", age == "total", type == "active") %>% 
+  ggplot(aes(date, median)) +
+  geom_line(aes(lty = "Líklegasta spá")) +
+  geom_line(aes(y = upper, lty = "Svartsýn spá"), col = "grey50") +
+  # geom_point(data = iceland_d, aes(x = date, y = total_cases), inherit.aes = F) +
+  scale_y_continuous(breaks = pretty_breaks(8)) +
+  scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
+  labs(linetype = " ") +
+  theme(axis.title = element_blank(),
+        legend.position = "top") +
+  ggsave(make_fig_path("cases_active_total.png"), width = 8, height = 0.621 * 8, scale = 1.5)
+```
+
+## Sjúkrahúslegur
+
+### Uppsafnaðar sjúkrahúslegur
+
+```{r, fig.asp = 0.621}
+d %>% 
+  filter(name == "hospital", age == "total", type == "cumulative")  %>% 
+  ggplot(aes(date, median)) +
+  geom_line(aes(lty = "Líklegasta spá")) +
+  geom_line(aes(y = upper, lty = "Svartsýn spá"), col = "grey50") +
+  scale_y_continuous(breaks = pretty_breaks(8)) +
+  scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
+  labs(linetype = " ") +
+  theme(axis.title = element_blank(),
+        legend.position = "top")  +
+  ggsave(make_fig_path("hospital_cumulative_total.png"), width = 8, height = 0.621 * 8, scale = 1.5)
+```
+
+### Virkar sjúkrahúslegur á hverjum degi
+
+```{r, fig.asp = 0.621}
+d %>% 
+  filter(name == "hospital", age == "total", type == "active")  %>% 
+  ggplot(aes(date, median)) +
+  geom_line(aes(lty = "Líklegasta spá")) +
+  geom_line(aes(y = upper, lty = "Svartsýn spá"), col = "grey50") +
+  scale_y_continuous(breaks = pretty_breaks(8)) +
+  scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
+  labs(linetype = " ") +
+  theme(axis.title = element_blank(),
+        legend.position = "top")  +
+  ggsave(make_fig_path("hospital_active_total.png"), width = 8, height = 0.621 * 8, scale = 1.5)
+```
+
+## Gjörgæsla
+
+### Uppsafnaðar gjörgæslulegur
+
+```{r, fig.asp = 0.621}
+d %>% 
+  filter(name == "icu", age == "total", type == "cumulative") %>% 
+  ggplot(aes(date, median)) +
+  geom_line(aes(lty = "Líklegasta spá")) +
+  geom_line(aes(y = upper, lty = "Svartsýn spá"), col = "grey50") +
+  scale_y_continuous(breaks = pretty_breaks(8)) +
+  scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
+  labs(linetype = " ") +
+  theme(axis.title = element_blank(),
+        legend.position = "top") +
+  ggsave(make_fig_path("icu_cumulative_total.png"), width = 8, height = 0.621 * 8, scale = 1.5)
+```
+
+### Virkar gjörgæslulegur á hverjum degi
+
+```{r, fig.asp = 0.621}
+d %>% 
+  filter(name == "icu", age == "total", type == "active") %>% 
+  ggplot(aes(date, median)) +
+  geom_line(aes(lty = "Líklegasta spá")) +
+  geom_line(aes(y = upper, lty = "Svartsýn spá"), col = "grey50") +
+  scale_y_continuous(breaks = pretty_breaks(8)) +
+  scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
+  labs(linetype = " ") +
+  theme(axis.title = element_blank(),
+        legend.position = "top") +
+  ggsave(make_fig_path("icu_active_total.png"), width = 8, height = 0.621 * 8, scale = 1.5)
+```
+
+
+
+## Aldursskipt
+
+### Greind smit
+
+#### Uppsöfnuð
+
+```{r, fig.asp = 1}
+d %>% 
+  filter(name == "cases", age != "total", type == "cumulative") %>% 
+  ggplot(aes(date, median)) +
+  geom_line() +
+  geom_line(aes(y = upper), lty = 2, col  = "grey50") +
+  facet_wrap("age", scales = "free") +
+  scale_y_continuous(breaks = pretty_breaks(8)) +
+  scale_x_date(date_breaks = "2 week", date_labels = "%d/%m") +
+  labs(y = "Tilfelli") +
+  theme(axis.title = element_blank()) +
+  ggsave(make_fig_path("cases_cumulative_age.png"), width = 8, height = 8, scale = 1.5)
+```
+
+#### Virk
+
+```{r, fig.asp = 1}
+d %>% 
+  filter(name == "cases", age != "total", type == "active") %>% 
+  ggplot(aes(date, median)) +
+  geom_line() +
+  geom_line(aes(y = upper), lty = 2, col  = "grey50") +
+  facet_wrap("age", scales = "free") +
+  scale_y_continuous(breaks = pretty_breaks(8)) +
+  scale_x_date(date_breaks = "2 week", date_labels = "%d/%m") +
+  labs(y = "Tilfelli") +
+  theme(axis.title = element_blank()) +
+  ggsave(make_fig_path("cases__active_age.png"), width = 8, height = 8, scale = 1.5)
+```
+
+### Sjúkrahúslegur
+
+#### Uppsafnaðar
+
+```{r, fig.asp = 1}
+d %>% 
+  filter(name == "hospital", age != "total", type == "cumulative") %>% 
+  ggplot(aes(date, median)) +
+  geom_line() +
+  geom_line(aes(y = upper), lty = 2, col = "grey60") +
+  facet_wrap("age", scales = "free") +
+  scale_y_continuous(breaks = pretty_breaks(8)) +
+  scale_x_date(date_breaks = "2 week", date_labels = "%d/%m") +
+  labs() +
+  theme(axis.title = element_blank()) +
+  ggsave(make_fig_path("hospital_active_age.png"), width = 8, height = 8, scale = 1.5)
+```
+
+#### Virkar
+
+```{r, fig.asp = 1}
+d %>% 
+  filter(name == "hospital", age != "total", type == "active") %>% 
+  ggplot(aes(date, median)) +
+  geom_line() +
+  geom_line(aes(y = upper), lty = 2, col = "grey60") +
+  facet_wrap("age", scales = "free") +
+  scale_y_continuous(breaks = pretty_breaks(8)) +
+  scale_x_date(date_breaks = "2 week", date_labels = "%d/%m") +
+  labs() +
+  theme(axis.title = element_blank()) +
+  ggsave(make_fig_path("hospital_active_age.png"), width = 8, height = 8, scale = 1.5)
+```
+
+### Gjörgæslulegur
+
+#### Uppsafnaðar
+
+```{r, fig.asp = 1}
+d %>% 
+  filter(name == "icu", age != "total", type == "cumulative") %>% 
+  ggplot(aes(date, median)) +
+  geom_line() +
+  geom_line(aes(y = upper), lty = 2, col = "grey50") +
+  facet_wrap("age", scales = "free") +
+  scale_y_continuous(breaks = pretty_breaks(5)) +
+  scale_x_date(date_breaks = "2 week", date_labels = "%d/%m") +
+  labs(y = "Tilfelli") +
+  theme(axis.title = element_blank()) +
+  ggsave(make_fig_path("icu_cumulative_age.png"), width = 8, height = 0.621 * 8, scale = 1.5)
+```
+
+#### Virkar
+
+```{r, fig.asp = 1}
+d %>% 
+  filter(name == "icu", age != "total", type == "active") %>% 
+  ggplot(aes(date, median)) +
+  geom_line() +
+  geom_line(aes(y = upper), lty = 2, col = "grey50") +
+  facet_wrap("age", scales = "free") +
+  scale_y_continuous(breaks = pretty_breaks(5)) +
+  scale_x_date(date_breaks = "2 week", date_labels = "%d/%m") +
+  labs(title = "Virk alvarleg tilfelli á sjúkrahúsi eftir aldri",
+       y = "Tilfelli") +
+  theme(axis.title = element_blank()) +
+  ggsave(make_fig_path("icu_active_age.png"), width = 8, height = 0.621 * 8, scale = 1.5)
+```
+
+# Viðauki
+
+## Upplýsingar um gögn í líkanasmíð
+
+```{r}
+
+read_csv(str_c("../Output/Stan_Data_Info/Stan_Data_Info_", Sys.Date(), ".csv")) %>% 
+  set_names(c("Land", "Fyrsta athugun", "Fjöldi daga",
+              "Upphaf", "Nú")) %>% 
+  kable %>% 
+  kable_styling(bootstrap_options = c("striped", "hover")) %>% 
+  add_header_above(c("", "", "", "Tíðni" = 2))
+```
+

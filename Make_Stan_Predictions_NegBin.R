@@ -10,7 +10,6 @@
 # Fjöldi fólks á sjúkrahúsi
 # Við höfum tölur frá 
 
-TEST <- TRUE
 
 library(tidyverse)
 library(rstan)
@@ -34,11 +33,9 @@ aldur <- sheets_read("https://docs.google.com/spreadsheets/d/1xgDhtejTtcyy6EN5db
            p_tilfelli = tilfelli / sum(tilfelli)) %>% 
     select(aldur, tilfelli, p_tilfelli, everything())
 
-if (TEST) {
-    m <- read_rds("Stan/Test/Logistic/Hierarchical_Model_NegBin.rds")
-} else {
-    m <- read_rds("Stan/Public/Logistic/Hierarchical_Model_NegBin.rds")
-}
+
+m <- read_rds("Stan/Logistic/Hierarchical_Model_NegBin.rds")
+
 
 iceland_d <- d %>% filter(country == "Iceland")
 
@@ -130,9 +127,9 @@ all_results <- age_results %>%
     group_by(date = days + start_date, type, name, age) %>% 
     summarise(median = median(value),
               upper = quantile(value, .975))
-if (TEST) {
-    out_path <- str_c("Output/Test/Iceland_Predictions/Iceland_Predictions_", Sys.Date(), ".csv")
-    write_csv(all_results, out_path)
-}
+
+out_path <- str_c("Output/Iceland_Predictions/Iceland_Predictions_", Sys.Date(), ".csv")
+write_csv(all_results, out_path)
+
 
 

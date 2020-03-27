@@ -1,4 +1,4 @@
-TEST <- TRUE
+
 
 library(readr)
 library(dplyr)
@@ -31,39 +31,19 @@ stan_data <- list(N_obs = N_obs,
                   pop = pop)
 
 
-if (TEST) {
-    m <- sampling(stan_model("Stan/Test/Logistic/Hierarchical_Logistic_Cases_NegBin.stan"), 
-                  data  = stan_data, chains = 4, iter = 2000, warmup = 1000)
-    
-    write_rds(m, "Stan/Test/Logistic/Hierarchical_Model_NegBin.rds")
-    write_rds(m, str_c("Stan/Test/Logistic/Saved_Models/Hierarchical_Model_NegBin_", Sys.Date(), ".rds"))
-    write_rds(m, "Stan/Test/Logistic/Interactive Model Checking/Hierarchical_Model_NegBin.rds")
-    write_csv(d, "Stan/Test/Logistic/Interactive Model Checking/stan_data.csv")
-    write_csv(d, str_c("Input/Test/Stan_Data/Stan_Data_", Sys.Date(), ".csv"))
-    
-    d %>% 
-        group_by(country) %>% 
-        summarise(First = min(date),
-                  Days_In_Data = n(),
-                  Start_Rate = min(case_rate),
-                  End_Rate = max(case_rate)) %>%
-        write_csv(str_c("Output/Test/Stan_Data_Info/Stan_Data_Info_", Sys.Date(), ".csv"))
-    
-} else {
-    m <- sampling(stan_model("Stan/Public/Logistic/Hierarchical_Logistic_Cases_NegBin.stan"), 
-                  data  = stan_data, chains = 4, iter = 2000, warmup = 1000)
-    
-    write_rds(m, "Stan/Public/Logistic/Hierarchical_Model_NegBin.rds")
-    write_rds(m, str_c("Stan/Public/Logistic/Saved_Models/Hierarchical_Model_NegBin_", Sys.Date(), ".rds"))
-    write_rds(m, "Stan/Public/Logistic/Interactive Model Checking/Hierarchical_Model_NegBin.rds")
-    write_csv(d, "Stan/Public/Logistic/Interactive Model Checking/stan_data.csv")
-    write_csv(d, str_c("Input/Public/Stan_Data/Stan_Data_", Sys.Date(), ".csv"))
-    
-    d %>% 
-        group_by(country) %>% 
-        summarise(First = min(date),
-                  Days_In_Data = n(),
-                  Start_Rate = min(case_rate),
-                  End_Rate = max(case_rate)) %>%
-        write_csv(str_c("Output/Public/Stan_Data_Info/Stan_Data_Info_", Sys.Date(), ".csv"))
-}
+m <- sampling(stan_model("Stan/Logistic/Hierarchical_Logistic_Cases_NegBin.stan"), 
+              data  = stan_data, chains = 4, iter = 2000, warmup = 1000)
+
+write_rds(m, "Stan/Logistic/Hierarchical_Model_NegBin.rds")
+write_rds(m, str_c("Stan/Logistic/Saved_Models/Hierarchical_Model_NegBin_", Sys.Date(), ".rds"))
+write_rds(m, "Stan/Logistic/Interactive Model Checking/Hierarchical_Model_NegBin.rds")
+write_csv(d, "Stan/Logistic/Interactive Model Checking/stan_data.csv")
+write_csv(d, str_c("Input/Stan_Data/Stan_Data_", Sys.Date(), ".csv"))
+
+d %>% 
+    group_by(country) %>% 
+    summarise(First = min(date),
+              Days_In_Data = n(),
+              Start_Rate = min(case_rate),
+              End_Rate = max(case_rate)) %>%
+    write_csv(str_c("Output/Stan_Data_Info/Stan_Data_Info_", Sys.Date(), ".csv"))
