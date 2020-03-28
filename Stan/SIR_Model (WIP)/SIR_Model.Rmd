@@ -31,57 +31,31 @@ options(mc.cores = parallel::detectCores())
 ```
 
 ```{r}
-d <- read_csv("https://raw.githubusercontent.com/bgautijonsson/covid19/master/Input/ECDC_Data.csv")
-```
+d <- read_csv("https://raw.githubusercontent.com/bgautijonsson/covid19/master/Input/ECDC_Data.csv") %>% 
+    group_by(country) %>% 
+    mutate(infected = lag(total_cases, 1, default = 0),
+           susceptible = pop - infected) %>% 
+    filter(case_rate >= 0.04, continent == "Europe") %>% 
+    group_by(country) %>% 
+    filter(n() > 10) %>% 
+    mutate(days = row_number() - 1) %>% 
+    ungroup %>% 
+    select(country, days, new_cases, infected, susceptible) %>% 
+    filter(country == "Iceland")
 
+d
+```
 
 ```{r}
-d %>% 
-    filter(country == "Iceland") %>% 
-    View
+glm(new_cases ~ infected + susceptible + days, family = poisson, data = d)
 ```
 
-**S**usceptible, **I**nfectious, **R**ecovered.
-
-$$
-\begin{aligned}
-\frac{dS}{dt} &= \mu(N - S) - \beta I\frac{S}{N} \\
-\frac{dI}{dt} &= \beta I\frac{S}{N} - (\mu + \gamma)I \\
-\frac{dR}{dt} &= \gamma I - \mu R
-\end{aligned}
-$$
-
-```{r, fig.align = "center"}
-knitr::include_graphics("../Myndir/SIR.png")
-```
 
 ```{r}
 N_obs <- nrow(d)
 N_countries <- max(d$country_id)
 
-old_cases <- d$old_cases
-new_cases <- d$new_cases %>% as.integer
-recovered <- d$recovered %>% as.integer
-deaths <- d$deaths %>% as.integer
-pop <- d %>% 
-    distinct(country_id, pop) %>% 
-    arrange(country_id) %>% 
-    .$pop %>% 
-    as.integer
 
-country <- d$country_id
-
-start_value <- 300
-start_susceptible <- 300000
-simulation_days <- 56
-simulation_country <- d %>% filter(country == "Iceland") %>% .$country_id %>% unique
-
-stan_data <- list(N_obs = N_obs, N_countries = N_countries,
-                  old_cases = old_cases, new_cases = new_cases, recovered = recovered,  deaths = deaths,
-                  country = country, pop = pop,
-                  start_value = start_value, stat_susceptible = start_susceptible,
-                  simulation_days = simulation_days, simulation_country = simulation_country)
-str(stan_data)
 ```
 
 

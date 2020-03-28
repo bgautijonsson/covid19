@@ -15,7 +15,16 @@ N_countries <- max(d$country_id)
 
 days <- d$days
 new_cases <- d$new_cases
-total_cases <- d$total_cases
+total_cases <- d %>% group_by(country, country_id) %>% 
+    summarise(total_cases = max(total_cases)) %>% 
+    arrange(country_id) %>% 
+    .$total_cases
+
+total_deaths <- d %>% group_by(country, country_id) %>% 
+    summarise(total_deaths = max(total_deaths)) %>% 
+    arrange(country_id) %>% 
+    .$total_deaths
+
 country <- d$country_id %>% as.integer
 
 pop <- d %>% distinct(country_id, pop) %>% arrange(country_id) %>%  .$pop
@@ -25,12 +34,14 @@ stan_data <- list(N_obs = N_obs,
                   days = days, 
                   new_cases = new_cases, 
                   total_cases = total_cases, 
+                  total_deaths = total_deaths,
                   country = country,
                   pop = pop)
 
 
 m <- sampling(stan_model("Stan/Logistic/Hierarchical_Logistic_Cases_NegBin.stan"), 
-              data  = stan_data, chains = 4, iter = 2000, warmup = 1000)
+              data  = stan_data, chains = 4, iter = 2000, warmup = 1000,
+              control = list(adapt_delta = 0.99))
 
 write_rds(m, "Stan/Logistic/Hierarchical_Model_NegBin.rds")
 write_rds(m, str_c("Stan/Logistic/Saved_Models/Hierarchical_Model_NegBin_", Sys.Date(), ".rds"))

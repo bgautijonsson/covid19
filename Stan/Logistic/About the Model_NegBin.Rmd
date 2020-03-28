@@ -1,7 +1,7 @@
 ---
 title: "Hierarchical Logistic Growth Curves"
 author: "Brynjólfur Gauti Jónsson"
-date: "3/26/2020"
+date: "3/28/2020"
 output: 
     html_document:
         theme: flatly
@@ -42,12 +42,21 @@ n_countries <- max(d$country_id)
 
 ```{r}
 results <- tidyMCMC(m, conf.int = T, rhat = T, ess = T, estimate.method = "median", conf.method = "quantile") %>% 
-  mutate(par = str_match(term, "[a-z_2]+")) %>% 
+  mutate(par = str_match(term, "[a-zA-Z_2]+")) %>% 
   group_by(par) %>% 
   mutate(num = row_number() %>% as.numeric)
 ```
 
 # Updates
+
+## 2020-03-28
+
+* Weak priors on $a_S$ and $b_S$ to help the NUTS sampler.
+* Rewrote priors for scale parameters.
+
+## 2020-03-27
+
+* We now place informative priors on $\mu_\alpha$, $\mu_\beta$ and $\lambda_\phi$ to ensure that the model can be identified.
 
 ## 2020-03-26
 
@@ -168,12 +177,19 @@ The $\mu$ parameters are given informed prior distribution based on our previous
 
 $$
 \begin{aligned}
-\mu_\beta &\sim \mathrm{Normal}(0.14, 0.33^2) \\
-\mu_\alpha &\sim \mathrm{Normal}(-3.3 , 0.7^2)
+\mu_\alpha &\sim \mathrm{Normal}(-3.6 , 0.5^2) \\
+\mu_\beta &\sim \mathrm{Normal}(0.13, 0.05^2) 
 \end{aligned}
 $$
 
-$\sigma^2_\beta$ and $\sigma^2_\alpha$ are given $\mathrm{Inv-}\chi^2(2)$ prior distributions. This is equal to putting $\mathrm{Exponential}(\frac12)$ prior distributions on the precisions $\frac{1}{\sigma^2_\beta}$ and $\frac{1}{\sigma^2_\alpha}$. 
+We chose to put priors on the standard deviations, so that $\sigma_\beta$ and $\sigma_\alpha$ are given $\mathrm{Exponential}$ prior distributions
+
+$$
+\begin{aligned}
+\sigma_\alpha &\sim \mathrm{Exponential}(1) \\
+\sigma_\beta &\sim \mathrm{Exponential}(2).
+\end{aligned}
+$$
 
 The $S_i$ parameters take on values in $(0, 1)$, so we thought it proper to model them with Beta distributions. By putting hierarchical priors on them we could also share information between countries on the estimated saturation points. Thus the saturation parameter for country $i$ is sampled as
 
@@ -181,7 +197,14 @@ $$
 S_i \sim \mathrm{Beta}(a_S, b_S),
 $$
 
-where $a_S$ and $b_S$, being strictly positive, are given flat prior distributions on the $\log$ scale, which is equal to $p(a_S) \propto \frac{1}{a_S}$ and $p(b_S) \propto \frac{1}{b_S}$.
+where $a_S$ and $b_S$ are given vague Half-Cauchy prior distributions to help with the posterior geometry
+
+$$
+\begin{aligned}
+a_S &\sim \mathrm{Cauchy}(0, 5) \\
+b_s &\sim \mathrm{Cauchy}(0, 5).
+\end{aligned}
+$$
 
 We parametrize the negative binomial likelihood in the form of mean and overdispersion. If we write 
 
@@ -201,12 +224,14 @@ $$
 E[D_{i, t}] = \mu_{i, t} \qquad Var[D_{i, t}] = \mu_{i, t} + \phi_i \cdot \mu_{i, t}^2.
 $$
 
-Using this parametrization we put a hierarchical exponential prior on the $\phi_i$ parameters,
+Based on [Dan Simpson's excellent post](https://statmodeling.stat.columbia.edu/2018/04/03/justify-my-love/), which is also linked in [Stan-Dev's post on prior choices](https://github.com/stan-dev/stan/wiki/Prior-Choice-Recommendations) we put a hierarchical exponential prior on the $\phi_i$ parameters as follows:
 
 $$
-\phi_i \sim \mathrm{Exponential}(\lambda_\phi).
+\begin{aligned}
+\sqrt{\phi_i} &\sim \mathrm{Normal}(0, \sigma_\phi^2) \\
+\sigma_\phi &\sim \mathrm{Exponential}(1)
+\end{aligned}
 $$
-Since $\lambda_\phi$ is strictly positive we give it a flat prior on the log scale, or $p(\lambda_\phi) \propto \frac{1}{\lambda_\phi}$
 
 ***
 
@@ -219,14 +244,15 @@ C_{i, t} = \frac{d}{dt}P_{i, t} &= \beta_i S_i \frac{\exp{(-z_{i, t})}}{(\exp(-z
 z_{i, t} &= \alpha_i + \beta_i \cdot t \\
 \beta_i &\sim \mathrm{Normal}(\mu_\beta, \sigma^2_\beta) \\
 \alpha_i &\sim \mathrm{Normal}(\mu_\alpha, \sigma^2_\alpha) \\
+\mu_\beta &\sim \mathrm{Normal}(0.13, 0.05^2) \\
+\mu_\alpha &\sim \mathrm{Normal}(-3.6, 0.5^2) \\
+p(\sigma_\alpha) &\sim \mathrm{Exponential}(1)  \\
+p(\sigma_\beta) &\sim \mathrm{Exponential}(2)  \\
+\sqrt\phi_i &\sim \mathrm{Normal}(0, \lambda_\phi^2)\\
+\lambda_\phi &\sim \mathrm{Exponential}(1) \\
 S_i &\sim \mathrm{Beta}(a_S, b_S) \\
-\phi_i &\sim \mathrm{Exponential}(\lambda_\phi)\\
-p(\lambda_\phi) &\propto \frac{1}{\lambda_\phi} \\
-\mu_\beta &\sim \mathrm{Normal}(0.14, 0.33^2) \\
-\mu_\alpha &\sim \mathrm{Normal}(-3.3 , 0.7^2) \\
-p(\frac{1}{\sigma^2_\alpha}) = p(\frac{1}{\sigma^2_\beta}) &\sim \mathrm{Exponential}(\frac12)  \\
-p(a_S) &\propto \frac{1}{a_S} \\
-p(b_S) &\propto \frac{1}{b_S}
+p(a_S) &\sim \mathrm{Cauchy}(0, 5) \\
+p(b_S) &\sim \mathrm{Cauchy}(0, 5)
 \end{aligned}
 $$
 
@@ -273,9 +299,9 @@ ggplotly(p)
 
 ## Software
 
-The model is fit using [Stan's](https://mc-stan.org/) R interface.
+The model is fit using [Stan's](https://mc-stan.org/) R interface, and the model code can be found in the appendix.
 
-All code is available at https://github.com/bgautijonsson/covid19. We're sorry for the mess and we're working on it! We are also going to translate the README files into English.
+All code is available at https://github.com/bgautijonsson/covid19. We're sorry for the mess and we're working on it. We are also going to translate the README files into English.
 
 # Results
 
@@ -283,15 +309,13 @@ All code is available at https://github.com/bgautijonsson/covid19. We're sorry f
 
 ### Sampler configuration
 
-Eight chains were run for 3000 iterations after a warm-up period of 3000 iterations. The slowest chain converged in 280 seconds. 
+* Four chains were run for 2000 iterations after a warm-up period of 2000 iterations. The slowest chain converged in 430 seconds. 
+* Adapt_delta was set to 0.99
+
 
 ### Warnings
 
-* There were 67 divergent transitions after warmup.
-* Bulk effective sample size was too low.
-* Tail effective sample size was too low.
-
-
+* There were 535 divergent transitions after warmup.
 
 
 ## Country Level Effects
@@ -299,7 +323,7 @@ Eight chains were run for 3000 iterations after a warm-up period of 3000 iterati
 ```{r}
 results %>% 
   ungroup %>% 
-  filter(par %in% c("beta", "beta2", "alpha", "maximum", "phi_inv", "detected_perc")) %>%
+  filter(par %in% c("beta", "alpha", "S", "phi_inv")) %>%
   mutate(par = str_replace(par, "phi_inv", "phi")) %>% 
   inner_join(countries, by = c("num" = "country_id")) %>% 
   mutate(par = str_to_title(par)) %>% 
@@ -318,7 +342,7 @@ results %>%
 ```{r, fig.width = 9, fig.asp = 1.8}
 p <- results %>% 
   ungroup %>% 
-  filter(par %in% c("beta", "alpha", "beta2", "maximum", "phi_inv", "detected_perc", "beta2")) %>% 
+  filter(par %in% c("beta", "alpha", "S", "phi_inv")) %>% 
   mutate(par = str_replace(par, "phi_inv", "phi")) %>% 
   inner_join(countries, by = c("num" = "country_id")) %>% 
   mutate(par = str_to_title(par)) %>% 
@@ -341,12 +365,11 @@ ggplotly(p)
 ```{r}
 results %>% 
   ungroup %>% 
-  filter(par %in% c("mu_beta", "sigma_sq_beta", "sigma_sq_beta2", 
-                    "mu_alpha", "sigma_sq_alpha", "beta_a", "beta_b",
-                    "mu_phi_inv", "detect_a", "detect_b",
-                    "mu_beta2", "sigma_sq_beta2", "mu_error", "sigma_sq_error")) %>% 
-  mutate(par = str_replace(par, "mu_phi_inv", "mu_phi"),
-         par = str_to_title(par)) %>% 
+  filter(par %in% c("mu_beta", "sigma_beta", 
+                    "mu_alpha", "sigma_alpha", 
+                    "mu_s", "kappa_s",
+                    "sigma_phi_inv_sqrt")) %>% 
+  mutate(par = str_replace(par, "sigma_phi_inv_sqrt", "sigma_phi_sqrt")) %>% 
   select(par, everything(), -num, -term, -std.error) %>% 
   set_names(c("Parameter",  "Median", "Lower", "Upper", "Rhat", "ESS")) %>% 
   kable(digits = 4, align = c("l", "l", rep("c", ncol(.) - 2)),
@@ -396,49 +419,59 @@ data {
   int country[N_obs];
   vector[N_obs] days;
   int new_cases[N_obs];
+  
   int<lower = 0> N_countries;
+  int<lower = 0> total_cases[N_countries];
+  int<lower = 0> total_deaths[N_countries];
   vector[N_countries] pop;
 }
 
 parameters {
   vector<lower = 0>[N_countries] beta;
   vector[N_countries] alpha;
-  vector<lower = 0, upper = 1>[N_countries] maximum;
+  vector<lower = 0, upper = 1>[N_countries] S;
   
   real<lower = 0> mu_beta;
-  real<lower = 0> sigma_sq_beta;
+  real<lower = 0> sigma_beta;
   
   real mu_alpha;
-  real<lower = 0> sigma_sq_alpha;
+  real<lower = 0> sigma_alpha;
   
-  real<lower = 0> beta_a;
-  real<lower = 0> beta_b;
+  real<lower = 0> a_s;
+  real<lower = 0> b_s;
   
-  vector<lower = 0>[N_countries] phi_inv;
-  real<lower = 0> mu_phi_inv;
+  vector<lower = 0>[N_countries] phi_inv_sqrt;
+  real<lower = 0> sigma_phi_inv_sqrt;
   
 }
 
 transformed parameters {
   vector[N_obs] linear = alpha[country] + beta[country] .* days;
   vector<lower = 0, upper = 1>[N_obs] difference;
+  vector<lower = 0>[N_countries] phi_inv = square(phi_inv_sqrt);
   vector<lower = 0>[N_countries] phi = inv(phi_inv);
   for (i in 1:N_obs) {
-    difference[i] = beta[country[i]] * maximum[country[i]] * exp(-linear[i]) / square(exp(-linear[i]) + 1);
+    difference[i] = beta[country[i]] * S[country[i]] * exp(-linear[i]) / square(exp(-linear[i]) + 1);
   }
 }
 
 model {
   
-  sigma_sq_beta ~ inv_chi_square(2);
-  sigma_sq_alpha ~ inv_chi_square(2);
+  mu_alpha ~ normal(-3.6, 0.5);
+  sigma_alpha ~ exponential(1);
+  alpha ~ normal(mu_alpha, sigma_alpha);
   
-  maximum ~ beta(beta_a, beta_b);
+  mu_beta ~ normal(0.13, 0.05);
+  sigma_beta ~ exponential(2);
+  beta ~ normal(mu_beta, sigma_beta);
   
-  beta ~ normal(mu_beta, sigma_sq_beta);
-  alpha ~ normal(mu_alpha, sigma_sq_alpha);
+  S ~ beta(a_s, b_s);
   
-  phi_inv ~ exponential(mu_phi_inv);
+  a_s ~ cauchy(0, 5);
+  b_s ~ cauchy(0, 5);
+  
+  phi_inv_sqrt ~ normal(0, sigma_phi_inv_sqrt);
+  sigma_phi_inv_sqrt ~ exponential(1);
   
   new_cases ~ neg_binomial_2(difference .* pop[country], phi[country]);
 }

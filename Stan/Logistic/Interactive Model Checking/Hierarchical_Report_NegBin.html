@@ -199,6 +199,7 @@ summary {
 <option value="Cyprus">Cyprus</option>
 <option value="Czech Republic">Czech Republic</option>
 <option value="Denmark">Denmark</option>
+<option value="Dominican Republic">Dominican Republic</option>
 <option value="Ecuador">Ecuador</option>
 <option value="Estonia">Estonia</option>
 <option value="Finland">Finland</option>
@@ -226,6 +227,7 @@ summary {
 <option value="Monaco">Monaco</option>
 <option value="Montenegro">Montenegro</option>
 <option value="Netherlands">Netherlands</option>
+<option value="New Caledonia">New Caledonia</option>
 <option value="New Zealand">New Zealand</option>
 <option value="North Macedonia">North Macedonia</option>
 <option value="Norway">Norway</option>
@@ -243,6 +245,7 @@ summary {
 <option value="Sweden">Sweden</option>
 <option value="Switzerland">Switzerland</option>
 <option value="Trinidad And Tobago">Trinidad And Tobago</option>
+<option value="United Arab Emirates">United Arab Emirates</option>
 <option value="United Kingdom">United Kingdom</option>
 <option value="United States">United States</option>
 <option value="Uruguay">Uruguay</option>
@@ -306,13 +309,13 @@ pred_plot <-  eventReactive(input$gobutton, {
   
   days_in_data <- max(plot_dat$days) + 1
   
-  results <- spread_draws(m, alpha[country], beta[country], maximum[country], phi[country]) %>% 
+  results <- spread_draws(m, alpha[country], beta[country], S[country], phi[country]) %>% 
     ungroup %>% 
     filter(country == id) %>% 
     mutate(iter = row_number()) %>% 
-    select(iter, alpha, beta, maximum, phi) %>% 
+    select(iter, alpha, beta, S, phi) %>% 
     expand_grid(days = seq(1, days_in_data + 50)) %>% 
-    mutate(daily_rate = daily_cases(alpha, beta, maximum, days),
+    mutate(daily_rate = daily_cases(alpha, beta, S, days),
            daily_cases = rnbinom(n(), mu = daily_rate * pop, size = phi)) %>% 
     group_by(iter) %>% 
     mutate(cases = as.numeric(cumsum(daily_cases)) + start_cases) %>% 
@@ -350,7 +353,7 @@ pred_plot <-  eventReactive(input$gobutton, {
                aes(date, total_cases), inherit.aes = F) +
     scale_y_continuous(breaks = pretty_breaks(8)) +
     labs(y = "Count",
-         subtitle = "Possible growth curves drawn from posterior distributions") +
+         subtitle = "Possible growth curves drawn from posterior distribution") +
     theme(axis.title.x = element_blank())
   
   

@@ -66,13 +66,13 @@ pred_plot <-  eventReactive(input$gobutton, {
   
   days_in_data <- max(plot_dat$days) + 1
   
-  results <- spread_draws(m, alpha[country], beta[country], maximum[country], phi[country]) %>% 
+  results <- spread_draws(m, alpha[country], beta[country], S[country], phi[country]) %>% 
     ungroup %>% 
     filter(country == id) %>% 
     mutate(iter = row_number()) %>% 
-    select(iter, alpha, beta, maximum, phi) %>% 
+    select(iter, alpha, beta, S, phi) %>% 
     expand_grid(days = seq(1, days_in_data + 50)) %>% 
-    mutate(daily_rate = daily_cases(alpha, beta, maximum, days),
+    mutate(daily_rate = daily_cases(alpha, beta, S, days),
            daily_cases = rnbinom(n(), mu = daily_rate * pop, size = phi)) %>% 
     group_by(iter) %>% 
     mutate(cases = as.numeric(cumsum(daily_cases)) + start_cases) %>% 
@@ -110,7 +110,7 @@ pred_plot <-  eventReactive(input$gobutton, {
                aes(date, total_cases), inherit.aes = F) +
     scale_y_continuous(breaks = pretty_breaks(8)) +
     labs(y = "Count",
-         subtitle = "Possible growth curves drawn from posterior distributions") +
+         subtitle = "Possible growth curves drawn from posterior distribution") +
     theme(axis.title.x = element_blank())
   
   
