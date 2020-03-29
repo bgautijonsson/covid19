@@ -51,8 +51,5 @@ d <- read_xlsx(temp) %>%
     mutate(case_rate = total_cases / pop * 1000,
            death_rate = ifelse(total_cases == 0, 0, total_deaths / total_cases))
 
-
-d %>% 
-    write_csv("Input/Test/ECDC_Data.csv")
 d %>% 
     write_csv("Input/ECDC_Data.csv")
