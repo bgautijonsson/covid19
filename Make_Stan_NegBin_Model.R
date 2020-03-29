@@ -33,14 +33,12 @@ stan_data <- list(N_obs = N_obs,
                   N_countries = N_countries,
                   days = days, 
                   new_cases = new_cases, 
-                  total_cases = total_cases, 
-                  total_deaths = total_deaths,
                   country = country,
                   pop = pop)
 
 
 m <- sampling(stan_model("Stan/Logistic/Hierarchical_Logistic_Cases_NegBin.stan"), 
-              data  = stan_data, chains = 4, iter = 2000, warmup = 1000,
+              data  = stan_data, chains = 4, iter = 4000, warmup = 2000,
               control = list(adapt_delta = 0.99))
 
 write_rds(m, "Stan/Logistic/Hierarchical_Model_NegBin.rds")

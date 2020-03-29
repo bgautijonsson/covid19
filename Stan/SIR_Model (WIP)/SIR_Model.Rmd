@@ -31,23 +31,16 @@ options(mc.cores = parallel::detectCores())
 ```
 
 ```{r}
-d <- read_csv("https://raw.githubusercontent.com/bgautijonsson/covid19/master/Input/ECDC_Data.csv") %>% 
+read_csv("https://raw.githubusercontent.com/bgautijonsson/covid19/master/Input/ECDC_Data.csv") %>% 
+    select(country, pop, new_cases, total_cases, new_deaths, total_deaths) %>% 
     group_by(country) %>% 
-    mutate(infected = lag(total_cases, 1, default = 0),
-           susceptible = pop - infected) %>% 
-    filter(case_rate >= 0.04, continent == "Europe") %>% 
-    group_by(country) %>% 
-    filter(n() > 10) %>% 
-    mutate(days = row_number() - 1) %>% 
-    ungroup %>% 
-    select(country, days, new_cases, infected, susceptible) %>% 
-    filter(country == "Iceland")
-
-d
-```
-
-```{r}
-glm(new_cases ~ infected + susceptible + days, family = poisson, data = d)
+    mutate(N = pop,
+           I = lag(total_cases, n = 1, default = 0),
+           R = lag(I, n = 15, default = 0) + lag(total_deaths, n = 1, default = 0),
+           I = I - R,
+           S = N - I - R
+           ) %>% 
+    filter(total_cases > 0, country == "Iceland")
 ```
 
 

@@ -48,7 +48,7 @@ model {
   sigma_alpha ~ exponential(1);
   alpha ~ normal(mu_alpha, sigma_alpha);
   
-  mu_beta ~ normal(0, 1);
+  mu_beta ~ normal(0.13, 0.1);
   sigma_beta ~ exponential(1);
   beta ~ normal(mu_beta, sigma_beta);
   
