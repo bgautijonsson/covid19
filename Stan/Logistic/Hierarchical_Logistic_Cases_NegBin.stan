@@ -31,7 +31,7 @@ parameters {
 
 transformed parameters {
   vector[N_obs] linear = alpha[country] + beta[country] .* days;
-  vector<lower = 0, upper = 1>[N_obs] difference;
+  vector<lower = 0>[N_obs] difference;
   vector<lower = 0>[N_countries] phi_inv = square(phi_inv_sqrt);
   vector<lower = 0>[N_countries] phi = inv(phi_inv);
   real<lower = 0> a_s = mu_s * kappa_s;
@@ -44,15 +44,15 @@ transformed parameters {
 
 model {
   
-  mu_alpha ~ normal(-3.6, 1);
+  mu_alpha ~ normal(-3.6, 0.5);
   sigma_alpha ~ exponential(1);
   alpha ~ normal(mu_alpha, sigma_alpha);
   
-  mu_beta ~ normal(0.13, 0.1);
-  sigma_beta ~ exponential(1);
+  mu_beta ~ normal(0.1, 0.05);
+  sigma_beta ~ exponential(2);
   beta ~ normal(mu_beta, sigma_beta);
   
-  mu_s ~ beta(1, 99);
+  mu_s ~ beta(2, 200);
   kappa_s ~ cauchy(0, 5);
   S ~ beta(a_s, b_s);
   

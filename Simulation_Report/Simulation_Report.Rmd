@@ -43,32 +43,32 @@ spitali <- sheets_read("https://docs.google.com/spreadsheets/d/1xgDhtejTtcyy6EN5
 
 ```{r}
 smit_cumul <- d %>% 
-  filter(name == "cases", type == "cumulative", age == "total") %>% 
+  filter(name == "cases", type == "cumulative", age == "total", aldursdreifing == "gögn") %>% 
   summarise(median = max(median) %>% round(-2), 
             upper = max(upper) %>% round(-2))
 
 smit_active <- d %>% 
-  filter(name == "cases", type == "active", age == "total") %>% 
+  filter(name == "cases", type == "active", age == "total", aldursdreifing == "gögn") %>% 
   summarise(median = max(median) %>% round(-2), 
             upper = max(upper) %>% round(-2))
 
 hospital_cumul <- d %>% 
-  filter(name == "hospital", type == "cumulative", age == "total") %>% 
+  filter(name == "hospital", type == "cumulative", age == "total", aldursdreifing == "gögn") %>% 
   summarise(median = max(median) %>% round(-1), 
             upper = max(upper) %>% round(-1))
 
 hospital_active <- d %>% 
-  filter(name == "hospital", type == "active", age == "total") %>% 
+  filter(name == "hospital", type == "active", age == "total", aldursdreifing == "gögn") %>% 
   summarise(median = max(median) %>% round(-1), 
             upper = max(upper) %>% round(-1))
 
 icu_cumul <- d %>% 
-  filter(name == "icu", type == "cumulative", age == "total") %>% 
-  summarise(median = max(median) %>% round(-1), 
-            upper = max(upper) %>% round(-1))
+  filter(name == "icu", type == "cumulative", age == "total", aldursdreifing == "gögn") %>% 
+  summarise(median = max(median) %>% round(1), 
+            upper = max(upper) %>% round(1))
 
 icu_active <- d %>% 
-  filter(name == "icu", type == "active", age == "total") %>% 
+  filter(name == "icu", type == "active", age == "total", aldursdreifing == "gögn") %>% 
   summarise(median = max(median) %>% round(1), 
             upper = max(upper) %>% round(1))
 ```
@@ -76,17 +76,19 @@ icu_active <- d %>%
 
 # Samantekt
 
-Spáin hefur breyst frá því 22. mars enda hafa færri smit greinst síðustu daga.
+Aðferðin við mat forspárlíkansins hefur verið bætt frá 25. mars, en núna gerum við ráð fyrir því að daglegur fjöldi greindra smita fylgi líkindadreifingu sem leyfir raunhæfara mat á óvissu *(dreifni)* frá degi til dags. Sökum þess hefur svartsýna spáin hækkað.
 
-**Helstu niðurstöður spálíkansins með gögnum til og með 24. mars eru eftirfarandi:**
+Spáin um heildarfjölda smita hefur lítið breyst frá því 25. mars, en spár um álag á heilbrigðiskerfið hafa hækkað, þar sem aldursdreifing greindra smita á Íslandi hefur hliðrast. Til að búa undir möguleikann á frekari hliðrun fylgir nú önnur forspá þar sem gert er ráð fyrir að aldursdreifingin verði óhagstæðari.
 
-* Gert er ráð fyrir því að á meðan faraldurinn gengur yfir muni rúmlega `r smit_cumul$median` manns á Íslandi verið greindir með COVID-19, en talan gæti náð nær `r smit_cumul$upper` manns skv. svartsýnni spá.
+**Helstu niðurstöður spálíkansins með gögnum til og með 29. mars eru eftirfarandi:**
 
-* Gert er ráð fyrir að fjöldi greindra einstaklinga með virkan sjúkdóm nái hámarki í fyrstu viku apríl og verði sennilega um `r smit_active$median` manns, en gæti náð `r smit_active$upper` manns skv. svartsýnni spá.
+* Gert er ráð fyrir því að á meðan faraldurinn gengur yfir muni rúmlega `r smit_cumul$median` manns á Íslandi vera greind með COVID-19, en talan gæti náð nær `r smit_cumul$upper` manns skv. svartsýnni spá.
+
+* Gert er ráð fyrir að fjöldi greindra einstaklinga með virkan sjúkdóm nái hámarki í fyrstu viku apríl og verði sennilega um `r smit_active$median` manns, en gæti viku seinna náð `r smit_active$upper` manns skv. svartsýnni spá.
 
 * Gert er ráð fyrir að á meðan að faraldurinn gengur yfir muni  `r hospital_cumul$median` manns þarfnast innlagnar á sjúkrahúsi, en gæti náð hátt í `r hospital_cumul$upper` manns. 
 
-* Mesta álag á heilbrigðisþjónustu vegna sjúkrahúsinnlagna verður fyrir miðjan apríl en þá er gert ráð fyrir að tæplega `r hospital_active$median` einstaklingar geti verið inniliggjandi á sama tíma, en svartsýnni spá er `r hospital_active$upper` einstaklingar.
+* Mesta álag á heilbrigðisþjónustu vegna sjúkrahúsinnlagna verður fyrir miðjan apríl en þá er gert ráð fyrir að um það bil `r hospital_active$median` einstaklingar geti verið inniliggjandi á sama tíma, en svartsýnni spá er `r hospital_active$upper` einstaklingar.
 
 * Gert er ráð fyrir því að á tíma faraldursins muni um `r icu_cumul$median` einstaklingar veikjast alvarlega, þ.e. þurfa innlögn á gjörgæslu, á tímabilinu en svartsýnni spá er `r icu_cumul$upper` einstaklingar.
 
@@ -98,21 +100,21 @@ Greiningarvinnan mun halda áfram og spálíkanið verður uppfært reglulega me
 
 # Aðferðir og forsendur spálíkans
 
-* Við notuðum logistískt vaxtarlíkan með Poisson dreifingu á fjölda þegar greindra smita á Íslandi til að gera forspá um miðgildi (líklegustu spá) og 97,5% efri mörk (svartsýnustu spá) um uppsafnaðan fjölda greindra COVID-19 tilfella á Íslandi og virkra greindra tilfella (þar sem gert er ráð fyrir 21 veikindadegi) á næstu vikum.
+* Við notuðum logistískt vaxtarlíkan með neikvæða tvíkostadreifingu á fjölda þegar greindra smita á Íslandi til að gera forspá um miðgildi (líklegri spá) og 97,5% efri mörk (svartsýn spá) um uppsafnaðan fjölda greindra COVID-19 tilfella á Íslandi og virkra greindra tilfella (þar sem gert er ráð fyrir 21 veikindadegi) á næstu vikum.
 
 * Í samræmi við þekkingu á faraldsfræði smitsjúkdóma, þá gerir spálíkanið ráð fyrir að það hægi á núverandi veldisvexti greindra tilfella þar til að hann stöðvist á einhverjum tímapunkti, þar sem faraldurinn nær hámarki og virkum smitum fækkar þar á eftir.
 
-* Reikniaðferðin sem notuð er til að meta lögun vaxtarferilsins á Íslandi tekur mið af upplýsingum um COVID-19 faraldursferla í öðrum löndum (sjá viðauka) til að áætla mögulega lögun ferlisins á Ísland. Lönd sem eru komin lengra í ferlinum, t.d. Suður-Kórea, vega meira en þau sem styttra eru komin.
+* Reikniaðferðin sem notuð er til að meta lögun vaxtarferilsins á Íslandi tekur mið af upplýsingum um COVID-19 faraldursferla í öðrum löndum (sjá viðauka) til að áætla mögulega lögun ferilsins á Ísland. Lönd sem eru komin lengra í ferlinum, t.d. Suður-Kórea, vega meira en þau sem styttra eru komin.
 
 * Þar sem allir smitaðir einstaklingar á Íslandi eru skjólstæðingar íslensks heilbrigðiskerfis, þá byggir spáin á heildarfjölda smitaðra einstaklinga á Íslandi óháð uppruna smita, hvort einstaklingar greinist í sóttkví eða ekki, gegnum skimun Heilsugæslunnar eða ÍE. Hafa skal í huga að smitaðir einstaklingar í sóttkví gætu mögulega bætt minna við veldisvöxtinn en aðrir einstaklingar.
 
-* Við notuðum fyrirliggjandi aldursdreifingu smita á Íslandi til að áætla skiptingu framtíðartilfella í aldurshópa. Síðan notuðum við upplýsingar frá Ferguson og félögum hjá Imperial College (Tafla 1) um aldurstengd hlutföll spítalainnlagna í forspá okkar um fjölda sjúklinga hérlendis sem gætu lagst inn á spítala og/eða gjörgæslu.
+* Við notuðum fyrirliggjandi aldursdreifingu smita á Íslandi til að áætla skiptingu framtíðartilfella í aldurshópa. Síðan notuðum við upplýsingar frá Ferguson og félögum hjá Imperial College [(Tafla 1)](https://www.imperial.ac.uk/media/imperial-college/medicine/sph/ide/gida-fellowships/Imperial-College-COVID19-NPI-modelling-16-03-2020.pdf) um aldurstengd hlutföll spítalainnlagna í forspá okkar um fjölda sjúklinga hérlendis sem gætu lagst inn á spítala og/eða gjörgæslu.
 
 * Hafa ber í huga að aldursdreifing smitaðra einstaklinga á Íslandi er hagstæð enn sem komið er. Ef fjöldi smita eykst meðal aldraðra einstaklinga mun það hafa veruleg áhrif á spálíkanið í átt að auknu álagi á heilbrigðiskerfið.
 
 * Allan kóða á finna á [eftirfarandi vefsíðu](https://github.com/bgautijonsson/covid19).
 
-* Tæknilega skýrslu um aðferð við þróun líkans [má finna hér](https://rpubs.com/bgautijonsson/588811).
+* Tæknilega skýrslu um aðferð við þróun líkans [má finna hér](https://rpubs.com/bgautijonsson/HierarchicalLogisticGrowthCurves).
 
 * Mælaborð sem heldur utan um þróun COVID-19 á Íslandi og annars staðar má nálgast á [vef Háskóla Íslands hér](https://covid.rhi.hi.is/shiny/dashboard/).
 
@@ -122,12 +124,18 @@ Greiningarvinnan mun halda áfram og spálíkanið verður uppfært reglulega me
 
 ### Uppsöfnuð greind smit
 
+
 ```{r}
+plot_dat <- tibble(dagar = seq_len(31) - 1) %>% 
+  mutate(pred = exp(1.7 + 0.2061 * dagar),
+         date = min(iceland_d$date) + dagar)
 d %>% 
   filter(name == "cases", age == "total", type == "cumulative", aldursdreifing == "gögn") %>% 
   ggplot(aes(date, median)) +
-  geom_line(aes(lty = "Líklegasta spá")) +
+  geom_line(aes(lty = "Líkleg spá")) +
   geom_line(aes(y = upper, lty = "Svartsýn spá"), col = "grey50") +
+  geom_line(data = plot_dat, aes(x = date, y = pred), inherit.aes = T, col = "#e41a1c") +
+  geom_text(aes(x = ymd("2020-03-18"), y = 2000, label = "Óheftur veldisvöxtur"), inherit.aes = F, col = "#e41a1c") +
   geom_point(data = iceland_d, aes(x = date, y = total_cases), inherit.aes = F) +
   scale_y_continuous(breaks = pretty_breaks(8)) +
   scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
@@ -143,7 +151,7 @@ d %>%
 d %>% 
   filter(name == "cases", age == "total", type == "active", aldursdreifing == "gögn") %>% 
   ggplot(aes(date, median)) +
-  geom_line(aes(lty = "Líklegasta spá")) +
+  geom_line(aes(lty = "Líkleg spá")) +
   geom_line(aes(y = upper, lty = "Svartsýn spá"), col = "grey50") +
   # geom_point(data = iceland_d, aes(x = date, y = total_cases), inherit.aes = F) +
   scale_y_continuous(breaks = pretty_breaks(8)) +
@@ -162,7 +170,7 @@ d %>%
 d %>% 
   filter(name == "hospital", age == "total", type == "cumulative", aldursdreifing == "gögn")  %>% 
   ggplot(aes(date, median)) +
-  geom_line(aes(lty = "Líklegasta spá")) +
+  geom_line(aes(lty = "Líkleg spá")) +
   geom_line(aes(y = upper, lty = "Svartsýn spá"), col = "grey50") +
   geom_point(data = spitali, aes(x = date, y = spitali_samtals)) +
   scale_y_continuous(breaks = pretty_breaks(8)) +
@@ -179,7 +187,7 @@ d %>%
 d %>% 
   filter(name == "hospital", age == "total", type == "active", aldursdreifing == "gögn")  %>% 
   ggplot(aes(date, median)) +
-  geom_line(aes(lty = "Líklegasta spá")) +
+  geom_line(aes(lty = "Líkleg spá")) +
   geom_line(aes(y = upper, lty = "Svartsýn spá"), col = "grey50") +
   geom_point(data = spitali, aes(x = date, y = spitali)) +
   scale_y_continuous(breaks = pretty_breaks(8)) +
@@ -198,7 +206,7 @@ d %>%
 d %>% 
   filter(name == "icu", age == "total", type == "cumulative", aldursdreifing == "gögn") %>% 
   ggplot(aes(date, median)) +
-  geom_line(aes(lty = "Líklegasta spá")) +
+  geom_line(aes(lty = "Líkleg spá")) +
   geom_line(aes(y = upper, lty = "Svartsýn spá"), col = "grey50") +
   scale_y_continuous(breaks = pretty_breaks(8)) +
   scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
@@ -214,7 +222,7 @@ d %>%
 d %>% 
   filter(name == "icu", age == "total", type == "active", aldursdreifing == "gögn") %>% 
   ggplot(aes(date, median)) +
-  geom_line(aes(lty = "Líklegasta spá")) +
+  geom_line(aes(lty = "Líkleg spá")) +
   geom_line(aes(y = upper, lty = "Svartsýn spá"), col = "grey50") +
   geom_point(data = spitali, aes(x = date, y = icu)) +
   scale_y_continuous(breaks = pretty_breaks(8)) +
@@ -334,9 +342,9 @@ d %>%
 
 # Niðurstöður með annarri aldursdreifingu
 
-## Ný aldurdreifing
+## Önnur aldursdreifing
 
-blablabla myndrit aðferð halló
+Eftirfarandi er hermun á þróun miðað við að smit leggist hlutfallslega meira á eldri aldurshópa en nú gerir.
 
 ```{r}
 aldur %>% 
@@ -366,8 +374,9 @@ d %>%
                                      "Dreifing greindra smita" = "gögn",
                                      "Hermun" = "óhagstæð")) %>% 
   ggplot(aes(date, median, col = aldursdreifing)) +
-  geom_line(aes(lty = "Líklegasta spá")) +
+  geom_line(aes(lty = "Líkleg spá")) +
   geom_line(aes(y = upper, lty = "Svartsýn spá")) +
+  geom_point(data = spitali, aes(x = date, y = spitali_samtals), inherit.aes = F) +
   scale_y_continuous(breaks = pretty_breaks(8)) +
   scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
   scale_colour_brewer(type = "qua", palette = "Set1") +
@@ -386,7 +395,7 @@ d %>%
                                      "Dreifing greindra smita" = "gögn",
                                      "Hermun" = "óhagstæð")) %>% 
   ggplot(aes(date, median, col = aldursdreifing)) +
-  geom_line(aes(lty = "Líklegasta spá")) +
+  geom_line(aes(lty = "Líkleg spá")) +
   geom_line(aes(y = upper, lty = "Svartsýn spá")) +
   scale_y_continuous(breaks = pretty_breaks(8)) +
   scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
@@ -408,7 +417,7 @@ d %>%
                                      "Dreifing greindra smita" = "gögn",
                                      "Hermun" = "óhagstæð")) %>% 
   ggplot(aes(date, median, col = aldursdreifing)) +
-  geom_line(aes(lty = "Líklegasta spá")) +
+  geom_line(aes(lty = "Líkleg spá")) +
   geom_line(aes(y = upper, lty = "Svartsýn spá")) +
   scale_y_continuous(breaks = pretty_breaks(8)) +
   scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
@@ -428,8 +437,9 @@ d %>%
                                      "Dreifing greindra smita" = "gögn",
                                      "Hermun" = "óhagstæð")) %>% 
   ggplot(aes(date, median, col = aldursdreifing)) +
-  geom_line(aes(lty = "Líklegasta spá")) +
+  geom_line(aes(lty = "Líkleg spá")) +
   geom_line(aes(y = upper, lty = "Svartsýn spá")) +
+  geom_point(data = spitali, aes(x = date, y = icu), inherit.aes = F) +
   scale_y_continuous(breaks = pretty_breaks(8)) +
   scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
   scale_colour_brewer(type = "qua", palette = "Set1") +

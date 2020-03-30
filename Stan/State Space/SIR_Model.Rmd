@@ -1,0 +1,86 @@
+---
+title: "Modeling"
+author: "Brynjólfur Gauti Jónsson"
+date: "3/15/2020"
+output: 
+    html_document:
+        theme: flaty
+        code_folding: hide
+        toc: true
+        toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, 
+                      fig.width = 8, fig.asp = 0.621, out.width = "100%")
+```
+
+# Packages
+
+```{r}
+packages <- c("tidyverse", "knitr", "kableExtra", "broom", "cowplot", "rstan", "tidybayes", "scales", 
+              "lubridate")
+sapply(packages, require, character.only = TRUE, quietly = TRUE)
+theme_set(theme_bw() + 
+              panel_border(colour = "grey30", size = 1) + 
+              background_grid(color.major = "grey90", 
+                              color.minor = "grey95", 
+                              minor = "xy", major = "xy"))
+rm(packages)
+options(mc.cores = parallel::detectCores())
+```
+
+```{r}
+countries <- c("Iceland", "Norway", "Sweden", "Denmark", "Finland")
+d <- read_csv("https://raw.githubusercontent.com/bgautijonsson/covid19/master/Input/ECDC_Data.csv") %>% 
+    select(country, date, total_cases) %>% 
+    filter(date >= ymd("2020-03-05"), 
+           country %in% countries) %>% 
+    spread(country, total_cases)
+
+d
+```
+
+
+```{r}
+N_obs <- nrow(d)
+N_countries <- length(unique(d$country))
+country <- d$country_id
+
+N <- d$N
+S <- d$S
+I <- d$I
+R <- d$R
+
+new_cases <- d$new_cases
+new_deaths <- d$new_deaths
+new_recovered <- d$new_recovered
+
+stan_data <- list(
+    N_obs = N_obs,
+    N_countries = N_countries,
+    country = country,
+    N = N,
+    S = S,
+    I = I,
+    R = R,
+    new_cases = new_cases,
+    new_deaths = new_deaths,
+    new_recovered = new_recovered
+)
+
+str(stan_data)
+```
+
+
+```{r}
+m <- sampling(stan_model("SIR_Model.stan"), 
+              data  = stan_data, chains = 4, iter = 2000, warmup = 1000)
+```
+
+```{r}
+tidyMCMC(m, pars = c("mu_gamma", "mu_beta", "mu_mu",
+                     "sigma_gamma", "sigma_beta", "sigma_mu",
+                     "r0", "infectious_period"), conf.int = T, rhat = T, ess = T) %>% 
+    mutate_at(vars(-term), round, digits = 3)
+```

@@ -31,107 +31,70 @@ options(mc.cores = parallel::detectCores())
 ```
 
 ```{r}
-read_csv("https://raw.githubusercontent.com/bgautijonsson/covid19/master/Input/ECDC_Data.csv") %>% 
-    select(country, pop, new_cases, total_cases, new_deaths, total_deaths) %>% 
+d <- read_csv("https://raw.githubusercontent.com/bgautijonsson/covid19/master/Input/ECDC_Data.csv") %>% 
+    select(country, date, pop, new_cases, total_cases, new_deaths, total_deaths) %>% 
     group_by(country) %>% 
     mutate(N = pop,
            I = lag(total_cases, n = 1, default = 0),
            R = lag(I, n = 15, default = 0) + lag(total_deaths, n = 1, default = 0),
            I = I - R,
-           S = N - I - R
+           S = N - I - R,
+           new_recovered = lag(I, n = 15, default = 0) - lag(I, n = 16, default = 0),
+           new_recovered = pmax(0, new_recovered),
            ) %>% 
-    filter(total_cases > 0, country == "Iceland")
+    filter(country %in% c("Iceland", "Sweden", "Norway",
+                          "Denmark", "Finland", "Italy", "Austria",
+                          "South Korea", "Austria", "Switzerland",
+                          "United States"," Singapore", "Germany", "France",
+                          "Spain")) %>% 
+    select(country, date, N, I, R, S, new_cases, new_deaths, new_recovered) %>% 
+    ungroup %>% 
+    mutate(country_id = as.numeric(as.factor(country))) %>% 
+    filter(I > 25)
+
+d
 ```
 
 
 ```{r}
 N_obs <- nrow(d)
-N_countries <- max(d$country_id)
+N_countries <- length(unique(d$country))
+country <- d$country_id
 
+N <- d$N
+S <- d$S
+I <- d$I
+R <- d$R
 
+new_cases <- d$new_cases
+new_deaths <- d$new_deaths
+new_recovered <- d$new_recovered
+
+stan_data <- list(
+    N_obs = N_obs,
+    N_countries = N_countries,
+    country = country,
+    N = N,
+    S = S,
+    I = I,
+    R = R,
+    new_cases = new_cases,
+    new_deaths = new_deaths,
+    new_recovered = new_recovered
+)
+
+str(stan_data)
 ```
 
 
 ```{r}
 m <- sampling(stan_model("SIR_Model.stan"), 
-              data  = stan_data, chains = 8, iter = 2000, warmup = 500)
+              data  = stan_data, chains = 4, iter = 2000, warmup = 1000)
 ```
 
 ```{r}
-tidyMCMC(m, pars = c("mu_recovery", "mu_mortality", "mu_growth"), conf.int = T, rhat = T, ess = T)
+tidyMCMC(m, pars = c("mu_gamma", "mu_beta", "mu_mu",
+                     "sigma_gamma", "sigma_beta", "sigma_mu",
+                     "r0", "infectious_period"), conf.int = T, rhat = T, ess = T) %>% 
+    mutate_at(vars(-term), round, digits = 3)
 ```
-
-```{r, fig.asp = 0.4}
-growth <- tidyMCMC(m, pars = "growth", conf.int = T) %>% 
-    mutate(country_id = row_number()) %>% 
-    inner_join(d %>% distinct(country, country_id)) %>% 
-    mutate(var = "Growth",
-           plot_var = paste0(var, country))
-recov <- tidyMCMC(m, pars = "recovery", conf.int = T) %>% 
-    mutate(country_id = row_number()) %>% 
-    inner_join(d %>% distinct(country, country_id)) %>% 
-    mutate(var = "Recovery",
-           plot_var = paste0(var, country))
-mort <- tidyMCMC(m, pars = "mortality", conf.int = T) %>% 
-    mutate(country_id = row_number()) %>% 
-    inner_join(d %>% distinct(country, country_id)) %>% 
-    mutate(var = "Mortality",
-           plot_var = paste0(var, country))
-
-
-bind_rows(growth, recov, mort) %>% 
-    mutate(plot_var = fct_reorder(plot_var, estimate)) %>% 
-    ggplot(aes(plot_var, estimate, ymin = conf.low, ymax = conf.high,
-               col = country == "Iceland")) +
-    geom_linerange() +
-    geom_point() +
-    facet_wrap("var", scales = "free") +
-    scale_y_log10(labels = percent) +
-    scale_x_discrete(labels = function(x) str_replace(x, "Growth|Mortality|Recovery", "")) +
-    scale_colour_manual(values = c("grey", "blue")) +
-    coord_flip() +
-    theme(legend.position = "none", axis.title = element_blank())
-```
-
-
-```{r}
-pred_days <- seq_len(simulation_days)
-spread_draws(m, pred_cases[pred_days]) %>% 
-    group_by(pred_days) %>% 
-    summarise(estimate = median(pred_cases),
-              lower = quantile(pred_cases, 0.025),
-              upper = quantile(pred_cases, 0.975)) %>% 
-    ggplot(aes(pred_days, estimate, ymin = lower, ymax = upper)) +
-    geom_ribbon(alpha = 0.3) +
-    geom_line() +
-    scale_y_log10()
-```
-
-```{r}
-iceland_pred <- spread_draws(m, pred_cases[pred_days], pred_recovered[pred_days], pred_deaths[pred_days]) %>% 
-    group_by(.chain, .iteration) %>% 
-    mutate(pred_recovered = cumsum(pred_recovered),
-           pred_deaths = cumsum(pred_deaths)) %>% 
-    ungroup %>% 
-    pivot_longer(c(pred_cases, pred_recovered, pred_deaths), names_to = "variable", values_to = "n") %>% 
-    group_by(pred_days, variable) %>% 
-    summarise(estimate = median(n),
-              lower = quantile(n, 0.025),
-              upper = quantile(n, 0.975)) %>% 
-    ungroup %>% 
-    mutate(pred_days = ymd("2020-03-16") + pred_days)
-```
-
-
-```{r, fig.asp = 0.5}
-ggplot(iceland_pred, aes(pred_days, estimate, ymin = lower, ymax = upper)) +
-    geom_ribbon(alpha = 0.3) +
-    geom_line() +
-    facet_wrap("variable", scales = "free") 
-```
-
-```{r}
-d %>% 
-    filter(country == "Iceland")
-```
-

@@ -22,9 +22,9 @@ source("Make_Stan_Data.R")
 
 d <- Make_Stan_Data()
 
-daily_cases <- function(alpha, beta, maximum, t) {
+daily_cases <- function(alpha, beta, S, t) {
     z <- alpha + beta * t
-    beta * maximum * exp(-z) / (exp(-z) + 1)^2
+    beta * S * exp(-z) / (exp(-z) + 1)^2
 }
 
 aldur <- sheets_read("https://docs.google.com/spreadsheets/d/1xgDhtejTtcyy6EN5dbDp5W3TeJhKFRRgm6Xk0s0YFeA", sheet = "Aldur") %>% 
@@ -50,7 +50,7 @@ results <- spread_draws(
     m, 
     alpha[country], 
     beta[country], 
-    maximum[country],
+    S[country],
     phi[country]
 ) %>% 
     ungroup %>% 
@@ -60,12 +60,12 @@ results <- spread_draws(
         iter, 
         alpha, 
         beta, 
-        maximum,
+        S,
         phi
     ) %>% 
     expand_grid(days = seq(1, 60)) %>% 
     mutate(
-        daily_rate = daily_cases(alpha = alpha, beta = beta, maximum = maximum, t = days),
+        daily_rate = daily_cases(alpha = alpha, beta = beta, S = S, t = days),
         new_cases = rnbinom(n(), mu = daily_rate * pop, size = phi),
     ) %>% 
     group_by(iter) %>% 
