@@ -16,10 +16,6 @@ N_countries <- max(d$country_id)
 days <- d$days
 new_cases <- d$new_cases
 total_cases <- d$total_cases
-d %>% group_by(country, country_id) %>% 
-    summarise(total_cases = max(total_cases)) %>% 
-    arrange(country_id) %>% 
-    .$total_cases
 country <- d$country_id %>% as.integer
 
 pop <- d %>% distinct(country_id, pop) %>% arrange(country_id) %>%  .$pop

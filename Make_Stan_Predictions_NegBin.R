@@ -205,5 +205,3 @@ out <- out %>%
 out_path <- str_c("Output/Iceland_Predictions/Iceland_Predictions_", Sys.Date(), ".csv")
 write_csv(out, out_path)
 
-
-

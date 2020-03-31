@@ -1,4 +1,4 @@
-Make_Stan_Data <- function(min_case_rate = 0.02, min_days = 8, upper_mult = 3) {
+Make_Stan_Data <- function(min_case_rate = 0.02, min_days = 12, upper_mult = 3) {
     library(tidyverse)
     library(googlesheets4)
     library(readxl)
@@ -52,7 +52,7 @@ Make_Stan_Data <- function(min_case_rate = 0.02, min_days = 8, upper_mult = 3) {
     
     
     stan_data %>% 
-        filter(!country %in% c("China", "Malta")) %>% 
+        filter(!country %in% c("China", "Malta"), pop > 1e5) %>% 
         filter(case_rate >= min_case_rate) %>% 
         group_by(country) %>% 
         mutate(days = row_number() - 1) %>% 
