@@ -40,7 +40,7 @@ countries <- c(
     "Singapore", "South Korea",
     "Australia", "Canada", "Belgium"
 )
-d <- read_csv("https://raw.githubusercontent.com/bgautijonsson/covid19/master/Input/ECDC_Data.csv") %>% 
+d <- read_csv("../../Input/ECDC_Data.csv") %>% 
     select(country, date, pop, new_cases, total_cases, new_deaths, total_deaths) %>% 
     group_by(country) %>% 
     mutate(N = pop,
@@ -52,8 +52,7 @@ d <- read_csv("https://raw.githubusercontent.com/bgautijonsson/covid19/master/In
     filter(country %in% countries) %>% 
     select(country, date, N, I, R, S, new_cases, new_deaths) %>% 
     ungroup %>% 
-    mutate(country_id = as.numeric(as.factor(country)),
-           date = date + (country == "Iceland")) %>% 
+    mutate(country_id = as.numeric(as.factor(country))) %>% 
     filter(date > ymd("2020-03-02"))
 d %>% 
     mutate(I = as.integer(I)) %>% 

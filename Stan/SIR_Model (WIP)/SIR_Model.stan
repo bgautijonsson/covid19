@@ -51,8 +51,6 @@ model {
       new_cases[t, i] ~ poisson(beta[t, i] * I[t, i] * S[t, i] / N[t, i]);
     }
   }
-  
-  
 }
 
 
