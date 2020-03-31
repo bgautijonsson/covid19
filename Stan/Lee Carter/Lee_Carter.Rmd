@@ -1,0 +1,116 @@
+---
+title: "Modeling"
+author: "Brynjólfur Gauti Jónsson"
+date: "3/15/2020"
+output: 
+    html_document:
+        theme: flaty
+        code_folding: hide
+        toc: true
+        toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, 
+                      fig.width = 8, fig.asp = 0.621, out.width = "100%")
+```
+
+# Packages
+
+```{r}
+packages <- c("tidyverse", "knitr", "kableExtra", "broom", "cowplot", "rstan", "tidybayes", "scales", 
+              "lubridate")
+sapply(packages, require, character.only = TRUE, quietly = TRUE)
+theme_set(theme_bw() + 
+              panel_border(colour = "grey30", size = 1) + 
+              background_grid(color.major = "grey90", 
+                              color.minor = "grey95", 
+                              minor = "xy", major = "xy"))
+rm(packages)
+options(mc.cores = parallel::detectCores())
+```
+
+```{r}
+d <- read_csv("https://docs.google.com/spreadsheets/d/1ODqwILD6yBfE5mgKmI4mE-t-wzBDaw8l27gERUiAMgo/export?format=csv&id=1ODqwILD6yBfE5mgKmI4mE-t-wzBDaw8l27gERUiAMgo&gid=1016812695") %>% 
+    rename(date = Dagsetning) %>% 
+    select(-Total, -Cumulative) %>% 
+    pivot_longer(-date, names_to = "age", values_to = "cases")
+
+d_pop <- read_csv2("MAN08000bysex.csv", locale = locale("is", encoding = "ISO-8859-1"), skip = 1) %>% 
+    pivot_longer(c(-Kyn, -Aldur), 
+                 names_to = "year", names_ptypes = list("year" = numeric()),
+                 values_to = "pop") %>% 
+    filter(year == max(year)) %>% 
+    rename(kyn = Kyn, aldur = Aldur) %>% 
+    mutate(aldur = ifelse(aldur == "Á 1. ári", 0, parse_number(aldur)),
+           aldur = pmin(aldur, 81),
+           aldur = 10 * floor(aldur / 10),
+           aldur = ifelse(aldur == 80, "80+", str_c(aldur, " - ", aldur + 9)),
+           pop = parse_number(pop)) %>% 
+    group_by(age = aldur) %>% 
+    summarise(pop = sum(pop))
+```
+
+
+```{r}
+cases <- d %>% 
+    spread(age, cases) %>% 
+    select(-date) %>% 
+    as.matrix
+
+N_days <- nrow(total_cases)
+N_groups <- ncol(total_cases)
+
+pop <- d_pop$pop
+
+stan_data <- list(
+    N_days = N_days,
+    N_groups = N_agegroups,
+    cases = cases,
+    pop = pop
+)
+
+str(stan_data)
+```
+
+
+```{r}
+m <- sampling(stan_model("Lee_Carter.stan"), 
+              data  = stan_data, chains = 4, iter = 2000, warmup = 1000)
+```
+
+```{r}
+tidyMCMC(m, pars = c("beta", "change", "kappa", "alpha"), conf.int = T) %>% 
+    mutate(par = str_match(term, "[a-zA-Z]+"),
+           term = parse_number(term)) %>% 
+    filter(par == "change") %>% 
+    mutate(agegroup = factor(term, labels = colnames(total_cases))) %>% 
+    mutate_at(vars(estimate, contains("conf")), ~ exp(0.256 * .) - 1) %>% 
+    ggplot(aes(agegroup, estimate, ymin = conf.low, ymax = conf.high, group = "none")) +
+    geom_ribbon(alpha = 0.3) +
+    geom_line() +
+    scale_y_continuous(labels = percent) +
+    facet_wrap("par", scales = "free_x")
+```
+
+```{r}
+preds <- spread_draws(m, alpha[age], beta[age], kappa[day]) %>% 
+    mutate(pred = exp(alpha + beta * kappa)) %>% 
+    group_by(day, age) %>% 
+    summarise(median = median(pred))
+
+
+preds %>% 
+    mutate(age = 10 * (age - 1),
+           age = ifelse(age == 80, "80+", str_c(age, " - ", age + 9))) %>% 
+    inner_join(d_pop) %>% 
+    mutate(cases = median * pop) %>% 
+    group_by(age) %>% 
+    mutate(total_cases = cumsum(cases),
+           date = day - 1 + min(mdy(d$date))) %>% 
+    arrange(age, day) %>% 
+    ggplot(aes(date, total_cases, col = age, group = age)) +
+    geom_line() +
+    scale_y_log10()
+```
+

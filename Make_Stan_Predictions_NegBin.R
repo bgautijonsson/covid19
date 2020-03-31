@@ -205,3 +205,10 @@ out <- out %>%
 out_path <- str_c("Output/Iceland_Predictions/Iceland_Predictions_", Sys.Date(), ".csv")
 write_csv(out, out_path)
 
+
+out_path_posterior <- str_c("Output/Iceland_Posterior/Iceland_Posterior_", Sys.Date(), ".csv")
+results %>% 
+    mutate(date = days - 1 + min(iceland_d$date)) %>% 
+    select(date, iter, new_cases) %>% 
+    write_csv(out_path_posterior)
+

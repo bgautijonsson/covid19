@@ -34,7 +34,7 @@ options(mc.cores = parallel::detectCores())
 countries <- c("Iceland", "Norway", "Sweden", "Denmark", "Italy", "Spain", "Germany", "United States", "South Korea",
                "United Kingdom", "Austria", "Switzerland", "Belgium", "France", "Singapore", "Japan", "Canada")
 d <- read_csv("https://raw.githubusercontent.com/bgautijonsson/covid19/master/Input/ECDC_Data.csv") %>% 
-    select(country, date, total_cases) %>% 
+    select(country, date, total_cases, pop) %>% 
     mutate(date = date + (country == "Iceland"),
            total_cases = as.integer(total_cases)) %>% 
     filter(date >= ymd("2020-03-02"), 
@@ -45,21 +45,25 @@ d
 
 
 ```{r}
-N_days <- nrow(d)
-N_countries <- ncol(d)
 total_cases <- d %>% 
+    select(-pop) %>% 
     spread(country, total_cases) %>% 
     select(-date) %>% 
     as.matrix
 
-N_preds <- 5
+N_days <- nrow(total_cases)
+N_countries <- ncol(total_cases)
+
+pop <- d %>% 
+    distinct(country, pop) %>% 
+    .$pop
 
 stan_data <- list(
     N_days = N_days,
     N_countries = N_countries,
     total_cases = total_cases,
-    N_preds = N_preds
-    )
+    pop = pop
+)
 
 str(stan_data)
 ```
@@ -84,8 +88,18 @@ m <- sampling(stan_model("State_Space.stan"),
 ```
 
 ```{r}
-tidyMCMC(m, conf.int = T, rhat = T, ess = T) %>% 
-    mutate_at(vars(-term), round, digits = 3)
+tidyMCMC(m, pars = c("beta", "change", "kappa", "alpha"), conf.int = T) %>% 
+    mutate(par = str_match(term, "[a-zA-Z]+"),
+           term = parse_number(term)) %>% 
+    filter(par == "change") %>% 
+    mutate(country = factor(term, labels = colnames(total_cases)) %>% fct_reorder(estimate)) %>% 
+    mutate_at(vars(estimate, contains("conf")), ~ exp(2.42 * .) - 1) %>% 
+    ggplot(aes(country, estimate, ymin = conf.low, ymax = conf.high, group = country)) +
+    geom_linerange() +
+    geom_point() +
+    scale_y_continuous(labels = percent) +
+    facet_wrap("par", scales = "free_x") +
+    coord_flip()
 ```
 
 
