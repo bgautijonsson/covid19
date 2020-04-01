@@ -44,15 +44,15 @@ transformed parameters {
 
 model {
   
-  mu_alpha ~ normal(-3.6, 0.5);
+  mu_alpha ~ normal(-2, 1);
   sigma_alpha ~ exponential(1);
   alpha ~ normal(mu_alpha, sigma_alpha);
   
-  mu_beta ~ normal(0.1, 0.05);
-  sigma_beta ~ exponential(2);
+  mu_beta ~ normal(0.1, 0.1);
+  sigma_beta ~ exponential(1);
   beta ~ normal(mu_beta, sigma_beta);
   
-  mu_s ~ beta(2, 200);
+  mu_s ~ beta(1, 99);
   kappa_s ~ exponential(0.001);
   S ~ beta(a_s, b_s);
   

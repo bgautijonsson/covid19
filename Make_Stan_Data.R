@@ -1,4 +1,4 @@
-Make_Stan_Data <- function(min_case_rate = 0.02, min_days = 12, upper_mult = 3) {
+Make_Stan_Data <- function(min_case_rate = 0.14, min_days = 5, upper_mult = 2) {
     library(tidyverse)
     library(googlesheets4)
     library(readxl)

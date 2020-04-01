@@ -49,6 +49,10 @@ results <- tidyMCMC(m, conf.int = T, rhat = T, ess = T, estimate.method = "media
 
 # Updates
 
+## 2020-03-31
+
+* Reparametrized the prior for S in terms of $\mu$ the mean and $\kappa$ the sample size.
+
 ## 2020-03-28
 
 * Weak priors on $a_S$ and $b_S$ to help the NUTS sampler.
@@ -197,12 +201,21 @@ $$
 S_i \sim \mathrm{Beta}(a_S, b_S),
 $$
 
-where $a_S$ and $b_S$ are given vague Half-Cauchy prior distributions to help with the posterior geometry
+where we parametrize in terms of the mean, $\mu_S$, and prior sample size, $\kappa_S$
 
 $$
 \begin{aligned}
-a_S &\sim \mathrm{Cauchy}(0, 5) \\
-b_s &\sim \mathrm{Cauchy}(0, 5).
+\mu_S &\sim \mathrm{Beta}(1, 99) \\
+\kappa_S &\sim \mathrm{Exponential}(0.001).
+\end{aligned}
+$$
+
+We can then back-transform into $a_S$ and $b_S$ as
+
+$$
+\begin{aligned}
+a_S &= \mu_S \cdot \kappa_S \\
+b_S &= (1 - \mu_S) \cdot \kappa_S
 \end{aligned}
 $$
 
@@ -251,8 +264,10 @@ p(\sigma_\beta) &\sim \mathrm{Exponential}(2)  \\
 \sqrt\phi_i &\sim \mathrm{Normal}(0, \lambda_\phi^2)\\
 \lambda_\phi &\sim \mathrm{Exponential}(1) \\
 S_i &\sim \mathrm{Beta}(a_S, b_S) \\
-p(a_S) &\sim \mathrm{Cauchy}(0, 5) \\
-p(b_S) &\sim \mathrm{Cauchy}(0, 5)
+a_S &= \mu_S \cdot \kappa_S \\
+b_S &= (1 - \mu_S) \cdot \kappa_S \\
+\mu_S &\sim \mathrm{Beta}(1, 99) \\
+\kappa_S &\sim \mathrm{Exponential}(0.001)
 \end{aligned}
 $$
 
@@ -260,11 +275,14 @@ $$
 
 ## Data
 
+We use Icelandic data from the Directorate of Health and supplement with data on other countries from the [European CDC, obtained daily](https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-distribution-covid-19-cases-worldwide).
+
 Data used for modeling were filtered according to
 
+* Only use data for countries with a population above 100.000.
 * Only keep data for which cases per 1000 inhabitants $\geq$ 0.02.
 * Only keep data for countries for which the first observation after this filtering is $\leq$ 0.06
-* Only keep data for countries with more than 4 days of follow-up after the above steps.
+* Only keep data for countries with more than 11 days of follow-up after the above steps.
 
 ```{r}
 d %>% 
@@ -309,13 +327,15 @@ All code is available at https://github.com/bgautijonsson/covid19. We're sorry f
 
 ### Sampler configuration
 
-* Four chains were run for 2000 iterations after a warm-up period of 2000 iterations. The slowest chain converged in 430 seconds. 
+* Four chains were run for 2000 iterations after a warm-up period of 1000 iterations. The slowest chain converged in 430 seconds. 
 * Adapt_delta was set to 0.99
 
 
 ### Warnings
 
-* There were 535 divergent transitions after warmup.
+* There were 12 divergent transitions after warmup.
+
+We have examined the model carefully to find what causes these divergent transitions, and our current belief is country-specific correlations between $\beta_i$ and $S_i$ when the model predicts a high probability of the country being close to its maximum.
 
 
 ## Country Level Effects
@@ -397,17 +417,22 @@ This model does not predict the total amount of COVID-19 cases, it predicts the 
 
 As of yet, the model only implements one slope for each country, which is assumed to be fixed throughout the epidemic. Each country's policies should of course affect this growth rate and the date at which a country implements a policy should affect when the slope changes. Finding solutions to this is on our next actions list.
 
-# Next actions
-
-## Definite
+## Next actions
 
 * Time-varying growth rates.
 * Include country-level information in the model
 
-## Maybe
+# Estimating the burden on the Icelandic health care system
 
-* Include information on number of recovered to estimate country-specific recovery rates conditional on being diagnosed.
-* Include information on deaths to estimate country-specific death rates conditional on being diagnosed.
+We use the current age distribution of cases in Iceland to split our posterior predictive distritubion of daily cases into age categories. We then use numbers from Ferguson et al. at Imperial College, [(Table 1)](https://www.imperial.ac.uk/media/imperial-college/medicine/sph/ide/gida-fellowships/Imperial-College-COVID19-NPI-modelling-16-03-2020.pdf), to sample numbers of patients in hospital and from those numbers, how many will end up in ICU. Along with the numbers above, we use the following parameters in our simulations
+
+* `lag_infected_to_hospital <- 7`
+* `lag_hospital_to_icu <- 3`
+* `days_from_infection_to_healthy <- 21`
+* `days_in_hospital <- 14`
+* `days_in_icu <- 10`
+
+The results from our predictions are then shared at [covid.hi.is](https://covid.hi.is)
 
 # Appendix
 
@@ -437,8 +462,8 @@ parameters {
   real mu_alpha;
   real<lower = 0> sigma_alpha;
   
-  real<lower = 0> a_s;
-  real<lower = 0> b_s;
+  real<lower = 0, upper = 1> mu_s;
+  real<lower = 0> kappa_s;
   
   vector<lower = 0>[N_countries] phi_inv_sqrt;
   real<lower = 0> sigma_phi_inv_sqrt;
@@ -447,9 +472,12 @@ parameters {
 
 transformed parameters {
   vector[N_obs] linear = alpha[country] + beta[country] .* days;
-  vector<lower = 0, upper = 1>[N_obs] difference;
+  vector<lower = 0>[N_obs] difference;
   vector<lower = 0>[N_countries] phi_inv = square(phi_inv_sqrt);
   vector<lower = 0>[N_countries] phi = inv(phi_inv);
+  real<lower = 0> a_s = mu_s * kappa_s;
+  real<lower = 0> b_s = (1 - mu_s) * kappa_s;
+
   for (i in 1:N_obs) {
     difference[i] = beta[country[i]] * S[country[i]] * exp(-linear[i]) / square(exp(-linear[i]) + 1);
   }
@@ -465,17 +493,15 @@ model {
   sigma_beta ~ exponential(2);
   beta ~ normal(mu_beta, sigma_beta);
   
+  mu_s ~ beta(1, 99);
+  kappa_s ~ exponential(0.001);
   S ~ beta(a_s, b_s);
   
-  a_s ~ cauchy(0, 5);
-  b_s ~ cauchy(0, 5);
   
-  phi_inv_sqrt ~ normal(0, sigma_phi_inv_sqrt);
+  phi_inv_sqrt ~ exponential(sigma_phi_inv_sqrt);
   sigma_phi_inv_sqrt ~ exponential(1);
   
   new_cases ~ neg_binomial_2(difference .* pop[country], phi[country]);
 }
-
-
 ```
 

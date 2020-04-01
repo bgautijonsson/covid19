@@ -213,6 +213,7 @@ d %>%
   ggplot(aes(date, median)) +
   geom_line(aes(lty = "Líkleg spá")) +
   geom_line(aes(y = upper, lty = "Svartsýn spá"), col = "grey50") +
+  geom_point(data = spitali, aes(x = date, y = icu_samtals)) +
   scale_y_continuous(breaks = pretty_breaks(8)) +
   scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
   labs(linetype = " ") +

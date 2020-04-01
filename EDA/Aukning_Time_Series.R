@@ -67,3 +67,11 @@ results %>%
     ease_aes()
 
 anim_save("rate_evolution.gif")
+
+
+
+results %>% 
+    unnest(rate) %>% 
+    ggplot(aes(start_date, rate, group = country, col = country == "Iceland")) +
+    geom_line() +
+    scale_colour_manual(values = c("grey","blue"))

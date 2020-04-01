@@ -15,12 +15,14 @@ N_countries <- max(d$country_id)
 
 days <- d$days
 new_cases <- d$new_cases
-total_cases <- d %>% group_by(country, country_id) %>% 
+total_cases <- d %>% 
+    group_by(country, country_id) %>% 
     summarise(total_cases = max(total_cases)) %>% 
     arrange(country_id) %>% 
     .$total_cases
 
-total_deaths <- d %>% group_by(country, country_id) %>% 
+total_deaths <- d %>% 
+    group_by(country, country_id) %>% 
     summarise(total_deaths = max(total_deaths)) %>% 
     arrange(country_id) %>% 
     .$total_deaths
