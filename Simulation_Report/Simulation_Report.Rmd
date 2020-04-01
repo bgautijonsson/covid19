@@ -31,8 +31,12 @@ d <- read_csv(data_path)
 fig_out_path <- str_c(as.character(Sys.Date()), "/Figures/")
 make_fig_path <- function(name) str_c(fig_out_path, name)
 
-iceland_d <- read_csv("../Input/ECDC_Data.csv") %>% 
-  filter(country == "Iceland")
+iceland_d <- sheets_read("https://docs.google.com/spreadsheets/d/1xgDhtejTtcyy6EN5dbDp5W3TeJhKFRRgm6Xk0s0YFeA", sheet = "Smit") %>% 
+  rename(date = Dagsetning, total_cases = Smit_Samtals, active_cases = Virk) %>% 
+  mutate(new_cases = Ny_Smit + IE_Smit,
+         date = as_date(date)) %>% 
+  select(date, total_cases, active_cases)
+
 aldur <- sheets_read("https://docs.google.com/spreadsheets/d/1xgDhtejTtcyy6EN5dbDp5W3TeJhKFRRgm6Xk0s0YFeA", sheet = "Aldur") %>% 
   mutate(p_tilfelli = tilfelli / sum(tilfelli))
 
@@ -40,7 +44,6 @@ spitali <- sheets_read("https://docs.google.com/spreadsheets/d/1xgDhtejTtcyy6EN5
   set_names(c("date", "spitali", "icu", "utskr_spitali_samtals", "spitali_samtals", "icu_samtals")) %>% 
   mutate(date = as_date(date))
 ```
-
 
 
 ```{r}
@@ -155,7 +158,7 @@ d %>%
   ggplot(aes(date, median)) +
   geom_line(aes(lty = "Líkleg spá")) +
   geom_line(aes(y = upper, lty = "Svartsýn spá"), col = "grey50") +
-  # geom_point(data = iceland_d, aes(x = date, y = total_cases), inherit.aes = F) +
+  geom_point(data = iceland_d, aes(x = date, y = active_cases), inherit.aes = F) +
   scale_y_continuous(breaks = pretty_breaks(8)) +
   scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
   labs(linetype = " ") +

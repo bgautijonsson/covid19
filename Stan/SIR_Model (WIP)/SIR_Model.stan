@@ -42,10 +42,10 @@ model {
   
   gamma ~ gamma(a_gamma, b_gamma);
   
-  sigma_trend2_log_beta ~ exponential(1);
+  sigma_trend2_log_beta ~ exponential(10);
   trend2_log_beta ~ normal(mu_trend2_log_beta, sigma_trend2_log_beta);
   
-  sigma_trend_log_beta ~ exponential(1);
+  sigma_trend_log_beta ~ exponential(10);
   trend_log_beta[1, ] ~ normal(mu_trend_log_beta, sigma_trend_log_beta);
   
   sigma_log_beta ~ exponential(1);

@@ -53,7 +53,7 @@ model {
   beta ~ normal(mu_beta, sigma_beta);
   
   mu_s ~ beta(2, 200);
-  kappa_s ~ cauchy(0, 5);
+  kappa_s ~ exponential(0.001);
   S ~ beta(a_s, b_s);
   
   
