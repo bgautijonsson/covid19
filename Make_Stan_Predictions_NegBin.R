@@ -27,10 +27,10 @@ daily_cases <- function(alpha, beta, S, t) {
     beta * S * exp(-z) / (exp(-z) + 1)^2
 }
 
-aldur <- sheets_read("https://docs.google.com/spreadsheets/d/1xgDhtejTtcyy6EN5dbDp5W3TeJhKFRRgm6Xk0s0YFeA", sheet = "Aldur") %>% 
+aldur <- sheets_read("https://docs.google.com/spreadsheets/d/1xgDhtejTtcyy6EN5dbDp5W3TeJhKFRRgm6Xk0s0YFeA/edit#gid=0", sheet = "Aldur") %>% 
+    slice(1:9) %>% 
     mutate(tilfelli = tilfelli,
-           p_tilfelli = tilfelli / sum(tilfelli)) %>% 
-    select(aldur, tilfelli, p_tilfelli, everything())
+           p_tilfelli = tilfelli / sum(tilfelli))
 
 
 m <- read_rds("Stan/Logistic/Hierarchical_Model_NegBin.rds")

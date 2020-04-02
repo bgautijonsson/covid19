@@ -81,11 +81,9 @@ icu_active <- d %>%
 
 # Samantekt
 
-Aðferðin við mat forspárlíkansins hefur verið bætt frá 25. mars, en núna gerum við ráð fyrir því að daglegur fjöldi greindra smita fylgi líkindadreifingu sem leyfir raunhæfara mat á óvissu *(dreifni)* frá degi til dags. Sökum þess hefur svartsýna spáin hækkað.
+Spáin um heildarfjölda greindra smita hefur hækkað frá því 30. mars, og spár um álag á heilbrigðiskerfið þá sömuleiðis. Til að búa undir möguleikann á frekari hliðrun aldursdreifingar fylgir önnur forspá þar sem gert er ráð fyrir að aldursdreifingin verði óhagstæðari.
 
-Spáin um heildarfjölda smita hefur lítið breyst frá því 25. mars, en spár um álag á heilbrigðiskerfið hafa hækkað, þar sem aldursdreifing greindra smita á Íslandi hefur hliðrast. Til að búa undir möguleikann á frekari hliðrun fylgir nú önnur forspá þar sem gert er ráð fyrir að aldursdreifingin verði óhagstæðari.
-
-**Helstu niðurstöður spálíkansins með gögnum til og með 29. mars eru eftirfarandi:**
+**Helstu niðurstöður spálíkansins með gögnum til og með 1. apríl eru eftirfarandi:**
 
 * Gert er ráð fyrir því að á meðan faraldurinn gengur yfir muni rúmlega `r smit_cumul$median` manns á Íslandi vera greind með COVID-19, en talan gæti náð nær `r smit_cumul$upper` manns skv. svartsýnni spá.
 

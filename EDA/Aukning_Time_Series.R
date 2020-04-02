@@ -40,7 +40,7 @@ get_rates <- function(start_date) {
                               rate = evo[, 1])))
 }
 
-dates <- ymd("2020-03-01") + seq_len(25)
+dates <- ymd("2020-03-01") + seq_len(26)
 
 results <- map_df(dates, get_rates)
 
