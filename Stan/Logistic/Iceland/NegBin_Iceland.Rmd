@@ -32,6 +32,8 @@ d <- read_csv("https://docs.google.com/spreadsheets/d/1ODqwILD6yBfE5mgKmI4mE-t-w
     filter(date >= ymd("2020-03-05")) %>% 
     mutate(days = row_number() - 1)
 
+
+d
 ```
 
 
@@ -61,11 +63,7 @@ m <- sampling(stan_model("Hierarchical_Logistic_Cases_NegBin_Iceland.stan"),
 
 
 ```{r}
-tidyMCMC(m, pars = "beta", rhat = T, ess = T, conf.int = T) %>% 
-    mutate(days = row_number() - 1) %>% 
-    ggplot(aes(days, estimate, ymin = conf.low, ymax = conf.high)) +
-    geom_ribbon(alpha = 0.2) +
-    geom_line()
+tidyMCMC(m, pars = c("alpha", "beta", "S", "phi"), rhat = T, ess = T, conf.int = T)
 ```
 
 
@@ -73,16 +71,18 @@ tidyMCMC(m, pars = "beta", rhat = T, ess = T, conf.int = T) %>%
 spread_draws(m, pred_cases[days]) %>% 
     ungroup %>% 
     select(days, pred_cases) %>% 
-    group_by(days) %>% 
+    group_by(date = days + min(d$date)) %>% 
     mutate(iter = row_number()) %>% 
     group_by(iter) %>% 
     mutate(total_cases = cumsum(pred_cases)) %>% 
-    group_by(days) %>% 
+    group_by(date) %>% 
     summarise(median = median(total_cases),
               upper = quantile(total_cases, .975)) %>% 
-    ggplot(aes(days, median)) +
+    ggplot(aes(date, median)) +
     geom_line() +
-    geom_line(aes(y = upper), lty = 2)
+    geom_line(aes(y = upper), lty = 2) +
+    geom_point(data = d, aes(date, total_cases)) +
+    scale_y_log10()
 ```
 
 

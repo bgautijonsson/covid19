@@ -1,0 +1,19 @@
+---
+title: "Bi-Logistic"
+author: "Brynjólfur Gauti Jónsson"
+date: "4/3/2020"
+output: html_document
+---
+
+```{r}
+library(readr)
+library(dplyr)
+library(rstan)
+library(magrittr)
+
+options(mc.cores = parallel::detectCores())
+source("../../Make_Stan_Data.R")
+
+d <- Make_Stan_Data()
+```
+

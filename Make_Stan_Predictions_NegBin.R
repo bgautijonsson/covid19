@@ -45,7 +45,8 @@ start_cases <- min(iceland_d$total_cases)
 
 ##### Start simulations #####
 
-# Sample cumulative cases and calculate active cases
+# Sample new daily cases
+# Calculate total cases, recovered cases and active cases
 results <- spread_draws(
     m, 
     alpha[country], 
@@ -65,13 +66,20 @@ results <- spread_draws(
     ) %>% 
     expand_grid(days = seq(1, 60)) %>% 
     mutate(
+        # Calculate from model
         daily_rate = daily_cases(alpha = alpha, beta = beta, S = S, t = days),
         new_cases = rnbinom(n(), mu = daily_rate * pop, size = phi),
     ) %>% 
     group_by(iter) %>% 
-    mutate(total_cases = cumsum(new_cases) + start_cases,
-           recovered_cases = lag(total_cases, n = 21, default = 0),
-           active_cases = total_cases - recovered_cases) %>%  
+    mutate(
+        # Total cases is cumulative sum of daily cases plus starting cases since we
+        # don't start at the beginning of the epidemic
+        total_cases = cumsum(new_cases) + start_cases,
+        # Make assumption that infected recover in 21 days
+        recovered_cases = lag(total_cases, n = 21, default = 0),
+        # Then active cases is difference between total and recovered
+        active_cases = total_cases - recovered_cases
+    ) %>%  
     ungroup %>% 
     select(iter, days, new_cases, total_cases, recovered_cases, active_cases)
 
@@ -84,6 +92,9 @@ age_results <- results %>%
         age_cases = list(
             tibble(
                 age = aldur$aldur, 
+                # Use multinomial to sample possible splitting of
+                # cases into age groups
+                # using icelandic age distribution
                 cases_new = as.vector(rmultinom(1, 
                                                 size = new_cases, 
                                                 prob = aldur$p_tilfelli)),
@@ -97,22 +108,34 @@ age_results <- results %>%
            cases_active = cases_cumulative - cases_recovered) %>% 
     ungroup
 
-
 all_results <- age_results %>% 
     group_by(iter, days) %>% 
-    # Sample hospitalizations with binomial distribution fom Ferguson et al.
-    mutate(hospital_new = ifelse(cases_new == 0, 0, rbinom(n(), size = cases_new, prob = aldur$p_spitali)),
-           icu_new = ifelse(hospital_new == 0, 0, rbinom(n(), size = hospital_new, prob = aldur$p_alvarlegt))) %>% 
+    
+    mutate(
+        # Sample hospitalizations with binomial distribution fom Ferguson et al.
+        hospital_new = ifelse(cases_new == 0, 0, rbinom(n(), size = cases_new, prob = aldur$p_spitali)),
+        # Samplel ICU from hospital with Ferguson et al.
+        icu_new = ifelse(hospital_new == 0, 0, rbinom(n(), size = hospital_new, prob = aldur$p_alvarlegt))
+    ) %>% 
     group_by(iter, age) %>% 
-    mutate(hospital_new = lag(hospital_new, n = lag_infected_to_hospital, default = 0),
-           icu_new = lag(icu_new, n =  lag_infected_to_hospital + lag_hospital_to_icu, default = 0),
-           hospital_cumulative = cumsum(hospital_new),
-           icu_cumulative = cumsum(icu_new),
-           hospital_discharged = lag(hospital_cumulative, n = days_in_hospital, default = 0),
-           icu_discharged = lag(icu_cumulative, n = days_in_icu, default = 0),
-           hospital_active = hospital_cumulative - hospital_discharged,
-           icu_active = icu_cumulative - icu_discharged) %>% 
-    select(iter, days, new_cases, total_cases, recovered_cases, active_cases, age, starts_with("cases"), starts_with("hospital"), starts_with("icu")) %>%  
+    mutate(
+        # Assumption: people don't enter hospital immediately
+        hospital_new = lag(hospital_new, n = lag_infected_to_hospital, default = 0),
+        # Assumption: people don't go to ICU immediately
+        icu_new = lag(icu_new, n =  lag_infected_to_hospital + lag_hospital_to_icu, default = 0),
+        # Cumulative hospital and ICU
+        hospital_cumulative = cumsum(hospital_new),
+        icu_cumulative = cumsum(icu_new),
+        # Assumption: People are discharged from hospital or ICU after certain period
+        hospital_discharged = lag(hospital_cumulative, n = days_in_hospital, default = 0),
+        icu_discharged = lag(icu_cumulative, n = days_in_icu, default = 0),
+        # Calculate occupied beds as total - discharged
+        hospital_active = hospital_cumulative - hospital_discharged,
+        icu_active = icu_cumulative - icu_discharged
+    ) %>% 
+    # Data wrangling to summarise posterior predictive distribution
+    select(iter, days, new_cases, total_cases, recovered_cases, active_cases, age, 
+           starts_with("cases"), starts_with("hospital"), starts_with("icu")) %>%  
     pivot_longer(c(cases_new, cases_cumulative, cases_recovered, cases_active,
                    hospital_new, hospital_cumulative, hospital_discharged, hospital_active,
                    icu_new, icu_cumulative, icu_discharged, icu_active),
@@ -134,11 +157,12 @@ all_results <- age_results %>%
     group_by(date = days + start_date, name, type, age) %>% 
     summarise(median = median(value),
               upper = quantile(value, 0.975))
-
+# Save results with empirical age distribution
 out <- all_results %>% 
     mutate(aldursdreifing = "gögn")
 
-# Calculate cases in each age-group
+# Then repeat same with older age distribution
+##### Simulation for possibility of older infection distribution #####
 age_results <- results %>% 
     filter(iter >= max(iter) - N_iter) %>% 
     rowwise %>% 

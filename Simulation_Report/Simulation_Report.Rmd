@@ -43,6 +43,9 @@ aldur <- sheets_read("https://docs.google.com/spreadsheets/d/1xgDhtejTtcyy6EN5db
 spitali <- sheets_read("https://docs.google.com/spreadsheets/d/1xgDhtejTtcyy6EN5dbDp5W3TeJhKFRRgm6Xk0s0YFeA", sheet = "Spitali") %>% 
   set_names(c("date", "spitali", "icu", "utskr_spitali_samtals", "spitali_samtals", "icu_samtals")) %>% 
   mutate(date = as_date(date))
+
+d <- d %>% 
+  filter(date <= max(iceland_d$date) + 21)
 ```
 
 

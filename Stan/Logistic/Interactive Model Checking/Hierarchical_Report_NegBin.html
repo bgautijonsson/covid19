@@ -304,6 +304,7 @@ pred_plot <-  eventReactive(input$gobutton, {
   
   p1 <- results %>% 
     mutate(date = days + min(plot_dat$date)) %>% 
+    filter(date <= max(plot_dat$date) + 21) %>% 
     group_by(date) %>% 
     summarise(median = median(cumulative_cases),
               lower = quantile(cumulative_cases, alph / 2),
@@ -322,6 +323,7 @@ pred_plot <-  eventReactive(input$gobutton, {
   
   p2 <- results %>% 
     mutate(date = days + min(plot_dat$date)) %>% 
+    filter(date <= max(plot_dat$date) + 21) %>% 
     filter(iter %in% sample(iter, size = 200)) %>% 
     ggplot(aes(date, cumulative_cases, group = iter)) +
     geom_line(alpha = 0.1) +
@@ -343,11 +345,12 @@ pred_plot <-  eventReactive(input$gobutton, {
     ungroup %>% 
     mutate(serial_interval = rgamma(n(), 30, 2.5),
            r0 = beta * serial_interval) %>% 
-    group_by(days) %>% 
+    group_by(date = days + min(plot_dat$date) - 1) %>% 
     summarise(median = median(r0, na.rm = T),
               upper = quantile(r0, 1 - alph/2, na.rm = T),
               lower = quantile(r0, alph/2, na.rm = T)) %>% 
-    ggplot(aes(days + min(plot_dat$date), median)) +
+    filter(date <= max(plot_dat$date) + 21) %>% 
+    ggplot(aes(date, median)) +
     geom_hline(yintercept = 1, lty = 1, size = 1, col = "grey70") +
     geom_line() +
     geom_line(aes(y = lower), lty = 2) +
