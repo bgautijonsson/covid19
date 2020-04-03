@@ -1,0 +1,1464 @@
+/*
+Theme Name: PHE 2019
+Theme URI: https://castlebuilder.com
+Author: Castle Builder Design
+Author URI: https://castlebuilder.com
+Description: New theme based on Rockefeller main site
+Version: 1.0.0
+Text Domain: phe2019
+Tags: translation-ready
+
+*/
+/*--------------------------------------------------------------
+>>> TABLE OF CONTENTS:
+----------------------------------------------------------------
+# Normalize
+# Typography
+# Elements
+# Forms
+# Navigation
+	## Links
+	## Menus
+# Accessibility
+# Alignments
+# Widgets
+# Content
+	## Posts and pages
+	## Comments
+# Infinite scroll
+# Media
+	## Captions
+	## Galleries
+--------------------------------------------------------------*/
+/*--------------------------------------------------------------
+# Normalize
+--------------------------------------------------------------*/
+html {
+  font-family: sans-serif;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+main,
+menu,
+nav,
+section,
+summary {
+  display: block;
+}
+
+audio,
+canvas,
+progress,
+video {
+  display: inline-block;
+  vertical-align: baseline;
+}
+
+audio:not([controls]) {
+  display: none;
+  height: 0;
+}
+
+[hidden],
+template {
+  display: none;
+}
+
+a {
+  background-color: transparent;
+}
+
+a:active,
+a:hover {
+  outline: 0;
+}
+
+abbr[title] {
+  border-bottom: 1px dotted;
+}
+
+b,
+strong {
+  font-weight: bold;
+}
+
+dfn {
+  font-style: italic;
+}
+
+h1 {
+  font-size: 2.44em;
+  margin: 0.67em 0;
+  line-height: 1.4;
+}
+
+h2 {
+  font-size: 1.95em;
+  line-height: 1.4;
+}
+
+h3 {
+  font-size: 1.56em;
+  line-height: 1.4;
+}
+
+h4 {
+  font-size: 1.25em;
+  line-height: 1.5;
+}
+
+h5 {
+  font-size: 1em;
+}
+
+h6 {
+  font-size: 0.8em;
+}
+
+mark {
+  background: #ff0;
+  color: #000;
+}
+
+small {
+  font-size: 80%;
+}
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sup {
+  top: -0.5em;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+img {
+  border: 0;
+}
+
+svg:not(:root) {
+  overflow: hidden;
+}
+
+figure {
+  margin: 1em 40px;
+}
+
+hr {
+  box-sizing: content-box;
+  height: 0;
+}
+
+pre {
+  overflow: auto;
+}
+
+code,
+kbd,
+pre,
+samp {
+  font-family: Monaco, Consolas, "Andale Mono", "DejaVu Sans Mono", monospace;
+  font-size: 0.875rem;
+}
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  color: inherit;
+  font: inherit;
+  margin: 0;
+}
+
+button {
+  overflow: visible;
+}
+
+button,
+select {
+  text-transform: none;
+}
+
+button,
+html input[type="button"],
+input[type="reset"],
+input[type="submit"] {
+  -webkit-appearance: button;
+  cursor: pointer;
+}
+
+button[disabled],
+html input[disabled] {
+  cursor: default;
+}
+
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
+input {
+  line-height: normal;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  box-sizing: border-box;
+  padding: 0;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  height: auto;
+}
+
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+fieldset {
+  border: 1px solid #c0c0c0;
+  margin: 0 2px;
+  padding: 0.35em 0.625em 0.75em;
+}
+
+legend {
+  border: 0;
+  padding: 0;
+}
+
+textarea {
+  overflow: auto;
+}
+
+optgroup {
+  font-weight: bold;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+td,
+th {
+  padding: 0;
+}
+
+/*--------------------------------------------------------------
+# Typography
+--------------------------------------------------------------*/
+body,
+button,
+input,
+select,
+optgroup,
+textarea {
+  color: #191e23;
+  font-family: "Noto Serif", serif;
+  font-size: 16px;
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #191e23;
+  clear: both;
+}
+
+h1.entry-title {
+    max-width: 100%;
+}
+
+body:not(.home) .entry-header h1.entry-title {
+    font-size: 54px;
+    line-height: 1em;
+    margin: 15px 0 7.5px 0;
+    padding-bottom: 18px;
+    margin: 40px 0 20px;
+    border-bottom: 1px solid #eee;
+}
+
+dfn, cite, em, i {
+  font-style: italic;
+}
+
+blockquote {
+  margin: 0 1.5em;
+}
+
+address {
+  margin: 0 0 1.5em;
+}
+
+pre {
+  font-family: Monaco, Consolas, "Andale Mono", "DejaVu Sans Mono", monospace;
+  line-height: 1.6;
+  margin-bottom: 1.6em;
+  max-width: 100%;
+  overflow: auto;
+  padding: 0.8em 1em;
+}
+
+code, kbd, tt, var {
+  font-family: Monaco, Consolas, "Andale Mono", "DejaVu Sans Mono", monospace;
+  font-size: 0.875rem;
+}
+
+@media screen and (min-width: 600px) {
+  code, kbd, tt, var {
+    font-size: 0.8125rem;
+  }
+}
+
+p > code {
+  padding: 2px;
+  border-radius: 2px;
+  background: #f3f4f5;
+  font-size: inherit;
+}
+
+abbr, acronym {
+  border-bottom: 1px dotted #666;
+  cursor: help;
+}
+
+mark, ins {
+  background: #fff9c0;
+  text-decoration: none;
+}
+
+big {
+  font-size: 125%;
+}
+
+.archive .site-header {
+	margin-bottom: 3.5em;
+}
+
+.site-title {
+	margin: .4375em 0 0;
+	font-size: 38px;
+	font-weight: bold;
+	line-height: 1.2;
+	color: #333332;
+}
+
+.site-title a {
+	text-decoration: none;
+	color: inherit;
+}
+
+.site-branding {
+	margin-bottom: 1.75em;
+}
+
+.site-description {
+	margin: .4375em 0 0;
+	font-size: 17px;
+	font-weight: inherit;
+	line-height: 1.4;
+	word-wrap: break-word;
+	color: #6c7781;
+}
+/*--------------------------------------------------------------
+# Elements
+--------------------------------------------------------------*/
+html {
+  box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+  /* Inherit box-sizing to make it easier to change the property for components that leverage other behavior; see http://css-tricks.com/inheriting-box-sizing-probably-slightly-better-best-practice/ */
+  box-sizing: inherit;
+}
+
+body {
+  background: #fff;
+  /* Fallback for when there is no custom background color defined. */ }
+
+blockquote, q {
+  quotes: "" ""; }
+  blockquote:before, blockquote:after, q:before, q:after {
+    content: ""; }
+
+hr {
+  border: 0;
+  height: 1px;
+  margin-bottom: 1.5em;
+}
+
+ul, ol {
+  margin: 0 0 1.5em 3em;
+}
+
+ul {
+  list-style: disc;
+}
+
+ol {
+  list-style: decimal;
+}
+
+li > ul,
+li > ol {
+  margin-bottom: 0;
+  margin-left: 1.5em;
+}
+
+dt {
+  font-weight: bold;
+}
+
+dd {
+  margin: 0 1.5em 1.5em;
+}
+
+img {
+  height: auto;
+  /* Make sure images are scaled correctly. */
+  max-width: 100%;
+  /* Adhere to container width. */
+}
+
+figure {
+  margin: 1em 0;
+  /* Extra wide images within figure tags don't overflow the content area. */
+}
+
+table {
+  margin: 0 0 1.5em;
+  width: 100%;
+}
+
+/*--------------------------------------------------------------
+# Forms
+--------------------------------------------------------------*/
+button,
+input[type="button"],
+input[type="reset"],
+input[type="submit"] {
+  border: 1px solid;
+  border-color: #ccc #ccc #bbb;
+  border-radius: 3px;
+  background: #e6e6e6;
+  color: rgba(0, 0, 0, 0.8);
+  font-size: 12px;
+  font-size: 0.75rem;
+  line-height: 1;
+  padding: .6em 1em .4em;
+}
+
+button:hover,
+input[type="button"]:hover,
+input[type="reset"]:hover,
+input[type="submit"]:hover {
+  border-color: #ccc #bbb #aaa;
+}
+
+button:active, button:focus,
+input[type="button"]:active,
+input[type="button"]:focus,
+input[type="reset"]:active,
+input[type="reset"]:focus,
+input[type="submit"]:active,
+input[type="submit"]:focus {
+  border-color: #aaa #bbb #bbb;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="url"],
+input[type="password"],
+input[type="search"],
+input[type="number"],
+input[type="tel"],
+input[type="range"],
+input[type="date"],
+input[type="month"],
+input[type="week"],
+input[type="time"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="color"],
+textarea {
+  color: #666;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 3px;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="url"]:focus,
+input[type="password"]:focus,
+input[type="search"]:focus,
+input[type="number"]:focus,
+input[type="tel"]:focus,
+input[type="range"]:focus,
+input[type="date"]:focus,
+input[type="month"]:focus,
+input[type="week"]:focus,
+input[type="time"]:focus,
+input[type="datetime"]:focus,
+input[type="datetime-local"]:focus,
+input[type="color"]:focus,
+textarea:focus {
+  color: #111;
+}
+
+select {
+  border: 1px solid #ccc;
+}
+
+textarea {
+  width: 100%;
+}
+
+/*--------------------------------------------------------------
+# Navigation
+--------------------------------------------------------------*/
+/*--------------------------------------------------------------
+## Links
+--------------------------------------------------------------*/
+#phe_content a {
+  color: #0d399d;
+}
+
+#phe_content a:hover, 
+#phe_content a:focus, 
+#phe_content a:active {
+  color: #668adc;
+}
+
+a:focus {
+  outline: thin dotted;
+}
+
+a:hover, a:active {
+  outline: 0;
+}
+
+/*--------------------------------------------------------------
+## Menus
+--------------------------------------------------------------*/
+.main-navigation {
+	clear: both;
+	display: block;
+  margin: 0 auto;
+	max-width: 580px;
+  text-align: center;
+}
+
+.main-navigation ul {
+	display: none;
+	list-style: none;
+	margin: 0;
+	padding-left: 0;
+}
+
+.main-navigation ul ul {
+	box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
+	float: left;
+	position: absolute;
+	top: 100%;
+	left: -999em;
+	z-index: 99999;
+  text-align: left;
+}
+
+.main-navigation ul ul ul {
+	left: -999em;
+	top: 0;
+}
+
+.main-navigation ul ul li:hover > ul,
+.main-navigation ul ul li.focus > ul {
+	left: 100%;
+}
+
+.main-navigation ul ul a {
+	width: 200px;
+}
+
+.main-navigation ul li:hover > ul,
+.main-navigation ul li.focus > ul {
+  display: block;
+	left: auto;
+}
+
+.main-navigation li {
+	position: relative;
+}
+
+.main-navigation a {
+	display: block;
+	text-decoration: none;
+}
+
+.menu-toggle {
+  padding: 1em;
+}
+
+@media screen and (max-width: 37.5em) {
+	/* Small menu. */
+	.menu-toggle,
+	.main-navigation.toggled ul {
+		display: block;
+    margin: 0 auto;
+	}
+}
+
+@media screen and (min-width: 37.5em) {
+	.menu-toggle {
+		display: none;
+	}
+	.main-navigation ul {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .main-navigation a {
+    padding: 0 .5em;
+  }
+}
+
+.site-main .comment-navigation,
+.site-main .posts-navigation {
+  border-bottom: 1px solid #e2e4e7;
+	margin-bottom: 60px;
+	overflow: hidden;
+    padding-bottom: 60px;
+}
+
+.nav-links {
+	display: flex;
+}
+
+.comment-navigation .nav-previous,
+.posts-navigation .nav-previous,
+.post-navigation .nav-previous {
+	width: 50%;
+	flex: 1 0 50%;
+}
+
+.comment-navigation .nav-next,
+.posts-navigation .nav-next,
+.post-navigation .nav-next {
+	text-align: end;
+	flex: 1 0 50%;
+}
+
+/*--------------------------------------------------------------
+# Accessibility
+--------------------------------------------------------------*/
+/* Text meant only for screen readers. */
+.screen-reader-text {
+  clip: rect(1px, 1px, 1px, 1px);
+  position: absolute !important;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  word-wrap: normal !important;
+  /* Many screen reader and browser combinations announce broken words as they would appear visually. */
+}
+
+.screen-reader-text:focus {
+  background-color: #f1f1f1;
+  border-radius: 3px;
+  box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.6);
+  clip: auto !important;
+  color: #21759b;
+  display: block;
+  font-size: 14px;
+  font-size: 0.875rem;
+  font-weight: bold;
+  height: auto;
+  left: 5px;
+  line-height: normal;
+  padding: 15px 23px 14px;
+  text-decoration: none;
+  top: 5px;
+  width: auto;
+  z-index: 100000;
+  /* Above WP toolbar. */
+}
+
+/* Do not show the outline on the skip link target. */
+#primary[tabindex="-1"]:focus {
+  outline: 0;
+}
+
+/*--------------------------------------------------------------
+# Alignments
+--------------------------------------------------------------*/
+
+.alignleft,
+.alignright {
+	max-width: 580px !important;	/* Let's work to make this !important unnecessary */
+}
+
+.alignleft img,
+.alignright img,
+.alignleft figcaption,
+.alignright figcaption {
+	max-width: 50%;
+	width: 50%;
+}
+
+.alignleft figcaption {
+	clear: left;
+}
+
+.alignright figcaption {
+	clear: right;
+}
+
+.alignleft img,
+.alignleft figcaption {
+  float: left;
+  margin-right: 1.5em;
+}
+
+.alignright img,
+.alignright figcaption {
+  float: right;
+  margin-left: 1.5em;
+}
+
+.aligncenter {
+  clear: both;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+/*--------------------------------------------------------------
+# Widgets
+--------------------------------------------------------------*/
+.widget-area {
+	width: 25%;
+}
+
+.widget {
+  margin: 0 0 1.5em;
+  /* Make sure select elements fit in widgets. */
+}
+
+.widget select {
+  max-width: 100%;
+}
+
+/*--------------------------------------------------------------
+# Content
+--------------------------------------------------------------*/
+#page {
+  margin: 0 auto;
+  max-width: 100%;
+}
+
+.site-branding {
+  text-align: center;
+  margin: 60px 0;
+}
+
+.site-footer {
+  margin: 1em 0;
+  color: #6c7781;
+  font-size: 90%;
+}
+
+/*--------------------------------------------------------------
+## Posts and pages
+--------------------------------------------------------------*/
+.sticky {
+  display: block;
+}
+
+body:not(.archive) .hentry {
+  margin: 36px 0 60px;
+}
+
+.updated:not(.published) {
+  display: none;
+}
+
+.page-content,
+body:not(.home) .entry-content,
+.entry-summary {
+  margin: 1.5em 0 0;
+}
+.home .entry-content>div {
+    margin-top: 12px;
+}
+
+.entry-meta {
+  color: #6c7781;
+  font-size: 90%;
+}
+
+.page-links {
+  clear: both;
+  margin: 0 0 1.5em;
+}
+
+.entry-footer,
+.site-info,
+.posts-navigation,
+.page-navigation,
+.comments-area,
+.not-found .page-content,
+.search .entry-summary {
+  margin: 1.5em auto;
+  padding-left: 14px;
+  padding-right: 14px;
+}
+
+.entry-footer span{
+  margin-right: 1em;
+}
+
+.entry-footer{
+  color: #6c7781;
+  font-size: 90%;
+}
+
+@media screen and (min-width: 608px) {
+  .entry-header,
+  .page-header,
+  .entry-footer,
+  .site-info,
+  .posts-navigation,
+  .post-navigation,
+  .page-navigation,
+  .comments-area,
+  .not-found .page-content,
+  .search .entry-summary {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+/*--------------------------------------------------------------
+## Comments
+--------------------------------------------------------------*/
+.comment-content a {
+  word-wrap: break-word;
+}
+
+.bypostauthor {
+  display: block;
+}
+
+/*--------------------------------------------------------------
+# Infinite scroll
+--------------------------------------------------------------*/
+/* Globally hidden elements when Infinite Scroll is supported and in use. */
+.infinite-scroll .posts-navigation,
+.infinite-scroll.neverending .site-footer {
+  /* Theme Footer (when set to scrolling) */
+  display: none;
+}
+
+/* When Infinite Scroll has reached its end we need to re-display elements that were hidden (via .neverending) before. */
+.infinity-end.neverending .site-footer {
+  display: block;
+}
+
+/*--------------------------------------------------------------
+# Media
+--------------------------------------------------------------*/
+.page-content .wp-smiley,
+.entry-content .wp-smiley,
+.comment-content .wp-smiley {
+  border: none;
+  margin-bottom: 0;
+  margin-top: 0;
+  padding: 0;
+}
+
+/* Make sure embeds and iframes fit their containers. */
+embed,
+iframe,
+object {
+  max-width: 100%;
+}
+
+/* Make sure logo link wraps around logo image. */
+.custom-logo-link {
+  display: inline-block;
+}
+
+/*--------------------------------------------------------------
+## Captions
+--------------------------------------------------------------*/
+.wp-caption {
+  margin-bottom: 1.5em;
+  max-width: 100%;
+}
+
+.wp-caption img[class*="wp-image-"] {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.wp-caption .wp-caption-text {
+  margin: 0.8075em 0;
+}
+
+.wp-caption-text {
+  text-align: center;
+}
+
+/*--------------------------------------------------------------
+## Galleries
+--------------------------------------------------------------*/
+.gallery {
+  margin-bottom: 1.5em;
+}
+
+.gallery-item {
+  display: inline-block;
+  text-align: center;
+  vertical-align: top;
+  width: 100%;
+}
+
+.gallery-columns-2 .gallery-item {
+  max-width: 50%;
+}
+
+.gallery-columns-3 .gallery-item {
+  max-width: 33.3333333333%;
+}
+
+.gallery-columns-4 .gallery-item {
+  max-width: 25%;
+}
+
+.gallery-columns-5 .gallery-item {
+  max-width: 20%;
+}
+
+.gallery-columns-6 .gallery-item {
+  max-width: 16.6666666667%;
+}
+
+.gallery-columns-7 .gallery-item {
+  max-width: 14.2857142857%;
+}
+
+.gallery-columns-8 .gallery-item {
+  max-width: 12.5%;
+}
+
+.gallery-columns-9 .gallery-item {
+  max-width: 11.1111111111%;
+}
+
+.gallery-caption {
+  display: block;
+}
+
+/* Block */
+#primary .entry-content > *,
+#primary .entry-content p {
+    max-width: 100%;
+}
+
+/* Sidebar */
+#sidebar {
+    padding: 36px 36px 0;
+    background: #f3f3f3;
+}
+#sidebar h3 {
+    color: #000;
+}
+body:not(.home) #sidebar {
+    margin-top: 41px;
+    margin-bottom: 48px;
+}
+.home #sidebar h3 {
+    margin-bottom: 0;
+}
+.home #sidebar ul {
+    margin-top: 24px;
+}
+.single-research #publications h2:before,
+#sidebar h3:before,
+#sidebar h4:before {
+    content: '';
+    display: block;
+    width: 30px;
+    height: 4px;
+    background-color: #0d399d;
+    margin-bottom: 12px;
+}
+#sidebar ul {
+    margin: 36px 0;
+    padding: 0;
+    list-style: none;
+    font-weight: bold;
+}
+#sidebar a {
+    color: #000;
+    text-decoration: underline;
+}
+#sidebar a:hover {
+    color: #666;
+}
+#sidebar a.news_excerpt {
+	text-decoration: none;
+    font-weight: normal;
+}
+#sidebar a.news_excerpt:hover {
+	color: #000;
+}
+#sidebar a.news_excerpt span {
+	text-transform: uppercase;
+    font-weight: bold;
+    color: #0d399d;
+}
+#sidebar a.news_excerpt span:hover {
+    color: #000;
+}
+#sidebar li .wp-block-latest-posts__post-date, #sidebar span.post-date {
+    text-transform: uppercase;
+    font-size: 14px;
+    color: #0d399d;
+}
+#sidebar span.post-date::before {
+  content: '';
+  display: block;
+}
+#sidebar form {
+    position: relative;
+}
+#sidebar form label {
+    width: 100%;
+    margin: 0;
+}
+#sidebar #search-3,
+#sidebar #search-4 {
+    margin: -36px -36px 1.5em -36px;
+    background: #fff;
+    padding: 0 0 36px;
+}
+#sidebar input[type=search] {
+    border: 1px solid #000;
+    border-radius: 0;
+    margin: 0 0 6px;
+    height: 31px;
+    width: 100%;
+    padding: 0 43px 0 12px;
+    font-weight: normal;
+}
+#sidebar input[type=submit]:focus,
+#sidebar input[type=submit]:active {
+    outline: 0;
+}
+#sidebar input[type=submit] {
+    width: 31px;
+    height: 31px;
+    background: #0d399d url(images/icon-search.png) no-repeat 50% 50%;
+    background-size: 60% auto;
+    text-indent: -9999px;
+    border: none;
+    border-radius: 0;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+#sidebar input[type=submit]:hover {
+    opacity: 0.8;
+}
+#sidebar input[type=radio] {
+     -webkit-appearance: none;
+     -moz-appearance: none;
+     appearance: none;
+     display: inline-block;
+     position: relative;
+     background-color: #f1f1f1;
+     color: #666;
+     top: 3px;
+     height: 16px;
+     width: 16px;
+     border: 0;
+     border-radius: 50px;
+     cursor: pointer;     
+     outline: none;
+     border: 1px solid #949494;
+}
+#sidebar input[type=radio]:checked::before {
+    position: absolute;
+    font: 12px/1 'Open Sans', sans-serif;
+    left: 4px;
+    top: 1px;
+    content: '\02143';
+    color: #fff;
+    transform: rotate(40deg);
+    font-weight: bold;
+}
+#sidebar input[type=radio]:hover {
+     background-color: #0d399d61;
+}
+#sidebar input[type=radio]:checked {
+     background-color: #0d399d;
+     border: none;
+}
+#sidebar input[type=radio]:not(:first-of-type) {
+    margin-left: 8px;
+}
+#sidebar form.search-form {
+    font-size: 14px;
+}
+
+/* home */
+.home .entry-content {
+    display: inline-block;
+}
+.home .wp-block-image {
+    margin: 24px 0 0;
+}
+.home .wp-block-image figure {
+    margin: 0;
+}
+.home .wp-block-image figure img {
+    max-height: 80px;
+}
+.home p strong:first-of-type {
+    font-family: arno-pro-display,Georgia,"Times New Roman",Times,serif;
+    font-size: 26px;
+    margin-bottom: 0.3em;
+}
+.home p {
+    margin-bottom: 18px;
+}
+.home #phe_content h2 {
+    max-width: 1338px;
+    font-size: 36px;
+    padding: 20px 20px 0;
+    margin: 0;
+}
+.home #primary article {
+    margin-bottom: 0;
+}
+
+
+.home #research {
+   padding: 20px;
+}
+.home #research {
+   margin: 0;
+}
+#research .card-img  img {
+    width: 100%;
+    max-width: 380px;
+    border: 2px solid #eee;
+}
+#research a:hover {
+    text-decoration: none;
+}
+#research h4 {
+    font-size: 22px;
+    padding: 12px;
+    color: #000;
+    line-height: 1.3;
+    position: relative;
+    text-align: center;
+}
+#research a:hover h4 {
+    color: #666;
+}
+#research a:hover .card-img img {
+    border: 2px solid #999;
+}
+#research #areas {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: stretch;
+    padding: 0;
+}
+#research #areas> div {
+    margin-bottom: 2em;
+}
+
+/* Interior */
+body:not(.home) .entry-header,
+body:not(.home) .entry-footer {
+    margin: 0;
+}
+
+body:not(.home) #phe_content .entry-title a {
+    font-size: 28px;
+    line-height: 1.1em;
+    font-family: arno-pro-display,Georgia,"Times New Roman",Times,serif;
+    font-weight: 600;
+    color: #000;
+    position: relative;
+    background-image: linear-gradient(to bottom,#979797 0,#979797 100%);
+    background-size: 1px 1px;
+    background-repeat: repeat-x;
+    background-position: 0 80%;
+    padding-bottom: 0;
+}
+body:not(.home) #phe_content .entry-title a:hover {
+    text-decoration: none;
+    color: #666;
+}
+body:not(.search-results):not(.home):not(.archive):not(.single) #phe_content .entry-title {
+    margin-bottom: 1em;
+}
+
+/* posts */
+.posted-on,
+.byline, .entry-meta {
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #0d399d;
+}
+.cat-links a:link,
+.posted-on a:link,
+.byline a:link,
+.cat-links a:hover,
+.posted-on a:hover,
+.byline a:hover,
+.cat-links a: visited,
+.posted-on a:visited,
+.byline a:visited {
+    color: #0d399d;
+}
+.cat-links a:link,
+.posted-on a:link,
+.byline a:link {
+    text-decoration: underline;
+}
+.nav-links {
+    margin-bottom: 60px;
+    overflow: hidden;
+}
+#phe_content .nav-links a {
+    color: #000;
+    text-decoration: underline;
+}
+#phe_content .nav-links a:hover {
+    color: #666;
+}
+
+/* news */
+.search-results .entry-title,
+.search-results .entry-summary,
+.archive.tax-area article p:first-child,
+.archive.tax-area article div:first-child,
+.archive.category article p:first-child,
+.archive.category article div:first-child  {
+    margin: 0;
+    padding: 0;
+}
+.archive.tax-area .entry-content,
+.archive.category article .entry-content {
+    margin-top: 1em;
+}
+
+.archive.tax-area article p:not(:first-child) {
+    margin: 1em 0 0;
+}
+.archive.category article p:not(:first-child),
+.archive.category article div:not(:first-child):not(.entry-meta) {
+    margin-top: 1em;
+}
+.search-results article p {
+    margin-top: 1em;
+}
+.archive.tax-area .entry-meta {
+    margin: 0 0 0.5em;
+}
+.search-results .entry-meta {
+    margin-top: 0.5em;
+}
+.archive.category article .entry-meta {
+    margin-bottom: 0.5em;
+}
+.archive article .entry-footer {
+    margin-top: 1em;
+}
+.archive.tax-area article:not(:first-of-type),
+.search-results article:not(:first-of-type),
+.archive.category article:not(:first-of-type) {
+    border-top: 7px solid #eee;
+    margin-top: 36px;
+    padding-top: 36px;
+}
+.archive.tax-area article:first-of-type,
+.archive.category article:first-of-type {
+    margin-top: 48px;
+}
+.archive.tax-area article:last-of-type {
+    margin-bottom: 60px;
+}
+
+.archive.category-talks .entry-header img {
+    margin: 1em 0;
+}
+
+.single .entry-header img {
+    margin-top: 48px;
+}
+
+/* Single Research */
+.news_excerpt {
+    font-size: .83em;
+    line-height: 1.4;
+    display: inline-block;
+}
+
+.single-research #publications {
+    border: 7px solid #f3f3f3;
+    padding: 36px;
+}
+.single-research #publications h2 {
+    margin-bottom: 36px;
+}
+.single-research #publications p.publication:not(:first-of-type) {
+    margin-top: 36px;
+} 
+.single-research .entry-header img {
+    border: 1px solid #cacaca;
+}
+
+/* Contact */
+ul.contact {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+ ul.contact li {
+    margin: 0 0 1em;
+    padding: 0;
+    font-family: arno-pro-display,Georgia,"Times New Roman",Times,serif;
+    font-size: 22px;
+    font-weight: 700;
+ }
+#phe_content  ul.contact li a {
+    color: #000;
+    background-image: linear-gradient(to bottom,#979797 0,#979797 100%);
+    background-size: 1px 1px;
+    background-repeat: repeat-x;
+    background-position: 0 80%;
+    padding-bottom: 0;
+  }
+  #phe_content  ul.contact li a:hover {
+    text-decoration: none;
+    color: #0d399d
+  }
+ ul.contact li i {
+    font-family: Roboto,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 17px;
+    font-weight: normal;
+ }
+ h2.contact {
+    padding-top: 12px;
+    border-top: 7px solid #eee;
+ }
+ 
+  /*hiding some dates*/
+.postid-4201 .entry-meta, .postid-4181 .entry-meta {
+    display: none;
+    visibility: hidden;
+ }
+ 
+ 
+ /*RESPONSIVE*/
+ 
+ @media screen and (min-width: 1200px) {
+    .ru-site-header__segment--2,
+    .ru-site-header__segment--1 {
+        border-bottom: none!important;
+    }
+    body.admin-bar .ru-site-header__segment--1 {
+        top: 32px;
+     }
+    body.admin-bar .ru-site-utility-menu {
+        top: -26px;
+     }
+     body:not(.home) .ru-site-header__header {
+        height: 0;
+     }
+
+}
+
+@media screen and (min-width: 768px) {
+    .home #primary {
+        max-width: 66.66%;
+        float: left;
+        padding-right: 36px;
+        padding-left: 24px;
+    }
+    .home  #sidebar {
+        margin-top: 41px;
+        margin-right: 2%;
+        max-width: 30.5%;
+        float: right;
+    }
+    .home h1.entry-title {
+        font-size: 54px;
+        line-height: 1;
+    }
+    .site-main.col-sm-8 {
+        padding-right: 36px;
+    }
+}
+@media screen and (max-width: 767px) {
+    #sidebar {
+        padding-bottom: 1px;
+    }
+}
+
+@media screen and (min-width: 451px) {
+    .archive.category-news article .wp-post-image {
+        max-width: 33.333%;
+        float: right;
+        margin: 0 0 36px 24px;
+    }
+    .single-research .entry-header img {
+        max-width: 33.33%;
+        float: left;
+        margin: 33px 24px 12px 0;
+    }
+    .archive.category article .wp-post-image:after {
+        clear: right;
+    }
+    .archive.category article:after {
+        clear: both;
+        content: '';
+        display: table;
+    }
+}

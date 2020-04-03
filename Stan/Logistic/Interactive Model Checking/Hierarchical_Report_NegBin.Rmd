@@ -77,7 +77,8 @@ pred_plot <-  eventReactive(input$gobutton, {
     group_by(iter) %>% 
     mutate(cases = as.numeric(cumsum(daily_cases)) + start_cases) %>% 
     ungroup %>% 
-    select(iter, days, cumulative_cases = cases)
+    select(iter, days, new_cases = daily_cases, cumulative_cases = cases)
+  
   
   plot_lab1 <- str_c("Cumulative cases in  ", 
                      input$country, 
@@ -113,6 +114,31 @@ pred_plot <-  eventReactive(input$gobutton, {
          subtitle = "Possible growth curves drawn from posterior distribution") +
     theme(axis.title.x = element_blank())
   
+  p3 <- results %>% 
+    group_by(iter) %>% 
+    mutate(recovered_cases = lag(cumulative_cases, 15, default = 0),
+           dIdt = new_cases,
+           I = cumulative_cases - recovered_cases,
+           N = pop,
+           S = N - cumulative_cases,
+           beta = dIdt * N / (S * I)) %>% 
+    ungroup %>% 
+    mutate(serial_interval = rgamma(n(), 30, 2.5),
+           r0 = beta * serial_interval) %>% 
+    group_by(days) %>% 
+    summarise(median = median(r0, na.rm = T),
+              upper = quantile(r0, 1 - alph/2, na.rm = T),
+              lower = quantile(r0, alph/2, na.rm = T)) %>% 
+    ggplot(aes(days + min(plot_dat$date), median)) +
+    geom_hline(yintercept = 1, lty = 1, size = 1, col = "grey70") +
+    geom_line() +
+    geom_line(aes(y = lower), lty = 2) +
+    geom_line(aes(y = upper), lty = 2) +
+    ggtitle(latex2exp::TeX("$R_e$ based on predicted growth and a Gamma(30, 2.5) serial interval"),
+            subtitle = "Diagnosed cases are assumed to recover in 15 days") +
+    ylab(latex2exp::TeX("$R_e$")) +
+    theme(axis.title.x = element_blank()) +
+    background_grid(major = "none", minor = "none")
   
   
   if (input$scale == "Log") {
@@ -123,7 +149,7 @@ pred_plot <-  eventReactive(input$gobutton, {
   }
   
   
-  plot_grid(p1, p2, nrow = 2)
+  plot_grid(p1, p2, p3, nrow = 3)
   
 })
 

@@ -15,165 +15,112 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE,
                       fig.width = 8, fig.asp = 0.621, out.width = "100%")
 ```
 
-# Packages
-
 ```{r}
-packages <- c("tidyverse", "knitr", "kableExtra", "broom", "cowplot", "rstan", "tidybayes", "scales", 
-              "lubridate")
-sapply(packages, require, character.only = TRUE, quietly = TRUE)
+library(tidyverse); library(knitr); library(kableExtra); library(broom); library(cowplot); 
+library(rstan); library(tidybayes); library(scales)
+library(lubridate); library(ggtext)
 theme_set(theme_bw() + 
               panel_border(colour = "grey30", size = 1) + 
               background_grid(color.major = "grey90", 
                               color.minor = "grey95", 
                               minor = "xy", major = "xy"))
-rm(packages)
-options(mc.cores = parallel::detectCores())
-```
 
-```{r}
-countries <- c(
-    "Iceland", "Sweden", "Norway",
-    "Denmark", "Italy", "Austria",
-    "South Korea", "Austria", "Switzerland",
-    "United States","Germany", 
-    "France","Spain",
-    "Singapore", "South Korea",
-    "Australia", "Canada", "Belgium"
-)
-d <- read_csv("../../Input/ECDC_Data.csv") %>% 
-    select(country, date, pop, new_cases, total_cases, new_deaths, total_deaths) %>% 
-    group_by(country) %>% 
-    mutate(N = pop,
-           I = lag(total_cases, n = 1, default = 0),
-           R = lag(I, n = 15, default = 0) + lag(total_deaths, n = 1, default = 0),
-           I = I - R,
-           S = N - I - R,
-    ) %>% 
-    filter(country %in% countries) %>% 
-    select(country, date, N, I, R, S, new_cases, new_deaths) %>% 
-    ungroup %>% 
-    mutate(country_id = as.numeric(as.factor(country))) %>% 
-    filter(date > ymd("2020-03-10"))
-d %>% 
-    mutate(I = as.integer(I)) %>% 
-    select(date, I, country) %>% 
-    spread(country, I) %>% 
-    select(-date) %>% 
-    as.matrix
+
+
+d <- read_csv("https://docs.google.com/spreadsheets/d/1ODqwILD6yBfE5mgKmI4mE-t-wzBDaw8l27gERUiAMgo/export?format=csv&gid=0") %>% 
+    select(
+        date = "Dagsetning",
+        new_cases = "Ny_Smit",
+        new_deaths = "Dauðsföll",
+        new_recovered = "Batnað", 
+        total_cases = "Smit_Samtals",
+        total_deaths = "Dauðsföll_Samtals",
+        total_recovered = "Batnað_Samtals",
+        total_removed = "Removed_Samtals",
+        active_cases = "Virk_Smit")
+
+d <- d %>% 
+    mutate(date = mdy(date),
+           new_cases = lead(new_cases, 1, default = 0),
+           N = 364220,
+           S = N - total_cases) %>% 
+    select(date, dI_dt = new_cases, total_cases, S,  I = active_cases, R = total_removed, N) %>% 
+    filter(date >= ymd("2020-03-09"))
+
+d
 ```
 
 
 ```{r}
-N <- d %>% 
-    mutate(N = as.integer(N)) %>% 
-    select(date, N, country) %>% 
-    spread(country, N) %>% 
-    select(-date) %>% 
-    as.matrix
+N_days <- nrow(d)
 
-S <- d %>% 
-    mutate(S = as.integer(S)) %>% 
-    select(date, S, country) %>% 
-    spread(country, S) %>% 
-    select(-date) %>% 
-    as.matrix
+S <- d$S
+I <- d$I
+dI_dt <- d$dI_dt
+N <- 364220
 
-I <- d %>% 
-    mutate(I = as.integer(I)) %>% 
-    select(date, I, country) %>% 
-    spread(country, I) %>% 
-    select(-date) %>% 
-    as.matrix
+eftir_bann <- cumsum(1 * (d$date > ymd("2020-03-17")))
 
-R <- d %>% 
-    mutate(R = as.integer(R)) %>% 
-    select(date, R, country) %>% 
-    spread(country, R) %>% 
-    select(-date) %>% 
-    as.matrix
-
-new_cases <- d %>% 
-    mutate(new_cases = as.integer(new_cases)) %>% 
-    select(date, new_cases, country) %>% 
-    spread(country, new_cases) %>% 
-    select(-date) %>% 
-    as.matrix
-
-N_days <- nrow(I)
-N_countries <- ncol(I)
-
-a_gamma <- 30
-b_gamma <- 2.5
+days <- seq_len(N_days) - 1
 
 stan_data <- list(
     N_days = N_days,
-    N_countries = N_countries,
     N = N,
-    S = S,
+    S  = S,
     I = I,
-    R = R,
-    new_cases = new_cases,
-    a_gamma = a_gamma,
-    b_gamma = b_gamma
+    dI_dt = dI_dt,
+    days = days,
+    eftir_bann = eftir_bann
 )
 
 str(stan_data)
 ```
 
+
 ```{r}
-curve(dgamma(x, 30, 2.5), from = 0, to = 20)
+m <- sampling(stan_model("SIR_Model_Discrete.stan"), 
+              data  = stan_data, chains = 4, iter = 2000, warmup = 1000)
+```
+
+```{r}
+d %>% 
+    mutate(beta = dI_dt * N / (I * S))
 ```
 
 
 ```{r}
-m <- sampling(stan_model("SIR_Model.stan"), 
-              data  = stan_data, chains = 4, iter = 4000, warmup = 2000, control = list(adapt_delta = 0.9))
-```
-
-```{r}
-chosen <- which(colnames(I) == "Norway")
-tidyMCMC(m, conf.int = T, rhat = T, ess = T) %>% 
-    mutate(par = str_match(term, "[a-zA-Z_20]+")) %>% 
-    filter(par == "r0") %>% 
-    mutate(day = str_match(term, "([0-9]+),")[, 2] %>% parse_number,
-           date = day - 1 + min(d$date),
-           country = str_match(term, ",([0-9]+)")[, 2]) %>% 
-    ggplot(aes(date, estimate, group = country, 
-               col = country == chosen,
-               size = country == chosen)) +
+tidyMCMC(m, pars = "beta", conf.int = T, rhat = T, ess = T) %>% 
+    mutate(date = min(d$date) + row_number() - 1) %>% 
+    ggplot(aes(date, estimate, ymin = conf.low, ymax = conf.high)) +
+    geom_ribbon(alpha = 0.3) +
     geom_line() +
-    geom_hline(yintercept = 1, lty = 2, col = "grey") +
-    # scale_y_log10(breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)) +
-    scale_colour_manual(values = c("grey", "blue")) +
-    scale_size_manual(values = c(0.6, 1.3)) +
-    coord_cartesian(ylim = c(0.3, 12)) +
-    theme(legend.position = "none", axis.title = element_blank()) 
-    # ggsave("r0_trend.png", width = 8, height = 0.621 * 8, scale = 1.5)
+    geom_point(data = d %>% mutate(beta = dI_dt * N / (S * I)), aes(x = date, y = beta), inherit.aes = F) +
+    geom_vline(xintercept = ymd("2020-03-16"), lty = 2)
 ```
 
+
 ```{r}
-chosen <- which(colnames(I) == "Iceland")
-tidyMCMC(m, conf.int = T, rhat = T, ess = T) %>% 
-    mutate(par = str_match(term, "[a-zA-Z_20]+")) %>% 
-    filter(par == "r0") %>% 
-    mutate(day = str_match(term, "([0-9]+),")[, 2] %>% parse_number,
-           date = day - 1 + min(d$date),
-           country = str_match(term, ",([0-9]+)")[, 2]) %>% 
-    filter(country == chosen) %>% 
-    ggplot(aes(date, estimate)) +
-    geom_ribbon(aes(ymax = conf.high, ymin = conf.low), alpha = 0.3) +
+tidyMCMC(m, pars = "r0", conf.int = T, rhat = T, ess = T) %>% 
+    mutate(date = min(d$date) + row_number() - 1) %>% 
+    ggplot(aes(date, estimate, ymin = conf.low, ymax = conf.high)) +
+    geom_ribbon(alpha = 0.3) +
     geom_line() +
-    # scale_y_log10(breaks = c(1, 2, 3, 5, 10)) +
-    scale_y_continuous(breaks = pretty_breaks(10)) +
-    geom_hline(yintercept = 1, lty = 2) +
-    labs(title = "R0 time trend in Iceland") +
-    theme(legend.position = "none", axis.title = element_blank()) +
-    coord_cartesian(ylim = c(0.3, 10)) +
-    ggsave("r0_trend_Ice.png", width = 8, height = 0.621 * 8, scale = 1.5)
-```
-
-
-```{r}
-tidyMCMC(m, pars = c("sigma_state"))
+    geom_hline(yintercept = 1, lty = 2, col = "grey60") +
+    # Fyrra samkomubann
+    geom_vline(xintercept = ymd("2020-03-16"), lty = 2) +
+    geom_text(data = tibble(), 
+              aes(x = ymd("2020-03-16"), y = 0.2, label = "Fyrra samkomubann"), 
+              inherit.aes = F, nudge_x = 2.7) +
+    # Seinna samkomubann
+    geom_vline(xintercept = ymd("2020-03-24"), lty = 2) +
+    geom_text(data = tibble(), 
+              aes(x = ymd("2020-03-24"), y = 3.5, label = "Seinna samkomubann"), 
+              inherit.aes = F, nudge_x = 2.8) +
+    scale_y_continuous(breaks = pretty_breaks(8)) +
+    ylab(latex2exp::TeX("$R_e$")) + 
+    ggtitle(latex2exp::TeX("Þróun $R_e$ á Íslandi")) +
+    theme(axis.title.x = element_blank()) +
+    background_grid(major = "none", minor = "none") +
+    ggsave("r0_islandi.png", width = 6, height = 0.621 * 6, scale = 1.5)
 ```
 

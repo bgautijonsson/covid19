@@ -179,29 +179,49 @@ summary {
 <div class="form-group shiny-input-container">
 <label class="control-label" for="country">Country</label>
 <div>
-<select id="country"><option value="Australia">Australia</option>
+<select id="country"><option value="Armenia">Armenia</option>
+<option value="Aruba">Aruba</option>
+<option value="Australia">Australia</option>
 <option value="Austria">Austria</option>
 <option value="Bahrain">Bahrain</option>
+<option value="Barbados">Barbados</option>
 <option value="Belgium">Belgium</option>
 <option value="Canada">Canada</option>
+<option value="Chile">Chile</option>
+<option value="Croatia">Croatia</option>
+<option value="Cyprus">Cyprus</option>
+<option value="Czech Republic">Czech Republic</option>
 <option value="Denmark">Denmark</option>
-<option value="Egypt">Egypt</option>
+<option value="Ecuador">Ecuador</option>
+<option value="Estonia">Estonia</option>
+<option value="Finland">Finland</option>
 <option value="France">France</option>
+<option value="French Polynesia">French Polynesia</option>
 <option value="Germany">Germany</option>
 <option value="Greece">Greece</option>
+<option value="Guam">Guam</option>
 <option value="Iran">Iran</option>
+<option value="Ireland">Ireland</option>
+<option value="Israel">Israel</option>
 <option value="Italy">Italy</option>
-<option value="Japan">Japan</option>
-<option value="Kuwait">Kuwait</option>
-<option value="Malaysia">Malaysia</option>
+<option value="Latvia">Latvia</option>
+<option value="Lithuania">Lithuania</option>
+<option value="Luxembourg">Luxembourg</option>
+<option value="Malta">Malta</option>
+<option value="Montenegro">Montenegro</option>
 <option value="Netherlands">Netherlands</option>
+<option value="New Zealand">New Zealand</option>
+<option value="North Macedonia">North Macedonia</option>
 <option value="Norway">Norway</option>
+<option value="Panama">Panama</option>
+<option value="Portugal">Portugal</option>
+<option value="Qatar">Qatar</option>
 <option value="Singapore">Singapore</option>
-<option value="South Korea">South Korea</option>
+<option value="Slovenia">Slovenia</option>
 <option value="Spain">Spain</option>
 <option value="Sweden">Sweden</option>
 <option value="Switzerland">Switzerland</option>
-<option value="United Arab Emirates">United Arab Emirates</option>
+<option value="Turkey">Turkey</option>
 <option value="United Kingdom">United Kingdom</option>
 <option value="United States">United States</option>
 <option value="Iceland" selected>Iceland</option></select>
@@ -275,7 +295,8 @@ pred_plot <-  eventReactive(input$gobutton, {
     group_by(iter) %>% 
     mutate(cases = as.numeric(cumsum(daily_cases)) + start_cases) %>% 
     ungroup %>% 
-    select(iter, days, cumulative_cases = cases)
+    select(iter, days, new_cases = daily_cases, cumulative_cases = cases)
+  
   
   plot_lab1 <- str_c("Cumulative cases in  ", 
                      input$country, 
@@ -311,6 +332,31 @@ pred_plot <-  eventReactive(input$gobutton, {
          subtitle = "Possible growth curves drawn from posterior distribution") +
     theme(axis.title.x = element_blank())
   
+  p3 <- results %>% 
+    group_by(iter) %>% 
+    mutate(recovered_cases = lag(cumulative_cases, 15, default = 0),
+           dIdt = new_cases,
+           I = cumulative_cases - recovered_cases,
+           N = pop,
+           S = N - cumulative_cases,
+           beta = dIdt * N / (S * I)) %>% 
+    ungroup %>% 
+    mutate(serial_interval = rgamma(n(), 30, 2.5),
+           r0 = beta * serial_interval) %>% 
+    group_by(days) %>% 
+    summarise(median = median(r0, na.rm = T),
+              upper = quantile(r0, 1 - alph/2, na.rm = T),
+              lower = quantile(r0, alph/2, na.rm = T)) %>% 
+    ggplot(aes(days + min(plot_dat$date), median)) +
+    geom_hline(yintercept = 1, lty = 1, size = 1, col = "grey70") +
+    geom_line() +
+    geom_line(aes(y = lower), lty = 2) +
+    geom_line(aes(y = upper), lty = 2) +
+    ggtitle(latex2exp::TeX("$R_e$ based on predicted growth and a Gamma(30, 2.5) serial interval"),
+            subtitle = "Diagnosed cases are assumed to recover in 15 days") +
+    ylab(latex2exp::TeX("$R_e$")) +
+    theme(axis.title.x = element_blank()) +
+    background_grid(major = "none", minor = "none")
   
   
   if (input$scale == "Log") {
@@ -321,7 +367,7 @@ pred_plot <-  eventReactive(input$gobutton, {
   }
   
   
-  plot_grid(p1, p2, nrow = 2)
+  plot_grid(p1, p2, p3, nrow = 3)
   
 })
 

@@ -32,8 +32,8 @@ fig_out_path <- str_c(as.character(Sys.Date()), "/Figures/")
 make_fig_path <- function(name) str_c(fig_out_path, name)
 
 iceland_d <- sheets_read("https://docs.google.com/spreadsheets/d/1xgDhtejTtcyy6EN5dbDp5W3TeJhKFRRgm6Xk0s0YFeA", sheet = "Smit") %>% 
-  rename(date = Dagsetning, total_cases = Smit_Samtals, active_cases = Virk) %>% 
-  mutate(new_cases = Ny_Smit + IE_Smit,
+  rename(date = Dagsetning, total_cases = Smit_Samtals, active_cases = Virk_Smit) %>% 
+  mutate(new_cases = LSH_Smit + IE_Smit,
          date = as_date(date)) %>% 
   select(date, total_cases, active_cases)
 
@@ -81,7 +81,7 @@ icu_active <- d %>%
 
 # Samantekt
 
-Spáin um heildarfjölda greindra smita hefur hækkað frá því 30. mars, og spár um álag á heilbrigðiskerfið þá sömuleiðis. Til að búa undir möguleikann á frekari hliðrun aldursdreifingar fylgir önnur forspá þar sem gert er ráð fyrir að aldursdreifingin verði óhagstæðari.
+Spáin um heildarfjölda greindra smita hefur hækkað frá því 30. mars, og spár um álag á heilbrigðiskerfið þá sömuleiðis. Til að vera viðbúin möguleikanum á frekari hliðrun aldursdreifingar fylgir önnur forspá þar sem gert er ráð fyrir að aldursdreifingin verði óhagstæðari, en hana má lesa neðar í skýrslunni.
 
 **Helstu niðurstöður spálíkansins með gögnum til og með 1. apríl eru eftirfarandi:**
 
@@ -99,19 +99,27 @@ Spáin um heildarfjölda greindra smita hefur hækkað frá því 30. mars, og s
 
 * Smávægileg hliðrun aldursdreifingar í átt að fleiri greindum smitum meðal einstaklinga yfir sextugt myndi auka álag á heilbrigðisþjónustu talsvert.
 
-Greiningarvinnan mun halda áfram og spálíkanið verður uppfært reglulega með nýjum upplýsingum. Hafa ber í huga að vegna fámennis geta tölurnar um fjölda greindra tilfella breyst mikið frá degi til dags sem hefur áhrif á niðurstöður spálíkansins. Líkanið verður þó stöðugra eftir því sem á líður.
+Greiningarvinnan mun halda áfram og spáin verður uppfært reglulega með nýjum upplýsingum. Hafa ber í huga að vegna fámennis geta tölurnar um fjölda greindra tilfella breyst mikið frá degi til dags sem hefur áhrif á spána, en hún verður stöðugri eftir því sem á líður.
 
 # Aðferðir og forsendur spálíkans
 
-* Við notuðum logistískt vaxtarlíkan með neikvæða tvíkostadreifingu á fjölda þegar greindra smita á Íslandi til að gera forspá um miðgildi (líklegri spá) og 97,5% efri mörk (svartsýn spá) um uppsafnaðan fjölda greindra COVID-19 tilfella á Íslandi og virkra greindra tilfella (þar sem gert er ráð fyrir 21 veikindadegi) á næstu vikum.
+* Mikilvægt er að hafa í huga hvað verið er að tala um þegar talað er um forspá eða spálíkan. Forspáin er reiknuð út frá spálíkaninu, en spálíkan er reikniformúla sem beitt er á fyrirliggjandi gögn. Spálíkanið *(formúlan)* breytist ekki, en forspáin breytist þegar ný gögn berast.
 
-* Í samræmi við þekkingu á faraldsfræði smitsjúkdóma, þá gerir spálíkanið ráð fyrir að það hægi á núverandi veldisvexti greindra tilfella þar til að hann stöðvist á einhverjum tímapunkti, þar sem faraldurinn nær hámarki og virkum smitum fækkar þar á eftir.
+* Við notuðum logistískt vaxtarlíkan með neikvæða tvíkostadreifingu á daglegan fjölda nýgreindra smita á Íslandi til að gera forspá um miðgildi (líklegri spá) og 97,5% efri mörk (svartsýn spá) um fjölda greindra COVID-19 tilfella á Íslandi og virkra greindra tilfella (þar sem gert er ráð fyrir 21 veikindadegi) á næstu vikum.
 
-* Reikniaðferðin sem notuð er til að meta lögun vaxtarferilsins á Íslandi tekur mið af upplýsingum um COVID-19 faraldursferla í öðrum löndum (sjá viðauka) til að áætla mögulega lögun ferilsins á Ísland. Lönd sem eru komin lengra í ferlinum, t.d. Suður-Kórea, vega meira en þau sem styttra eru komin.
+* Í samræmi við þekkingu á faraldsfræði smitsjúkdóma, þá gerir spálíkanið ráð fyrir að það hægi á upphaflegum veldisvexti greindra tilfella þar til að faraldurinn nær hámarki, nýjum smitum fer fækkandi og fjölda einstaklinga með virkan sjúkdóm þar á eftir.
+
+* Reikniaðferðin sem notuð er til að meta lögun vaxtarferilsins á Íslandi tekur mið af upplýsingum um COVID-19 faraldursferla í öðrum löndum (sjá viðauka) til að áætla mögulega lögun ferilsins á Ísland. Þrátt fyrir að upplýsingar frá öðrum löndum séu notaðar þá vega gögnin um Ísland mest í forspánni. 
 
 * Þar sem allir smitaðir einstaklingar á Íslandi eru skjólstæðingar íslensks heilbrigðiskerfis, þá byggir spáin á heildarfjölda smitaðra einstaklinga á Íslandi óháð uppruna smita, hvort einstaklingar greinist í sóttkví eða ekki, gegnum skimun Heilsugæslunnar eða ÍE. Hafa skal í huga að smitaðir einstaklingar í sóttkví gætu mögulega bætt minna við veldisvöxtinn en aðrir einstaklingar.
 
 * Við notuðum fyrirliggjandi aldursdreifingu smita á Íslandi til að áætla skiptingu framtíðartilfella í aldurshópa. Síðan notuðum við upplýsingar frá Ferguson og félögum hjá Imperial College [(Tafla 1)](https://www.imperial.ac.uk/media/imperial-college/medicine/sph/ide/gida-fellowships/Imperial-College-COVID19-NPI-modelling-16-03-2020.pdf) um aldurstengd hlutföll spítalainnlagna í forspá okkar um fjölda sjúklinga hérlendis sem gætu lagst inn á spítala og/eða gjörgæslu.
+  - Ýmsar ástæður eru fyrir því að slík aldurstengd áhætta skyldi vera önnur á Íslandi en í Hubei.
+  - T.d. felst í þessu óbein forsenda um að dreifing áhættuþátta fyrir alvarlegum afleiðingum sjúkdómsins sé svipuð.
+  - Auk þess er gert ráð fyrir því að ákvarðanir um það hvenær tímabært sé að leggja einstaklinga inn á spítala eða gjörgæslu séu eins.
+  - Misræmi milli spár og fjölda á gjörgæslu gæti bent til þess að viðbrögð í upphafi faraldurs séu önnur hér en í Hubei.
+  - Hins vegar er þessi forsenda nauðsynleg í upphafi faraldurs meðan ekki eru næg gögn um sjúkrahús- og gjörgæslulegur hér á landi.
+
 
 * Hafa ber í huga að aldursdreifing smitaðra einstaklinga á Íslandi er hagstæð enn sem komið er. Ef fjöldi smita eykst meðal aldraðra einstaklinga mun það hafa veruleg áhrif á spálíkanið í átt að auknu álagi á heilbrigðiskerfið.
 
