@@ -24,10 +24,10 @@ theme_set(theme_bw() +
               background_grid(color.major = "grey90", 
                               color.minor = "grey95", 
                               minor = "xy", major = "xy"))
+options(mc.cores = parallel::detectCores())
 
 
-
-d <- read_csv("https://docs.google.com/spreadsheets/d/1ODqwILD6yBfE5mgKmI4mE-t-wzBDaw8l27gERUiAMgo/export?format=csv&gid=0") %>% 
+d <- read_csv("https://docs.google.com/spreadsheets/d/1xgDhtejTtcyy6EN5dbDp5W3TeJhKFRRgm6Xk0s0YFeA/export?format=csv&gid=0") %>% 
     select(
         date = "Dagsetning",
         new_cases = "Ny_Smit",
@@ -40,12 +40,13 @@ d <- read_csv("https://docs.google.com/spreadsheets/d/1ODqwILD6yBfE5mgKmI4mE-t-w
         active_cases = "Virk_Smit")
 
 d <- d %>% 
-    mutate(date = mdy(date),
-           new_cases = lead(new_cases, 1, default = 0),
+    mutate(date = ymd(date),
            N = 364220,
-           S = N - total_cases) %>% 
+           S = N - total_cases,
+           S = lag(S, 1, default = 0),
+           active_cases = lag(active_cases, 1, default = 0)) %>% 
     select(date, dI_dt = new_cases, total_cases, S,  I = active_cases, R = total_removed, N) %>% 
-    filter(date >= ymd("2020-03-09"))
+    filter(date >= ymd("2020-03-05"))
 
 d
 ```
@@ -109,18 +110,20 @@ tidyMCMC(m, pars = "r0", conf.int = T, rhat = T, ess = T) %>%
     # Fyrra samkomubann
     geom_vline(xintercept = ymd("2020-03-16"), lty = 2) +
     geom_text(data = tibble(), 
-              aes(x = ymd("2020-03-16"), y = 0.2, label = "Fyrra samkomubann"), 
-              inherit.aes = F, nudge_x = 2.7) +
+              aes(x = ymd("2020-03-16"), y = 0.2, label = "Fyrri samkomubann"), 
+              inherit.aes = F, nudge_x = 2.4) +
     # Seinna samkomubann
     geom_vline(xintercept = ymd("2020-03-24"), lty = 2) +
     geom_text(data = tibble(), 
-              aes(x = ymd("2020-03-24"), y = 3.5, label = "Seinna samkomubann"), 
-              inherit.aes = F, nudge_x = 2.8) +
+              aes(x = ymd("2020-03-24"), y = 3.5, label = "Seinni samkomubann"), 
+              inherit.aes = F, nudge_x = 2.4) +
     scale_y_continuous(breaks = pretty_breaks(8)) +
+    scale_x_date(breaks = ymd(c("2020-03-05", "2020-03-16", "2020-03-24", "2020-04-01")),
+                 date_labels = "%d. %B") +
     ylab(latex2exp::TeX("$R_e$")) + 
     ggtitle(latex2exp::TeX("Þróun $R_e$ á Íslandi")) +
     theme(axis.title.x = element_blank()) +
     background_grid(major = "none", minor = "none") +
-    ggsave("r0_islandi.png", width = 6, height = 0.621 * 6, scale = 1.5)
+    ggsave("r0_islandi.png", width = 6, height = 0.5 * 6, scale = 2)
 ```
 

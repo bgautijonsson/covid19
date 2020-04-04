@@ -5,9 +5,9 @@ account: bgautijonsson
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 2000757
-bundleId: 2964090
+bundleId: 2968479
 url: https://bgautijonsson.shinyapps.io/Hierarchical_Report_NegBin/
-when: 1585917920.00937
+when: 1586010961.27325
 asMultiple: FALSE
 asStatic: FALSE
 ignoredFiles: ECDC_Data.csv|Hierarchical_Model.rds|Hierarchical_Report_NegBin.html|Hierarchical_Report.html|Hierarchical_Report.Rmd|Hierarchical_Report_data/data_chunks_index.txt|Hierarchical_Report_data/unnamed-chunk-1.RData

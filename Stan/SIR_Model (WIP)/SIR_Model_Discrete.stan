@@ -45,8 +45,8 @@ model {
   
   f = L_K * eta;
   
-  rho ~ inv_gamma(2, 2);
-  alpha ~ normal(0, 3);
+  rho ~ inv_gamma(5, 5);
+  alpha ~ exponential(1);
   sigma_beta ~ exponential(1);
   eta ~ std_normal();
   

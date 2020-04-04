@@ -108,7 +108,7 @@ p2 <- tibble(start_date = ymd("2020-03-03"),
                        breaks = pretty_breaks(5),
                        expand = expansion(mult = 0.02)) +
     scale_colour_manual(values = c("black", "blue")) +
-    coord_flip(ylim = c(0, 0.61)) +
+    coord_flip(ylim = c(0, 0.56)) +
     theme(axis.title = element_blank(),
           text = element_text(size = 11)) +
     background_grid(major = "none", minor = "none")
@@ -134,7 +134,7 @@ p3 <- tibble(start_date = ymd("2020-03-03"),
                        breaks = pretty_breaks(5),
                        expand = expansion(mult = 0.02)) +
     scale_colour_manual(values = c("black", "blue")) +
-    coord_flip(ylim = c(0, 0.61)) +
+    coord_flip(ylim = c(0, 0.56)) +
     theme(axis.title = element_blank(),
           text = element_text(size = 11)) +
     background_grid(major = "none", minor = "none")

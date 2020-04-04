@@ -17,6 +17,7 @@ theme_set(theme_classic(base_size = 12) +
                             color.minor = "grey95", 
                             minor = "xy", major = "xy") +
             theme(legend.position = "none"))
+
 ```
 
 ```{r, context = "data"}
@@ -71,13 +72,14 @@ pred_plot <-  eventReactive(input$gobutton, {
     filter(country == id) %>% 
     mutate(iter = row_number()) %>% 
     select(iter, alpha, beta, S, phi) %>% 
-    expand_grid(days = seq(1, days_in_data + 50)) %>% 
+    expand_grid(days = seq(-20, days_in_data + 50)) %>% 
     mutate(daily_rate = daily_cases(alpha, beta, S, days),
            daily_cases = rnbinom(n(), mu = daily_rate * pop, size = phi)) %>% 
     group_by(iter) %>% 
-    mutate(cases = as.numeric(cumsum(daily_cases)) + start_cases) %>% 
+    mutate(cases = as.numeric(cumsum(daily_cases * (days > 0))) + start_cases,
+           cases_r0 = as.numeric(cumsum(daily_cases))) %>% 
     ungroup %>% 
-    select(iter, days, new_cases = daily_cases, cumulative_cases = cases)
+    select(iter, days, new_cases = daily_cases, cumulative_cases = cases, cases_r0)
   
   
   plot_lab1 <- str_c("Cumulative cases in  ", 
@@ -86,7 +88,8 @@ pred_plot <-  eventReactive(input$gobutton, {
   
   p1 <- results %>% 
     mutate(date = days + min(plot_dat$date)) %>% 
-    filter(date <= max(plot_dat$date) + 21) %>% 
+    filter(date <= max(plot_dat$date) + 21,
+           days > 0) %>% 
     group_by(date) %>% 
     summarise(median = median(cumulative_cases),
               lower = quantile(cumulative_cases, alph / 2),
@@ -105,7 +108,8 @@ pred_plot <-  eventReactive(input$gobutton, {
   
   p2 <- results %>% 
     mutate(date = days + min(plot_dat$date)) %>% 
-    filter(date <= max(plot_dat$date) + 21) %>% 
+    filter(date <= max(plot_dat$date) + 21,
+           days > 0) %>% 
     filter(iter %in% sample(iter, size = 200)) %>% 
     ggplot(aes(date, cumulative_cases, group = iter)) +
     geom_line(alpha = 0.1) +
@@ -118,20 +122,22 @@ pred_plot <-  eventReactive(input$gobutton, {
   
   p3 <- results %>% 
     group_by(iter) %>% 
-    mutate(recovered_cases = lag(cumulative_cases, 15, default = 0),
+    mutate(recovered_cases = lag(cases_r0, 15, default = 0),
            dIdt = new_cases,
-           I = cumulative_cases - recovered_cases,
+           I = cases_r0 - recovered_cases,
            N = pop,
-           S = N - cumulative_cases,
+           S = N - cases_r0,
            beta = dIdt * N / (S * I)) %>% 
     ungroup %>% 
     mutate(serial_interval = rgamma(n(), 30, 2.5),
            r0 = beta * serial_interval) %>% 
-    group_by(date = days + min(plot_dat$date) - 1) %>% 
+    group_by(date = days + min(plot_dat$date) - 1, days) %>% 
     summarise(median = median(r0, na.rm = T),
               upper = quantile(r0, 1 - alph/2, na.rm = T),
               lower = quantile(r0, alph/2, na.rm = T)) %>% 
-    filter(date <= max(plot_dat$date) + 21) %>% 
+    ungroup %>% 
+    filter(date <= max(plot_dat$date) + 21,
+           days > 0) %>% 
     ggplot(aes(date, median)) +
     geom_hline(yintercept = 1, lty = 1, size = 1, col = "grey70") +
     geom_line() +

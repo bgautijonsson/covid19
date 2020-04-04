@@ -86,13 +86,13 @@ icu_active <- d %>%
 
 Spáin um heildarfjölda greindra smita hefur hækkað frá því 30. mars, og spár um álag á heilbrigðiskerfið þá sömuleiðis. Til að vera viðbúin möguleikanum á frekari hliðrun aldursdreifingar fylgir önnur forspá þar sem gert er ráð fyrir að aldursdreifingin verði óhagstæðari, en hana má lesa neðar í skýrslunni.
 
-**Helstu niðurstöður spálíkansins með gögnum til og með 1. apríl eru eftirfarandi:**
+**Helstu niðurstöður spálíkansins með gögnum til og með 3. apríl eru eftirfarandi:**
 
-* Gert er ráð fyrir því að á meðan faraldurinn gengur yfir muni rúmlega `r smit_cumul$median` manns á Íslandi vera greind með COVID-19, en talan gæti náð nær `r smit_cumul$upper` manns skv. svartsýnni spá.
+* Gert er ráð fyrir því að á meðan þessi bylgja faraldursins gengur yfir muni rúmlega `r smit_cumul$median` manns á Íslandi vera greind með COVID-19, en talan gæti náð nær `r smit_cumul$upper` manns skv. svartsýnni spá.
 
 * Gert er ráð fyrir að fjöldi greindra einstaklinga með virkan sjúkdóm nái hámarki í fyrstu viku apríl og verði sennilega um `r smit_active$median` manns, en gæti viku seinna náð `r smit_active$upper` manns skv. svartsýnni spá.
 
-* Gert er ráð fyrir að á meðan að faraldurinn gengur yfir muni  `r hospital_cumul$median` manns þarfnast innlagnar á sjúkrahúsi, en gæti náð hátt í `r hospital_cumul$upper` manns. 
+* Gert er ráð fyrir að á meðan að þessi bylgja faraldursins gengur yfir muni  `r hospital_cumul$median` manns þarfnast innlagnar á sjúkrahúsi, en gæti náð hátt í `r hospital_cumul$upper` manns. 
 
 * Mesta álag á heilbrigðisþjónustu vegna sjúkrahúsinnlagna verður fyrir miðjan apríl en þá er gert ráð fyrir að um það bil `r hospital_active$median` einstaklingar geti verið inniliggjandi á sama tíma, en svartsýnni spá er `r hospital_active$upper` einstaklingar.
 
@@ -110,7 +110,7 @@ Greiningarvinnan mun halda áfram og spáin verður uppfært reglulega með nýj
 
 * Við notuðum logistískt vaxtarlíkan með neikvæða tvíkostadreifingu á daglegan fjölda nýgreindra smita á Íslandi til að gera forspá um miðgildi (líklegri spá) og 97,5% efri mörk (svartsýn spá) um fjölda greindra COVID-19 tilfella á Íslandi og virkra greindra tilfella (þar sem gert er ráð fyrir 21 veikindadegi) á næstu vikum.
 
-* Í samræmi við þekkingu á faraldsfræði smitsjúkdóma, þá gerir spálíkanið ráð fyrir að það hægi á upphaflegum veldisvexti greindra tilfella þar til að faraldurinn nær hámarki, nýjum smitum fer fækkandi og fjölda einstaklinga með virkan sjúkdóm þar á eftir.
+* Í samræmi við þekkingu á faraldsfræði smitsjúkdóma, þá gerir spálíkanið ráð fyrir að það hægi á upphaflegum veldisvexti greindra tilfella þar til að þessi bylgja faraldursins nær hámarki, nýjum smitum fer fækkandi og fjölda einstaklinga með virkan sjúkdóm þar á eftir.
 
 * Reikniaðferðin sem notuð er til að meta lögun vaxtarferilsins á Íslandi tekur mið af upplýsingum um COVID-19 faraldursferla í öðrum löndum (sjá viðauka) til að áætla mögulega lögun ferilsins á Ísland. Þrátt fyrir að upplýsingar frá öðrum löndum séu notaðar þá vega gögnin um Ísland mest í forspánni. 
 
@@ -397,8 +397,7 @@ d %>%
   scale_colour_brewer(type = "qua", palette = "Set1") +
   labs(linetype = " ", col = " ") +
   theme(axis.title = element_blank(),
-        legend.position = "top")  +
-  ggsave(make_fig_path("hospital_cumulative_total.png"), width = 8, height = 0.621 * 8, scale = 1.5)
+        legend.position = "top")
 ```
 
 ### Virkar sjúkrahúslegur á hverjum degi
@@ -417,8 +416,7 @@ d %>%
   scale_colour_brewer(type = "qua", palette = "Set1") +
   labs(linetype = " ", col = " ") +
   theme(axis.title = element_blank(),
-        legend.position = "top")  +
-  ggsave(make_fig_path("hospital_active_total.png"), width = 8, height = 0.621 * 8, scale = 1.5)
+        legend.position = "top")
 ```
 
 ## Gjörgæsla
@@ -439,8 +437,7 @@ d %>%
   scale_colour_brewer(type = "qua", palette = "Set1") +
   labs(linetype = " ", col = " ") +
   theme(axis.title = element_blank(),
-        legend.position = "top") +
-  ggsave(make_fig_path("icu_cumulative_total.png"), width = 8, height = 0.621 * 8, scale = 1.5)
+        legend.position = "top") 
 ```
 
 ### Virkar gjörgæslulegur á hverjum degi
@@ -460,8 +457,7 @@ d %>%
   scale_colour_brewer(type = "qua", palette = "Set1") +
   labs(linetype = " ", col = " ") +
   theme(axis.title = element_blank(),
-        legend.position = "top") +
-  ggsave(make_fig_path("icu_active_total.png"), width = 8, height = 0.621 * 8, scale = 1.5)
+        legend.position = "top") 
 ```
 
 
@@ -486,8 +482,7 @@ d %>%
   scale_x_date(date_breaks = "2 week", date_labels = "%d/%m") +
   scale_colour_brewer(type = "qua", palette = "Set1") +
   labs(y = "Tilfelli") +
-  theme(axis.title = element_blank()) +
-  ggsave(make_fig_path("cases_cumulative_age.png"), width = 8, height = 8, scale = 1.5)
+  theme(axis.title = element_blank()) 
 ```
 
 #### Virk
@@ -506,8 +501,7 @@ d %>%
   scale_x_date(date_breaks = "2 week", date_labels = "%d/%m") +
   scale_colour_brewer(type = "qua", palette = "Set1") +
   labs(y = "Tilfelli") +
-  theme(axis.title = element_blank()) +
-  ggsave(make_fig_path("cases__active_age.png"), width = 8, height = 8, scale = 1.5)
+  theme(axis.title = element_blank())
 ```
 
 ### Sjúkrahúslegur
@@ -528,8 +522,7 @@ d %>%
   scale_x_date(date_breaks = "2 week", date_labels = "%d/%m") +
   scale_colour_brewer(type = "qua", palette = "Set1") +
   labs() +
-  theme(axis.title = element_blank()) +
-  ggsave(make_fig_path("hospital_active_age.png"), width = 8, height = 8, scale = 1.5)
+  theme(axis.title = element_blank()) 
 ```
 
 #### Virkar
@@ -548,8 +541,7 @@ d %>%
   scale_x_date(date_breaks = "2 week", date_labels = "%d/%m") +
   scale_colour_brewer(type = "qua", palette = "Set1") +
   labs() +
-  theme(axis.title = element_blank()) +
-  ggsave(make_fig_path("hospital_active_age.png"), width = 8, height = 8, scale = 1.5)
+  theme(axis.title = element_blank()) 
 ```
 
 ### Gjörgæslulegur
@@ -570,8 +562,7 @@ d %>%
   scale_x_date(date_breaks = "2 week", date_labels = "%d/%m") +
   scale_colour_brewer(type = "qual", palette = "Set1") +
   labs(y = "Tilfelli") +
-  theme(axis.title = element_blank()) +
-  ggsave(make_fig_path("icu_cumulative_age.png"), width = 8, height = 0.621 * 8, scale = 1.5)
+  theme(axis.title = element_blank())
 ```
 
 #### Virkar
@@ -591,8 +582,7 @@ d %>%
   scale_colour_brewer(type = "qua", palette = "Set1") +
   labs(title = "Virk alvarleg tilfelli á sjúkrahúsi eftir aldri",
        y = "Tilfelli") +
-  theme(axis.title = element_blank()) +
-  ggsave(make_fig_path("icu_active_age.png"), width = 8, height = 0.621 * 8, scale = 1.5)
+  theme(axis.title = element_blank())
 ```
 
 # Viðauki
