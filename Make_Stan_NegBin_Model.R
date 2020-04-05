@@ -29,8 +29,7 @@ stan_data <- list(N_obs = N_obs,
 
 
 m <- sampling(stan_model("Stan/Logistic/Hierarchical_Logistic_Cases_NegBin.stan"), 
-              data  = stan_data, chains = 4, iter = 4000, warmup = 2000,
-              control = list(adapt_delta = 0.99))
+              data  = stan_data, chains = 4, iter = 4000, warmup = 2000)
 
 write_rds(m, "Stan/Logistic/Hierarchical_Model_NegBin.rds")
 write_rds(m, str_c("Stan/Logistic/Saved_Models/Hierarchical_Model_NegBin_", Sys.Date(), ".rds"))

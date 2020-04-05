@@ -27,7 +27,7 @@ theme_set(theme_bw() +
 options(mc.cores = parallel::detectCores())
 
 
-d <- read_csv("https://docs.google.com/spreadsheets/d/1xgDhtejTtcyy6EN5dbDp5W3TeJhKFRRgm6Xk0s0YFeA/export?format=csv&gid=0") %>% 
+d <- read_csv("https://docs.google.com/spreadsheets/d/1xgDhtejTtcyy6EN5dbDp5W3TeJhKFRRgm6Xk0s0YFeA/export?format=csv&id=1xgDhtejTtcyy6EN5dbDp5W3TeJhKFRRgm6Xk0s0YFeA&gid=1788393542") %>% 
     select(
         date = "Dagsetning",
         new_cases = "Ny_Smit",
@@ -84,8 +84,7 @@ m <- sampling(stan_model("SIR_Model_Discrete.stan"),
 ```
 
 ```{r}
-d %>% 
-    mutate(beta = dI_dt * N / (I * S))
+tidyMCMC(m, pars = c("rho", "alpha", "sigma_beta", "sigma_obs"), conf.int = T, rhat = T, ess = T)
 ```
 
 

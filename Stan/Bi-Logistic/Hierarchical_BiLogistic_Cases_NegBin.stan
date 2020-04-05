@@ -87,17 +87,17 @@ model {
   sigma_alpha ~ exponential(1);
   z_alpha ~ std_normal();
   
-  mu_alpha2 ~ normal(0, 1);
+  mu_alpha2 ~ normal(0, 3);
   sigma_alpha2 ~ exponential(1);
   z_alpha2 ~ std_normal();
   
    // Beta parameters
-  mu_beta ~ normal(0, 1);
+  mu_beta ~ normal(0, 3);
   sigma_beta ~ exponential(1);
   z_beta ~ std_normal();
   
   
-  mu_beta2 ~ normal(0, 1);
+  mu_beta2 ~ normal(0, 3);
   sigma_beta2 ~ exponential(1);
   z_beta2 ~ std_normal();
   
@@ -108,7 +108,7 @@ model {
   
   
   mu_s2 ~ beta(1, 9);
-  kappa_s2 ~ exponential(0.01);
+  kappa_s2 ~ exponential(0.001);
   S2 ~ beta(a_s, b_s);
   
    // Overdispersion parameters

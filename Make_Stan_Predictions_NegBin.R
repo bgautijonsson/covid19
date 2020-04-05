@@ -52,7 +52,8 @@ results <- spread_draws(
     alpha[country], 
     beta[country], 
     S[country],
-    phi[country]
+    phi[country],
+    nu[country]
 ) %>% 
     ungroup %>% 
     filter(country == id) %>% 
@@ -62,13 +63,16 @@ results <- spread_draws(
         alpha, 
         beta, 
         S,
-        phi
+        phi,
+        nu
     ) %>% 
-    expand_grid(days = seq(1, 60)) %>% 
+    expand_grid(days = seq(1, 80)) %>% 
     mutate(
         # Calculate from model
-        daily_rate = daily_cases(alpha = alpha, beta = beta, S = S, t = days),
-        new_cases = rnbinom(n(), mu = daily_rate * pop, size = phi),
+        z = alpha + nu * beta * days,
+        f = S / (1 + exp(-z))^(1/nu),
+        dfdt = beta * f * (1 - (f / S)^nu),
+        new_cases = rnbinom(n(), mu = dfdt * pop, size = phi),
     ) %>% 
     group_by(iter) %>% 
     mutate(

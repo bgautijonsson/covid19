@@ -11,6 +11,10 @@ data {
   vector[N_countries] pop;
 }
 
+transformed data {
+  vector[N_countries] log_pop = log(pop);
+}
+
 parameters {
   // Since we use a non-centered parametrisation we first create normal(0, 1) variables for alpha and beta
   
@@ -34,50 +38,65 @@ parameters {
   vector<lower = 0>[N_countries] z_phi_inv_sqrt;
   real<lower = 0> sigma_phi_inv_sqrt;
   
+  real mu_nu;
+  real<lower = 0> sigma_nu;
+  vector[N_countries] z_nu;
+  
 }
 
 transformed parameters {
-   // Non-Centerd parametrizations
-   // If B ~ normal(mu_b, sigma_b) then B = mu_b + sigma_b * normal(0, 1)
-  vector<lower = 0>[N_countries] beta = exp(mu_beta + sigma_beta * z_beta);
+  // Non-Centerd parametrizations
+  // If B ~ normal(mu_b, sigma_b) then B = mu_b + sigma_b * normal(0, 1)
+  vector[N_countries] log_beta = mu_beta + sigma_beta * z_beta;
+  vector<lower = 0>[N_countries] beta = exp(log_beta);
   vector[N_countries] alpha = mu_alpha + sigma_alpha * z_alpha;
-   // If X ~ exponential(lambda) then X ~ lambda * exponential(1)
+  // If X ~ exponential(lambda) then X ~ lambda * exponential(1)
   vector<lower = 0>[N_countries] phi_inv_sqrt = sigma_phi_inv_sqrt * z_phi_inv_sqrt;
-   // Overdispersion parameters
+  // Overdispersion parameters
   vector<lower = 0>[N_countries] phi_inv = square(phi_inv_sqrt);
   vector<lower = 0>[N_countries] phi = inv(phi_inv);
-   // Asymptote hyperparameters
+  // Asymptote hyperparameters
   real<lower = 0> a_s = mu_s * kappa_s;
   real<lower = 0> b_s = (1 - mu_s) * kappa_s;
-   // Logistic equation calculations
-  vector[N_obs] linear = alpha[country] + beta[country] .* days;
-  vector<lower = 0>[N_obs] difference;
+  // Generalized Logistic Parameters
+  vector<lower = 0>[N_countries] nu = exp(mu_nu + sigma_nu * z_nu);
+  // Logistic equation calculations
+  vector[N_obs] linear = alpha[country] + nu[country] .* beta[country] .* days;
+  vector<lower = 0>[N_obs] f;
+  vector<lower = 0>[N_obs] dfdt;
   for (i in 1:N_obs) {
-    difference[i] = beta[country[i]] * S[country[i]] * exp(-linear[i]) / square(exp(-linear[i]) + 1);
+    f[i] = S[country[i]] / pow(1 + exp(-linear[i]), inv(nu[country[i]]));
+    dfdt[i] = beta[country[i]] * f[i] * (1 - pow(f[i] / S[country[i]], nu[country[i]]));
+
   }
 }
 
 model {
-   // Alpha parameters
+  // Alpha parameters
   mu_alpha ~ normal(-2.5, 3);
   sigma_alpha ~ exponential(1);
   z_alpha ~ std_normal();
   
-   // Beta parameters
+  // Beta parameters
   mu_beta ~ normal(-3, 1);
   sigma_beta ~ exponential(1);
   z_beta ~ std_normal();
   
-   // Asymptote parameters
+  // Asymptote parameters
   mu_s ~ beta(1, 99);
   kappa_s ~ exponential(0.001);
   S ~ beta(a_s, b_s);
   
-   // Overdispersion parameters
+  // Overdispersion parameters
   z_phi_inv_sqrt ~ exponential(1);
   sigma_phi_inv_sqrt ~ exponential(1);
   
+  // Logistic parameters
+  mu_nu ~ normal(0, 1);
+  sigma_nu ~ exponential(1);
+  z_nu ~ std_normal();
+  
   //  Likelihood
-  new_cases ~ neg_binomial_2(difference .* pop[country], phi[country]);
+  new_cases ~ neg_binomial_2(dfdt .* pop[country], phi[country]);
 }
 

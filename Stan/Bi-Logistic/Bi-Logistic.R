@@ -6,7 +6,6 @@ library(tidybayes)
 
 options(mc.cores = parallel::detectCores())
 source("Make_Stan_Data.R")
-
 d <- Make_Stan_Data()
 
 
