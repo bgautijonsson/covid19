@@ -150,9 +150,9 @@ pred_plot <-  eventReactive(input$gobutton, {
     geom_line() +
     geom_line(aes(y = lower), lty = 2) +
     geom_line(aes(y = upper), lty = 2) +
-    ggtitle(latex2exp::TeX("$R_e$ based on predicted growth and a Gamma(30, 2.5) serial interval"),
+    ggtitle(latex2exp::TeX("$R_t$ based on predicted growth and a Gamma(30, 2.5) serial interval"),
             subtitle = "Diagnosed cases are assumed to recover in 15 days") +
-    ylab(latex2exp::TeX("$R_e$")) +
+    ylab(latex2exp::TeX("$R_t$")) +
     theme(axis.title.x = element_blank()) +
     background_grid(major = "none", minor = "none")
   
