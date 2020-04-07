@@ -84,7 +84,7 @@ m <- sampling(stan_model("SIR_Model_Discrete.stan"),
 ```
 
 ```{r}
-tidyMCMC(m, pars = c("rho", "alpha", "sigma_beta", "sigma_obs"), conf.int = T, rhat = T, ess = T)
+tidyMCMC(m, pars = c("rho", "alpha", "sigma_beta"), conf.int = T, rhat = T, ess = T)
 ```
 
 
@@ -119,10 +119,37 @@ tidyMCMC(m, pars = "r0", conf.int = T, rhat = T, ess = T) %>%
     scale_y_continuous(breaks = pretty_breaks(8)) +
     scale_x_date(breaks = ymd(c("2020-03-05", "2020-03-16", "2020-03-24", "2020-04-01")),
                  date_labels = "%d. %B") +
-    ylab(latex2exp::TeX("$R_e$")) + 
-    ggtitle(latex2exp::TeX("Þróun $R_e$ á Íslandi")) +
+    ylab(latex2exp::TeX("$R_t$")) + 
+    ggtitle(latex2exp::TeX("Þróun $R_t$ á Íslandi")) +
     theme(axis.title.x = element_blank()) +
     background_grid(major = "none", minor = "none") +
     ggsave("r0_islandi.png", width = 6, height = 0.5 * 6, scale = 2)
 ```
 
+
+```{r}
+tidyMCMC(m, pars = "r0", conf.int = T, rhat = T, ess = T) %>% 
+    mutate(date = min(d$date) + row_number() - 1) %>% 
+    ggplot(aes(date, estimate, ymin = conf.low, ymax = conf.high)) +
+    geom_ribbon(alpha = 0.3) +
+    geom_line() +
+    geom_hline(yintercept = 1, lty = 2, col = "grey60") +
+    # Fyrra samkomubann
+    geom_vline(xintercept = ymd("2020-03-16"), lty = 2) +
+    geom_text(data = tibble(), 
+              aes(x = ymd("2020-03-16"), y = 0.2, label = "Ban on mass gatherings over 100"), 
+              inherit.aes = F, nudge_x = 3.5) +
+    # Seinna samkomubann
+    geom_vline(xintercept = ymd("2020-03-24"), lty = 2) +
+    geom_text(data = tibble(), 
+              aes(x = ymd("2020-03-24"), y = 3.5, label = "Ban on mass gatherings over 20"), 
+              inherit.aes = F, nudge_x = 3.5) +
+    scale_y_continuous(breaks = pretty_breaks(8)) +
+    scale_x_date(breaks = ymd(c("2020-03-05", "2020-03-16", "2020-03-24", "2020-04-01")),
+                 date_labels = "%d. %B") +
+    ylab(latex2exp::TeX("$R_t$")) + 
+    ggtitle(latex2exp::TeX("Evolution of $R_t$ in Iceland")) +
+    theme(axis.title.x = element_blank()) +
+    background_grid(major = "none", minor = "none") +
+    ggsave("r0_iceland.png", width = 6, height = 0.5 * 6, scale = 2)
+```

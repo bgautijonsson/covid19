@@ -5,7 +5,7 @@ days_from_infection_to_healthy <- 21
 days_in_hospital <- 14
 days_in_icu <- 10
 
-N_iter <- 2000
+N_iter <- 4000
 
 ##### Packages #####
 library(tidyverse)
@@ -52,8 +52,7 @@ results <- spread_draws(
     alpha[country], 
     beta[country], 
     S[country],
-    phi[country],
-    nu[country]
+    phi[country]
 ) %>% 
     ungroup %>% 
     filter(country == id) %>% 
@@ -63,15 +62,14 @@ results <- spread_draws(
         alpha, 
         beta, 
         S,
-        phi,
-        nu
+        phi
     ) %>% 
     expand_grid(days = seq(1, 80)) %>% 
     mutate(
         # Calculate from model
-        z = alpha + nu * beta * days,
-        f = S / (1 + exp(-z))^(1/nu),
-        dfdt = beta * f * (1 - (f / S)^nu),
+        z = alpha + beta * days,
+        f = S / (1 + exp(-z)),
+        dfdt = beta * f * (1 - (f / S)),
         new_cases = rnbinom(n(), mu = dfdt * pop, size = phi),
     ) %>% 
     group_by(iter) %>% 
@@ -160,7 +158,8 @@ all_results <- age_results %>%
     pivot_longer(c(-iter, -days, -name, -type), names_to = "age", values_to = "value") %>% 
     group_by(date = days + start_date, name, type, age) %>% 
     summarise(median = median(value),
-              upper = quantile(value, 0.975))
+              upper = quantile(value, 0.975),
+              lower = quantile(value, 0.025))
 # Save results with empirical age distribution
 out <- all_results %>% 
     mutate(aldursdreifing = "gögn")
@@ -223,7 +222,8 @@ all_results <- age_results %>%
     pivot_longer(c(-iter, -days, -name, -type), names_to = "age", values_to = "value") %>% 
     group_by(date = days + start_date, name, type, age) %>% 
     summarise(median = median(value),
-              upper = quantile(value, 0.975))
+              upper = quantile(value, 0.975),
+              lower = quantile(value, 0.025))
 
 out <- out %>% 
     bind_rows(all_results %>% 

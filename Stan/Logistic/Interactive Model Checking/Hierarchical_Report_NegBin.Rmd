@@ -71,17 +71,16 @@ pred_plot <-  eventReactive(input$gobutton, {
                           alpha[country],
                           beta[country], 
                           S[country],
-                          phi[country], 
-                          nu[country]
+                          phi[country]
   ) %>% 
     ungroup %>% 
     filter(country == id) %>% 
     mutate(iter = row_number()) %>% 
-    select(iter, alpha, beta, S, phi, nu) %>% 
+    select(iter, alpha, beta, S, phi) %>% 
     expand_grid(days = seq(-20, days_in_data + 50)) %>% 
-    mutate(z = alpha + nu * beta * days,
-           f = S / (1 + exp(-z))^(1/nu),
-           dfdt = beta * f * (1 - (f / S)^nu),
+    mutate(z = alpha + beta * days,
+           f = S / (1 + exp(-z)),
+           dfdt = beta * f * (1 - (f / S)),
            daily_cases = rnbinom(n(), mu = dfdt * pop, size = phi)) %>% 
     group_by(iter) %>% 
     mutate(cases = as.numeric(cumsum(daily_cases * (days > 0))) + start_cases,

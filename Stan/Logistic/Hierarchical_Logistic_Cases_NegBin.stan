@@ -11,10 +11,6 @@ data {
   vector[N_countries] pop;
 }
 
-transformed data {
-  vector[N_countries] log_pop = log(pop);
-}
-
 parameters {
   // Since we use a non-centered parametrisation we first create normal(0, 1) variables for alpha and beta
   
@@ -38,13 +34,19 @@ parameters {
   vector<lower = 0>[N_countries] z_phi_inv_sqrt;
   real<lower = 0> sigma_phi_inv_sqrt;
   
-  real mu_nu;
-  real<lower = 0> sigma_nu;
-  vector[N_countries] z_nu;
+  // real mu_nu;
+  // real<lower = 0> sigma_nu;
+  // vector[N_countries] z_nu;
+  
+  // vector<lower = 0, upper = 1>[N_countries] perc_detected;
+  // real<lower = 0, upper = 1> mu_detected;
+  // real<lower = 0> kappa_detected;
   
 }
 
 transformed parameters {
+  // real<lower = 0> a_detected = mu_detected * kappa_detected;
+  // real<lower = 0> b_detected = (1 - mu_detected) * kappa_detected;
   // Non-Centerd parametrizations
   // If B ~ normal(mu_b, sigma_b) then B = mu_b + sigma_b * normal(0, 1)
   vector[N_countries] log_beta = mu_beta + sigma_beta * z_beta;
@@ -59,15 +61,19 @@ transformed parameters {
   real<lower = 0> a_s = mu_s * kappa_s;
   real<lower = 0> b_s = (1 - mu_s) * kappa_s;
   // Generalized Logistic Parameters
-  vector<lower = 0>[N_countries] nu = exp(mu_nu + sigma_nu * z_nu);
+  // vector<lower = 0>[N_countries] nu = exp(mu_nu + sigma_nu * z_nu);
   // Logistic equation calculations
-  vector[N_obs] linear = alpha[country] + nu[country] .* beta[country] .* days;
+  // vector[N_obs] linear = alpha[country] + nu[country] .* beta[country] .* days;
+  vector[N_obs] linear = alpha[country] + beta[country] .* days;
   vector<lower = 0>[N_obs] f;
   vector<lower = 0>[N_obs] dfdt;
   for (i in 1:N_obs) {
-    f[i] = S[country[i]] / pow(1 + exp(-linear[i]), inv(nu[country[i]]));
-    dfdt[i] = beta[country[i]] * f[i] * (1 - pow(f[i] / S[country[i]], nu[country[i]]));
-
+    // f[i] = S[country[i]] / pow(1 + exp(-linear[i]), inv(nu[country[i]]));
+    // dfdt[i] = beta[country[i]] * f[i] * (1 - pow(f[i] / S[country[i]], nu[country[i]]));
+    
+    f[i] = S[country[i]] / (1 + exp(-linear[i]));
+    dfdt[i] = beta[country[i]] * f[i] * (1 - f[i] / S[country[i]]);
+    
   }
 }
 
@@ -92,9 +98,13 @@ model {
   sigma_phi_inv_sqrt ~ exponential(1);
   
   // Logistic parameters
-  mu_nu ~ normal(0, 1);
-  sigma_nu ~ exponential(1);
-  z_nu ~ std_normal();
+  // mu_nu ~ normal(0, 1);
+  // sigma_nu ~ exponential(1);
+  // z_nu ~ std_normal();
+  
+  // kappa_detected ~ beta(30, 10);
+  // kappa_detected ~ exponential(0.001);
+  // perc_detected ~ beta(a_detected, b_detected);
   
   //  Likelihood
   new_cases ~ neg_binomial_2(dfdt .* pop[country], phi[country]);

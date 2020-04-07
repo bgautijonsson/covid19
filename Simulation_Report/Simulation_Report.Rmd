@@ -31,18 +31,16 @@ d <- read_csv(data_path)
 fig_out_path <- str_c(as.character(Sys.Date()), "/Figures/")
 make_fig_path <- function(name) str_c(fig_out_path, name)
 
-iceland_d <- sheets_read("https://docs.google.com/spreadsheets/d/1xgDhtejTtcyy6EN5dbDp5W3TeJhKFRRgm6Xk0s0YFeA", sheet = "Smit") %>% 
-  rename(date = Dagsetning, total_cases = Smit_Samtals, active_cases = Virk_Smit) %>% 
-  mutate(new_cases = LSH_Smit + IE_Smit,
-         date = as_date(date)) %>% 
-  select(date, total_cases, active_cases)
+iceland_d <- sheets_read("https://docs.google.com/spreadsheets/d/1xgDhtejTtcyy6EN5dbDp5W3TeJhKFRRgm6Xk0s0YFeA", sheet = "Allt") %>% 
+  rename(date = Dagsetning, 
+         total_cases = Smit_Samtals, active_cases = Virk_Smit, new_cases = Ny_Smit,
+         total_hospital = Spitali_Samtals, active_hospital = Inniliggjandi,
+         total_icu = Gjorgaesla_Samtals, active_icu = Gjorgaesla) %>% 
+  mutate(date = as_date(date))
 
 aldur <- sheets_read("https://docs.google.com/spreadsheets/d/1xgDhtejTtcyy6EN5dbDp5W3TeJhKFRRgm6Xk0s0YFeA", sheet = "Aldur") %>% 
   mutate(p_tilfelli = tilfelli / sum(tilfelli))
 
-spitali <- sheets_read("https://docs.google.com/spreadsheets/d/1xgDhtejTtcyy6EN5dbDp5W3TeJhKFRRgm6Xk0s0YFeA", sheet = "Spitali") %>% 
-  set_names(c("date", "spitali", "icu", "utskr_spitali_samtals", "spitali_samtals", "icu_samtals")) %>% 
-  mutate(date = as_date(date))
 
 d <- d %>% 
   filter(date <= max(iceland_d$date) + 21)
@@ -84,9 +82,14 @@ icu_active <- d %>%
 
 # Samantekt
 
-Spáin um heildarfjölda greindra smita hefur hækkað frá því 30. mars, og spár um álag á heilbrigðiskerfið þá sömuleiðis. Til að vera viðbúin möguleikanum á frekari hliðrun aldursdreifingar fylgir önnur forspá þar sem gert er ráð fyrir að aldursdreifingin verði óhagstæðari, en hana má lesa neðar í skýrslunni.
+```{r}
+dags <- format(Sys.Date() - 1, "%d. %B") %>% str_replace("^0", "")
+```
 
-**Helstu niðurstöður spálíkansins með gögnum til og með 3. apríl eru eftirfarandi:**
+
+Til að vera viðbúin möguleikanum á frekari hliðrun aldursdreifingar fylgir önnur forspá þar sem gert er ráð fyrir að aldursdreifingin verði óhagstæðari, en hana má lesa neðar í skýrslunni.
+
+**Helstu niðurstöður spálíkansins með gögnum til og með `r dags` eru eftirfarandi:**
 
 * Gert er ráð fyrir því að á meðan þessi bylgja faraldursins gengur yfir muni rúmlega `r smit_cumul$median` manns á Íslandi vera greind með COVID-19, en talan gæti náð nær `r smit_cumul$upper` manns skv. svartsýnni spá.
 
@@ -176,6 +179,24 @@ d %>%
   ggsave(make_fig_path("cases_active_total.png"), width = 8, height = 0.621 * 8, scale = 1.5)
 ```
 
+### Ný greind smit á hverjum degi
+
+```{r}
+d %>% 
+  filter(name == "cases", age == "total", type == "new", aldursdreifing == "gögn") %>% 
+  ggplot(aes(date, median)) +
+  geom_line(aes(lty = "Líkleg spá")) +
+  geom_line(aes(y = upper, lty = "Svartsýn spá"), col = "grey50") +
+  geom_point(data = iceland_d, aes(x = date, y = new_cases), inherit.aes = F) +
+  scale_y_continuous(breaks = pretty_breaks(8)) +
+  scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
+  labs(linetype = " ") +
+  theme(axis.title = element_blank(),
+        legend.position = "top") +
+  ggsave(make_fig_path("cases_new_total.png"), width = 8, height = 0.621 * 8, scale = 1.5)
+```
+
+
 ## Sjúkrahúslegur
 
 ### Uppsafnaðar sjúkrahúslegur
@@ -186,7 +207,7 @@ d %>%
   ggplot(aes(date, median)) +
   geom_line(aes(lty = "Líkleg spá")) +
   geom_line(aes(y = upper, lty = "Svartsýn spá"), col = "grey50") +
-  geom_point(data = spitali, aes(x = date, y = spitali_samtals)) +
+  geom_point(data = iceland_d, aes(x = date, y = total_hospital)) +
   scale_y_continuous(breaks = pretty_breaks(8)) +
   scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
   labs(linetype = " ") +
@@ -203,7 +224,7 @@ d %>%
   ggplot(aes(date, median)) +
   geom_line(aes(lty = "Líkleg spá")) +
   geom_line(aes(y = upper, lty = "Svartsýn spá"), col = "grey50") +
-  geom_point(data = spitali, aes(x = date, y = spitali)) +
+  geom_point(data = iceland_d, aes(x = date, y = active_hospital)) +
   scale_y_continuous(breaks = pretty_breaks(8)) +
   scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
   labs(linetype = " ") +
@@ -222,7 +243,7 @@ d %>%
   ggplot(aes(date, median)) +
   geom_line(aes(lty = "Líkleg spá")) +
   geom_line(aes(y = upper, lty = "Svartsýn spá"), col = "grey50") +
-  geom_point(data = spitali, aes(x = date, y = icu_samtals)) +
+  geom_point(data = iceland_d, aes(x = date, y = total_icu)) +
   scale_y_continuous(breaks = pretty_breaks(8)) +
   scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
   labs(linetype = " ") +
@@ -239,7 +260,7 @@ d %>%
   ggplot(aes(date, median)) +
   geom_line(aes(lty = "Líkleg spá")) +
   geom_line(aes(y = upper, lty = "Svartsýn spá"), col = "grey50") +
-  geom_point(data = spitali, aes(x = date, y = icu)) +
+  geom_point(data = iceland_d, aes(x = date, y = active_icu)) +
   scale_y_continuous(breaks = pretty_breaks(8)) +
   scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
   labs(linetype = " ") +
@@ -391,7 +412,7 @@ d %>%
   ggplot(aes(date, median, col = aldursdreifing)) +
   geom_line(aes(lty = "Líkleg spá")) +
   geom_line(aes(y = upper, lty = "Svartsýn spá")) +
-  geom_point(data = spitali, aes(x = date, y = spitali_samtals), inherit.aes = F) +
+  geom_point(data = iceland_d, aes(x = date, y = total_hospital), inherit.aes = F) +
   scale_y_continuous(breaks = pretty_breaks(8)) +
   scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
   scale_colour_brewer(type = "qua", palette = "Set1") +
@@ -411,6 +432,7 @@ d %>%
   ggplot(aes(date, median, col = aldursdreifing)) +
   geom_line(aes(lty = "Líkleg spá")) +
   geom_line(aes(y = upper, lty = "Svartsýn spá")) +
+  geom_point(data = iceland_d, aes(x = date, y = active_hospital), inherit.aes = F) +
   scale_y_continuous(breaks = pretty_breaks(8)) +
   scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
   scale_colour_brewer(type = "qua", palette = "Set1") +
@@ -432,6 +454,7 @@ d %>%
   ggplot(aes(date, median, col = aldursdreifing)) +
   geom_line(aes(lty = "Líkleg spá")) +
   geom_line(aes(y = upper, lty = "Svartsýn spá")) +
+  geom_point(data = iceland_d, aes(x = date, y = total_icu), inherit.aes = F) +
   scale_y_continuous(breaks = pretty_breaks(8)) +
   scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
   scale_colour_brewer(type = "qua", palette = "Set1") +
@@ -451,7 +474,7 @@ d %>%
   ggplot(aes(date, median, col = aldursdreifing)) +
   geom_line(aes(lty = "Líkleg spá")) +
   geom_line(aes(y = upper, lty = "Svartsýn spá")) +
-  geom_point(data = spitali, aes(x = date, y = icu), inherit.aes = F) +
+  geom_point(data = iceland_d, aes(x = date, y = active_icu), inherit.aes = F) +
   scale_y_continuous(breaks = pretty_breaks(8)) +
   scale_x_date(date_breaks = "1 weeks", date_labels = "%d/%m") +
   scale_colour_brewer(type = "qua", palette = "Set1") +

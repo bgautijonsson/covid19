@@ -12,7 +12,7 @@ Make_Landlaeknir_Data <- function() {
                date = ymd(Dagsetning),
                total_deaths = cumsum(new_deaths),
                country = "Iceland") %>% 
-        select(country, date, total_cases = Smit_Samtals, new_cases = ny_smit, new_deaths, total_deaths)
+        select(country, date, total_cases = Smit_Samtals, new_cases = ny_smit, new_deaths, total_deaths) 
 }
 
 

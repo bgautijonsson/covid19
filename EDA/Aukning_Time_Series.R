@@ -18,7 +18,7 @@ theme_set(theme_classic(base_size = 12) +
               theme(legend.position = "none"))
 
 d <- read_csv("Input/ECDC_Data.csv") %>% 
-    filter(continent == "Europe", total_cases > 0, country != "San Marino") %>% 
+    filter(continent == "Europe", total_cases > 0, country != "San Marino", date <= ymd("2020-04-01")) %>% 
     group_by(country) %>% 
     filter(any(date == ymd("2020-03-01"))) %>% 
     ungroup
@@ -94,11 +94,11 @@ m <- d %>%
     mutate(days = as.numeric(date - ymd("2020-03-03"))) %>% 
     lmer(log(case_rate) ~ days + (days | country), data = ., control = lmerControl(optimizer = "bobyqa"))
 
-evo <- exp(coef(m)[[1]][, 2, drop = F]) - 1
+evo1 <- exp(coef(m)[[1]][, 2, drop = F]) - 1
 
 p2 <- tibble(start_date = ymd("2020-03-03"), 
        rate = list(tibble(country = rownames(evo),
-                          rate = evo[, 1]))) %>% 
+                          rate = evo1[, 1]))) %>% 
     unnest(rate) %>% 
     mutate(country = fct_reorder(country, rate)) %>% 
     ggplot(aes(country, rate, col = country == "Iceland")) +
@@ -119,14 +119,15 @@ m2 <- d %>%
     mutate(days = as.numeric(date - ymd("2020-03-17"))) %>% 
     lmer(log(case_rate) ~ days + (days | country), data = ., control = lmerControl(optimizer = "bobyqa"))
 
-evo <- exp(coef(m2)[[1]][, 2, drop = F]) - 1
+evo2 <- exp(coef(m2)[[1]][, 2, drop = F]) - 1
 
 
 p3 <- tibble(start_date = ymd("2020-03-03"), 
              rate = list(tibble(country = rownames(evo),
-                                rate = evo[, 1]))) %>% 
+                                rate = evo2[, 1],
+                                rate_old = evo1[, 1]))) %>% 
     unnest(rate) %>% 
-    mutate(country = fct_reorder(country, rate)) %>% 
+    mutate(country = fct_reorder(country, rate_old)) %>% 
     ggplot(aes(country, rate, col = country == "Iceland")) +
     geom_point(show.legend = F) +
     geom_segment(aes(xend = country, yend = 0), show.legend = F) +
