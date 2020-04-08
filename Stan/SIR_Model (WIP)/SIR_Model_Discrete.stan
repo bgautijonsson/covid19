@@ -51,11 +51,11 @@ model {
 
   
   rho ~ inv_gamma(5, 5);
-  alpha ~ std_normal();
-  sigma_beta ~ std_normal();
+  alpha ~ exponential(0.5);
+  sigma_beta ~ exponential(1);
   eta ~ std_normal();
   
-  phi_inv_sqrt ~ std_normal();
+  phi_inv_sqrt ~ exponential(1);
   
   
   log_beta ~ multi_normal_cholesky(rep_vector(0, N_days), L_K);

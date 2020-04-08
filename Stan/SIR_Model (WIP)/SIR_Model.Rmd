@@ -80,11 +80,15 @@ str(stan_data)
 
 ```{r}
 m <- sampling(stan_model("SIR_Model_Discrete.stan"), 
-              data  = stan_data, chains = 4, iter = 2000, warmup = 1000)
+              data  = stan_data, chains = 4, iter = 4000, warmup = 2000)
 ```
 
 ```{r}
 tidyMCMC(m, pars = c("rho", "alpha", "sigma_beta"), conf.int = T, rhat = T, ess = T)
+```
+
+```{r}
+curve(dgamma(x, 30, 2.5), from = 0, to = 30)
 ```
 
 
@@ -153,3 +157,20 @@ tidyMCMC(m, pars = "r0", conf.int = T, rhat = T, ess = T) %>%
     background_grid(major = "none", minor = "none") +
     ggsave("r0_iceland.png", width = 6, height = 0.5 * 6, scale = 2)
 ```
+
+```{r}
+spread_draws(m, r0[day]) %>% 
+    ungroup %>% 
+    mutate(date = min(d$date) + day - 1) %>% 
+    select(date, r0) %>% 
+    group_by(date) %>% 
+    mutate(iter = row_number()) %>% 
+    ungroup %>% 
+    filter(iter >= max(iter) - 1000) %>% 
+    ggplot(aes(date, r0, group = iter)) +
+    geom_line(alpha = 0.05) +
+    geom_smooth(aes(group = "none")) +
+    geom_hline(yintercept = 1, lty = 2, size = 1.5, col = "grey") +
+    coord_cartesian(ylim = c(0, 7))
+```
+
