@@ -1,0 +1,56 @@
+tidyMCMC(Make_Stan_NegBin_Model_Latent_results$m,
+         pars = c("mu_death_rate", "mu_detected", "kappa_detected",  "mu_beta", "mu_alpha"), 
+         ess = T, rhat = T, conf.int = T)
+
+
+results <- tidyMCMC(Make_Stan_NegBin_Model_Latent_results$m,
+         pars = c("country_mu_detected"), 
+         ess = T, rhat = T, conf.int = T) %>% 
+    mutate(country_id = row_number()) %>% 
+    inner_join(d %>% distinct(country, country_id), by = "country_id")
+
+
+results %>% 
+    mutate(country = fct_reorder(country, estimate)) %>% 
+    ggplot(aes(country, estimate, ymin = conf.low, ymax = conf.high)) +
+    geom_linerange() +
+    geom_point() +
+    scale_y_log10() +
+    coord_flip() 
+
+
+results <- tidyMCMC(Make_Stan_NegBin_Model_Latent_results$m,
+                    pars = c("death_rate"), 
+                    ess = T, rhat = T, conf.int = T) %>% 
+    mutate(country_id = row_number()) %>% 
+    inner_join(d %>% distinct(country, country_id), by = "country_id")
+
+
+results %>% 
+    mutate(country = fct_reorder(country, estimate)) %>% 
+    ggplot(aes(country, estimate, ymin = conf.low, ymax = conf.high)) +
+    geom_linerange() +
+    geom_point() +
+    scale_y_log10(labels = percent) +
+    coord_flip() 
+
+
+d %>% 
+    group_by(country) %>% 
+    filter(days == max(days)) %>% 
+    ungroup %>% 
+    select(country, country_id, days, total_cases, total_deaths) %>% 
+    mutate(death_rate = total_deaths / total_cases) %>% 
+    inner_join(results) %>% 
+    select(country, total_cases, total_deaths, days, death_rate, estimate) %>% 
+    print(n = 54)
+
+
+d %>% 
+    group_by(country, country_id) %>% 
+    summarise(pop = unique(pop),
+              total_deaths = max(total_deaths),
+              total_cases = max(total_cases)) %>% 
+    mutate(death_rate = total_deaths / total_cases,
+           est_cases = total_deaths / 0.0004) %>% 
+    print(n = 55)

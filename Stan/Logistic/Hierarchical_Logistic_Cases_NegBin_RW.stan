@@ -46,7 +46,6 @@ transformed parameters {
 
 model {
   
-  // mu_alpha ~ normal(-2, 1);
   sigma_alpha ~ exponential(1);
   alpha ~ normal(intercept, sigma_alpha);
   
@@ -56,7 +55,7 @@ model {
   beta_walk ~ exponential(10);
   
   mu_s ~ beta(1, 99);
-  kappa_s ~ exponential(0.001);
+  kappa_s ~ exponential(0.01);
   S ~ beta(a_s, b_s);
   
   
