@@ -5,7 +5,7 @@ days_from_infection_to_healthy <- 21
 days_in_hospital <- 14
 days_in_icu <- 10
 
-N_iter <- 4000
+N_iter <- 1000
 
 ##### Packages #####
 library(tidyverse)

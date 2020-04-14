@@ -23,7 +23,7 @@ d %>%
                           "Iceland", "South Korea", "Denmark", "Norway", "Sweden"),
            date >= ymd("2020-01-26")) %>% 
     mutate(colour = case_when(
-        country == "Iceland" ~ "Iceand",
+        country == "Iceland" ~ "Iceland",
         country %in% c("Norway", "Denmark", "Sweden") ~ "Nordic",
         country %in% c("South Korea", "China") ~ "Escaped",
         TRUE ~ "Stuck"

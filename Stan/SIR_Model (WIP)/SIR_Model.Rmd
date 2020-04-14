@@ -46,7 +46,7 @@ d <- d %>%
            S = lag(S, 1, default = 0),
            active_cases = lag(active_cases, 1, default = 0)) %>% 
     select(date, dI_dt = new_cases, total_cases, S,  I = active_cases, R = total_removed, N) %>% 
-    filter(date >= ymd("2020-03-07"))
+    filter(date >= ymd("2020-03-03"))
 
 d
 ```
@@ -86,7 +86,8 @@ str(stan_data)
 
 ```{r}
 m <- sampling(stan_model("SIR_Model_Discrete.stan"), 
-              data  = stan_data, chains = 4, iter = 4000, warmup = 2000)
+              data  = stan_data, chains = 4, iter = 4000, warmup = 2000,
+              control = list(adapt_delta = 0.99))
 ```
 
 ```{r}
@@ -97,7 +98,7 @@ tidyMCMC(m, conf.int = T, rhat = T, ess = T) %>%
 
 ```{r}
 tidyMCMC(m, pars = c("rho", "alpha", "phi_inv_sqrt", "log_beta_intercept", 
-                      "ban_speed", "first_ban_effect"), conf.int = T, rhat = T, ess = T)
+                      "ban_speed", "first_ban_effect", "r0"), conf.int = T, rhat = T, ess = T)
 ```
 
 ```{r}
@@ -121,7 +122,7 @@ spread_draws(m, first_ban_effect, ban_speed) %>%
 ```
 
 ```{r}
-curve(dgamma(x, 2, 100), from = 0, to = 0.1, n = 100)
+curve(dgamma(x, 2, 1), from = 0, to = 5, n = 100)
 ```
 
 ```{r}
@@ -158,7 +159,7 @@ tidyMCMC(m, pars = "r0", conf.int = T, rhat = T, ess = T) %>%
 
 
 ```{r}
-tidyMCMC(m, pars = "r0", conf.int = T, rhat = T, ess = T) %>% 
+tidyMCMC(m, pars = "r", conf.int = T, rhat = T, ess = T) %>% 
     mutate(date = min(d$date) + row_number() - 1) %>% 
     ggplot(aes(date, estimate, ymin = conf.low, ymax = conf.high)) +
     geom_ribbon(alpha = 0.3) +
@@ -178,15 +179,15 @@ tidyMCMC(m, pars = "r0", conf.int = T, rhat = T, ess = T) %>%
 ```
 
 ```{r}
-spread_draws(m, r0[day]) %>% 
+spread_draws(m, r[day]) %>% 
     ungroup %>% 
     mutate(date = min(d$date) + day - 1) %>% 
-    select(date, r0) %>% 
+    select(date, r) %>% 
     group_by(date) %>% 
     mutate(iter = row_number()) %>% 
     ungroup %>% 
     filter(iter >= max(iter) - 1000) %>% 
-    ggplot(aes(date, r0, group = iter)) +
+    ggplot(aes(date, r, group = iter)) +
     geom_line(alpha = 0.05) +
     geom_smooth(aes(group = "none")) +
     geom_hline(yintercept = 1, lty = 2, size = 1.5, col = "grey") +

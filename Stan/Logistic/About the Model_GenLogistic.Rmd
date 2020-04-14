@@ -1,0 +1,559 @@
+---
+title: "Hierarchical Logistic Growth Curves"
+author: "Brynjólfur Gauti Jónsson"
+date: "04/02/2020"
+output: 
+    html_document:
+        theme: flatly
+        toc: true
+        toc_float: true
+        code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = F, 
+                      fig.asp = 0.621, out.width = "100%", fig.width = 8)
+```
+
+```{r}
+library(tidyverse); library(knitr); library(kableExtra); library(broom); library(cowplot); 
+library(rstan); library(tidybayes); library(scales); library(DT); library(plotly)
+
+
+
+theme_set(theme_classic(base_size = 12) + 
+            background_grid(color.major = "grey90", 
+                            color.minor = "grey95", 
+                            minor = "xy", major = "xy") +
+            theme(legend.position = "none"))
+m <- read_rds("Hierarchical_Model_NegBin.rds")
+d <- read_csv("Interactive Model Checking/stan_data.csv")
+countries <- d %>% distinct(country, country_id)
+which_iceland <- d %>% filter(country == "Iceland") %>% .$country_id %>% unique
+n_countries <- max(d$country_id)
+```
+
+
+```{r, include = F, eval = F}
+# library(shinystan)
+# stan_obj <- launch_shinystan(m)
+# deploy_shinystan(stan_obj, appName = "LogisticGrowthCurves", account = "bgautijonsson")
+```
+
+
+```{r}
+results <- tidyMCMC(m, conf.int = T, rhat = T, ess = T, 
+                    estimate.method = "median", conf.method = "quantile") %>% 
+  mutate(par = str_match(term, "[a-zA-Z_2]+")) %>% 
+  group_by(par) %>% 
+  mutate(num = row_number() %>% as.numeric)
+```
+
+# Updates
+
+## 2020-04-02
+
+* Model the $\beta_i$ as lognormal since they are strictly positive.
+* There is enough data to loosen the informative priors, and we have done so.
+* Added posterior predictions for effective reproduction number, $R_e$, along with some text about it.
+* Reparametrised to use a noncentered parametrisation to aid Stan in performing NUTS.
+
+## 2020-03-31
+
+* Reparametrised the prior for S in terms of $\mu$ the mean and $\kappa$ the sample size.
+
+## 2020-03-28
+
+* Weak priors on $a_S$ and $b_S$ to help the NUTS sampler.
+* Rewrote priors for scale parameters.
+
+## 2020-03-27
+
+* We now place informative priors on $\mu_\alpha$, $\mu_\beta$ and $\lambda_\phi$ to ensure that the model can be identified.
+
+## 2020-03-26
+
+* Implemented a negative binomial likelihood with country-specific overdispersion.
+* Changed filtering criteria for inclusion in model data in order to include more countries.
+* Did some visual inspection of data in order to make sure we don't lose countries to inner_join strategies. Saw that we were missing USA among others due to different names in different datasets, but is now fixed.
+
+# Methods
+
+## Parametrisation
+
+Let $E_i$ and $I_{i, t}$ be the population and number of infected in country $i$ at time $t$. Then the percent of infected can be calculated as
+
+$$
+P_{i, t} = \frac{I_{i, t}}{E_i}.
+$$
+
+In the usual Logistic Regression GLM we could model the percent of infected, as a function of time *(in days)*, with
+
+$$
+\log\left(\frac{P_{i, t}}{1 - P_{i, t}}\right) = \alpha_i + \beta_i \cdot t,
+$$
+
+where $\alpha_i$ is a measure of how many have been infected in country $i$ at time $t = 0$ and $\beta_i$ is a measure of growth. In the case of COVID-19 infections we don't know the maximum percent of populations that will be infected, so we have another unknown parameter, the saturation percent at which a country will reach its maximum number of infected, $S_i$. Thus our model looks like
+
+$$
+\log\left(\frac{P_{i, t}}{S_i - P_{i, t}}\right) = \alpha_i + \beta_i \cdot t.
+$$
+
+These parameters are hard to estimate when data from only one country are used. However, if we were to pool information about them between countries, as in a hierarchical Bayesian model, estimation might be possible. Let
+
+$$
+z_{i, t} = \alpha_i + \beta_i \cdot t,
+$$
+
+where $\alpha_i$ is a measure of how many have been infected in country $i$ at time $t = 0$ and $\beta_i$ is a measure of growth. Then
+
+$$
+P_{i, t} = \frac{S_i}{1 + \exp(-z_{i, t})},
+$$
+
+and conditional on some sampling distribution, $f$, we could write
+
+$$
+I_{i, t} \sim \mathrm{f_\theta}(P_{i, t},  E_i),
+$$
+
+where $\theta$ contains all relevant parameters to be estimated.
+
+## Bayesian Inference
+
+Bayesian inference is a great tool when small amounts of data are to be shared from various sources. In this case the sources are different countries, and the data are cumulative numbers of cases. If we utilize a Negative Binomial likelihood for the observed cumulative cases, then
+
+$$
+I_{i, t} \sim \mathrm{NegBin}(P_{i, t} \cdot E_i, \phi_i),
+$$
+
+where $\phi_i$ is a country-level effect specifying the amount of overdispersion in that country.
+
+### Modeling daily counts
+
+However, there is a lot of implicit correlation in the values of $I_{i, t}$ for different values of $t$. Thus, a better parametrisation would be to model the daily number of cases. 
+
+Let
+
+$$
+z_{i, t} = \alpha_i + \beta_i \cdot t,
+$$
+
+so that the percent of infected, $P_i$, is
+
+$$
+P_{i, t} = \frac{S_i}{1 + \exp(-z_{i,t})}.
+$$
+
+If we furthermore write
+
+$$
+z^*_{i, t - 1} = \alpha_i + \beta_i \cdot (t - 1),
+$$
+
+and
+
+$$
+P^*_{i, t - 1} = \frac{S_i}{1 + \exp(-z^*_{i, t-1})},
+$$
+
+the change in rates between days is
+
+$$
+C_{i, t} = P_{i, t} - P^*_{i, t - 1}.
+$$
+
+Since $C_{i, t}$ is simply the first derivative of $P_{i, t}$ with respect to $t$, we can skip the differencing step and directly model the derivative
+
+$$
+C_{i, t} = \frac{d}{dt}P_{i, t} = \beta_i S_i \frac{\exp{(-z_{i, t})}}{(\exp(-z_{i, t}) + 1))^2}
+$$
+
+Then, conditional on a Negative Binomial likelihood and population size $E_i$, the daily number of observed cases, $D_{i, t}$, can be written as
+
+$$
+D_{i, t} \sim \mathrm{NegBin}(C_{i, t} \cdot E_i, \phi_i)
+$$
+
+### Parameters
+
+The parameters, $\alpha$ and $\beta$, are treated as in a generalized linear model, except that we model $\beta_i$ on the $\log$ scale to impose the constraints $\beta_i > 0$. We put hierarchical priors on $\alpha_i$ and $\beta_i$ so that for each country, $i$,
+
+$$
+\begin{aligned}
+\beta_i &\sim \mathrm{LogNormal}(\mu_\beta, \sigma^2_\beta) \\
+\alpha_i &\sim \mathrm{Normal}(\mu_\alpha, \sigma^2_\alpha)
+\end{aligned}
+$$
+
+The $\mu$ parameters are given vaguely informative prior distribution based on our previous Poisson model
+
+$$
+\begin{aligned}
+\mu_\alpha &\sim \mathrm{Normal}(-2.5 , 3^2) \\
+\mu_\beta &\sim \mathrm{Normal}(-3, 1^2) 
+\end{aligned}
+$$
+
+We chose to put priors on the standard deviations, so that $\sigma_\beta$ and $\sigma_\alpha$ are given $\mathrm{Exponential}$ prior distributions
+
+$$
+\begin{aligned}
+\sigma_\alpha &\sim \mathrm{Exponential}(1) \\
+\sigma_\beta &\sim \mathrm{Exponential}(2).
+\end{aligned}
+$$
+
+The $S_i$ parameters take on values in $(0, 1)$, so we thought it proper to model them with Beta distributions. By putting hierarchical priors on them we could also share information between countries on the estimated saturation points. Thus the saturation parameter for country $i$ is sampled as
+
+$$
+S_i \sim \mathrm{Beta}(a_S, b_S),
+$$
+
+where we parametrise in terms of the mean, $\mu_S$, and prior sample size, $\kappa_S$
+
+$$
+\begin{aligned}
+\mu_S &\sim \mathrm{Beta}(1, 99) \\
+\kappa_S &\sim \mathrm{Exponential}(0.001).
+\end{aligned}
+$$
+
+We can then back-transform into $a_S$ and $b_S$ as
+
+$$
+\begin{aligned}
+a_S &= \mu_S \cdot \kappa_S \\
+b_S &= (1 - \mu_S) \cdot \kappa_S
+\end{aligned}
+$$
+
+We parametrise the negative binomial likelihood in the form of mean and overdispersion. If we write 
+
+$$
+D_{i, t} \sim \mathrm{NegBin}(\mu_{i, t}, \phi_i),
+$$
+
+where
+
+$$
+\mu_{i, t} = C_{i, t} \cdot E_i,
+$$
+
+we can write
+
+$$
+E[D_{i, t}] = \mu_{i, t} \qquad Var[D_{i, t}] = \mu_{i, t} + \phi_i \cdot \mu_{i, t}^2.
+$$
+
+Based on [Dan Simpson's excellent post](https://statmodeling.stat.columbia.edu/2018/04/03/justify-my-love/), which is also linked in [Stan-Dev's post on prior choices](https://github.com/stan-dev/stan/wiki/Prior-Choice-Recommendations) we put a hierarchical exponential prior on the $\phi_i$ parameters as follows:
+
+$$
+\begin{aligned}
+\sqrt{\phi_i} &\sim \mathrm{Exponential}(\sigma_\phi) \\
+\sigma_\phi &\sim \mathrm{Exponential}(1)
+\end{aligned}
+$$
+
+***
+
+**Putting it all together we get**
+
+$$
+\begin{aligned}
+D_{i, t} &\sim \mathrm{NegBin}(C_{i, t} \cdot E_i, \phi_i) \\
+C_{i, t} = \frac{d}{dt}P_{i, t} &= \beta_i S_i \frac{\exp{(-z_{i, t})}}{(\exp(-z_{i, t}) + 1))^2} \\
+z_{i, t} &= \alpha_i + \beta_i \cdot t \\
+\beta_i &\sim \mathrm{LogNormal}(\mu_\beta, \sigma^2_\beta) \\
+\alpha_i &\sim \mathrm{Normal}(\mu_\alpha, \sigma^2_\alpha) \\
+\mu_\beta &\sim \mathrm{Normal}(-3, 1^2) \\
+\mu_\alpha &\sim \mathrm{Normal}(-2.5, 3^2) \\
+p(\sigma_\alpha) &\sim \mathrm{Exponential}(1)  \\
+p(\sigma_\beta) &\sim \mathrm{Exponential}(1)  \\
+\sqrt\phi_i &\sim \mathrm{Exponential}(\sigma_\phi^2)\\
+\sigma_\phi &\sim \mathrm{Exponential}(1) \\
+S_i &\sim \mathrm{Beta}(a_S, b_S) \\
+a_S &= \mu_S \cdot \kappa_S \\
+b_S &= (1 - \mu_S) \cdot \kappa_S \\
+\mu_S &\sim \mathrm{Beta}(1, 99) \\
+\kappa_S &\sim \mathrm{Exponential}(0.001)
+\end{aligned}
+$$
+
+***
+
+## Data
+
+We use Icelandic data from the Directorate of Health and supplement with data on other countries from the [European CDC, obtained daily](https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-distribution-covid-19-cases-worldwide).
+
+Data used for modeling were filtered according to
+
+* Only use data for countries with a population above 100.000.
+* Only keep data for which cases per 1000 inhabitants $\geq$ 0.1.
+* Only keep data for countries for which the first observation after this filtering is $\leq$ 0.2
+* Only keep data for countries with more than 11 days of follow-up after the above steps.
+* Countries that are not included for other reasons
+  - China
+  - South Korea
+
+```{r}
+d %>% 
+  group_by(country) %>% 
+  summarise(First = min(date),
+            Days_In_Data = n(),
+            Start_Rate = min(case_rate),
+            End_Rate = max(case_rate)) %>% 
+  set_names(c("Country", "Entry", "Days in data", "Start", "End")) %>% 
+  kable(caption = "Table 1. Summary information about countries used in modeling",
+        align = c("l", rep("c", ncol(.) - 1)),
+        digits = 3) %>% 
+  kable_styling(bootstrap_options = c("striped", "hover")) %>% 
+  row_spec(which_iceland, bold = T) %>% 
+  add_header_above(c("", "", "", "Rate per 1000" = 2)) %>%
+  scroll_box(height = "500px")
+```
+
+
+```{r, fig.asp = 0.8}
+p <- d %>% 
+  ggplot(aes(days, case_rate, group = country, col = country == "Iceland")) +
+  geom_line() +
+  scale_y_log10() +
+  scale_colour_manual(values = c("grey", "blue")) +
+  labs(x = "Days since rate reached 0.02 per 1000",
+       y = "Cases per 1000",
+       title = "Observed trends for countries used in data",
+       subtitle = "Shown as days since a country entered the modeling data")
+ggplotly(p)
+```
+
+## Software
+
+The model is fit using [Stan's](https://mc-stan.org/) R interface, and the model code can be found in the appendix.
+
+All code is available at https://github.com/bgautijonsson/covid19. We're sorry for the mess and we're working on it. We are also going to translate the README files into English.
+
+# Results
+
+## Convergence
+
+### Sampler configuration
+
+* Four chains were run for 2000 iterations after a warm-up period of 2000 iterations, a total of 4000 iterations. The slowest chain converged in 388 seconds. 
+* Adapt_delta was set to 0.99
+
+### Warnings
+
+* There were 7 divergent transitions after warmup.
+* There were 2 transitions after warmup that exceeded maximum treedepth.
+
+We have examined the model carefully to find what causes these divergent transitions, and our current belief is country-specific correlations between $\beta_i$ and $S_i$ when the model predicts a high probability of the country being close to its maximum. We have now removed South Korea from the data as the model has a hard time fitting the daily number of new cases in a country after it has reached its asymptote. We are working on steps to overcome this flaw. 
+
+
+## Country Level Effects
+
+```{r}
+results %>% 
+  ungroup %>% 
+  filter(par %in% c("beta", "alpha", "S", "phi_inv", "nu")) %>%
+  mutate(par = str_replace(par, "phi_inv", "phi")) %>% 
+  inner_join(countries, by = c("num" = "country_id")) %>% 
+  mutate(par = str_to_title(par)) %>% 
+  select(par, country, num, everything(), -num, -term, -std.error) %>% 
+  set_names(c("Parameter", "Country", "Median", "Lower", "Upper", "Rhat", "ESS")) %>% 
+  kable(digits = 4, align = c("l", "l", rep("c", ncol(.) - 2)),
+        caption = "Table 2. Summary of posterior samples of country level effects") %>% 
+  kable_styling(bootstrap_options = c("striped", "hover")) %>% 
+  add_header_above(c("", "", "", "95% PI" = 2, "Convergence" = 2)) %>% 
+  column_spec(1, bold = T) %>% 
+  row_spec(which_iceland + c(0, 1, 2) * n_countries, bold = T) %>% 
+  collapse_rows(1, valign = "top") %>% 
+  scroll_box(height = "600px")
+```
+
+```{r, fig.width = 9, fig.asp = 1.8}
+p <- results %>% 
+  ungroup %>% 
+  filter(par %in% c("beta", "alpha", "S", "phi_inv", "nu")) %>% 
+  mutate(par = str_replace(par, "phi_inv", "phi")) %>% 
+  inner_join(countries, by = c("num" = "country_id")) %>% 
+  mutate(par = str_to_title(par)) %>% 
+  mutate(plot_var = str_c(par, "_", country)) %>% 
+  mutate(country = fct_reorder(country, estimate)) %>% 
+  ggplot(aes(country, estimate, ymin = conf.low, ymax = conf.high, col = country == "Iceland")) +
+  geom_linerange() +
+  geom_point() +
+  coord_flip() +
+  facet_wrap("par", scales = "free_x") +
+  scale_colour_manual(values = c("grey", "blue")) +
+  labs(title = "Posterior medians and 95% PIs") +
+  theme(axis.title = element_blank())
+
+ggplotly(p)
+```
+
+## Hyperparameters
+
+```{r}
+results %>% 
+  ungroup %>% 
+  filter(par %in% c("mu_beta", "sigma_beta", 
+                    "mu_alpha", "sigma_alpha", 
+                    "mu_s", "kappa_s",
+                    "sigma_phi_inv_sqrt", "mu_nu", "sigma_nu")) %>% 
+  mutate(par = str_replace(par, "sigma_phi_inv_sqrt", "sigma_phi_sqrt")) %>% 
+  select(par, everything(), -num, -term, -std.error) %>% 
+  set_names(c("Parameter",  "Median", "Lower", "Upper", "Rhat", "ESS")) %>% 
+  kable(digits = 4, align = c("l", "l", rep("c", ncol(.) - 2)),
+        caption = "Table 3. Summary of posterior samples of hyperparameters") %>% 
+  kable_styling(bootstrap_options = c("striped", "hover")) %>% 
+  add_header_above(c("", "", "95% PI" = 2, "Convergence" = 2)) %>% 
+  column_spec(1, bold = T)
+```
+
+## Posterior Predictions
+
+We obtain predictions by conditioning on the first observed number of cumulative cases in a country (as seen in the modeling data), perform simulations of new daily cases and sum those up to get predicted cumulative cases.
+
+Posterior predictions for $R_e$ are obtained by looking at part of the SIR differential equation on daily new cases
+
+$$
+\frac{d}{dt} I = \beta \cdot I \cdot \frac{S}{N} - \text{Some rate of recovery}
+$$
+
+We do not model the rate of recovery, but based on literature review we assume that diagnosed cases are healthy after 15 days. As we are not interested in the negative part of $\frac{d}{dt}I$ we write $\frac{d}{dt} I_{i, t} = D_{i, t}$, the number of new cases. We can then simplify to estimate $\beta$ in country $i$ at time $t$ as
+
+$$
+\beta_{i, t} = D_{i, t} \cdot \frac{N}{I_{i, t} \cdot S_{i, t}}
+$$
+
+where $I_{i, t}$ is the cumulative number of diagnosed cases at time $t$ minus the cumulative number of cases at time $t - 15$. $S_{i, t}$ is simply the population minus the cumulative number of cases at time $t$. Then we utilize
+
+$$
+R_e = \beta \gamma^{-1}
+$$
+
+where $\gamma^{-1}$ is the length of the serial interval. After a literature review we put a $\mathrm{Gamma}(30, 2.5)$ distibution on the length of serial interval.
+
+```{r}
+knitr::include_app("https://bgautijonsson.shinyapps.io/Hierarchical_Report_NegBin/", height = "600px")
+```
+
+# Some things to keep in mind
+
+## Comparisons between countries
+
+This model does not predict the total amount of COVID-19 cases, it predicts the total amount of DIAGNOSED COVID-19 cases. It then depends on each country's specific diagnostic criteria what that number means. Iceland does many tests per capita so there it is predicting a broader spectrum of cases, not all serious, whereas in a country like Italy or Spain the model's predictions have another meaning as the diagnostic criteria are different from those of Iceland.
+
+## Changes in policies
+
+As of yet, the model only implements one slope for each country, which is assumed to be fixed throughout the epidemic. Each country's policies should of course affect this growth rate and the date at which a country implements a policy should affect when the slope changes. Finding solutions to this is on our next actions list.
+
+## Next actions
+
+* Time-varying growth rates.
+* Include country-level information in the model
+
+# Estimating the burden on the Icelandic health care system
+
+We use the current age distribution of cases in Iceland to split our posterior predictive distritubion of daily cases into age categories. We then use numbers from Ferguson et al. at Imperial College, [(Table 1)](https://www.imperial.ac.uk/media/imperial-college/medicine/sph/ide/gida-fellowships/Imperial-College-COVID19-NPI-modelling-16-03-2020.pdf), to sample numbers of patients in hospital and from those numbers, how many will end up in ICU. Along with the numbers above, we use the following parameters in our simulations
+
+* `lag_infected_to_hospital <- 7`
+* `lag_hospital_to_icu <- 3`
+* `days_from_infection_to_healthy <- 21`
+* `days_in_hospital <- 14`
+* `days_in_icu <- 10`
+
+The results from our predictions are then shared at [covid.hi.is](https://covid.hi.is)
+
+# Appendix
+
+## Stan Code
+
+```{r, eval = FALSE}
+data {
+  int<lower = 0> N_obs;
+  // country[N_obs] takes on value i for country number i etc.
+  int country[N_obs];
+  // days is how many days since case rate per 1000 exceeded a limit we have chosen
+  vector[N_obs] days;
+  // We model the daily number of newly diagnosed cases instead of cumulative numbers
+  int new_cases[N_obs];
+  
+  int<lower = 0> N_countries;
+  vector[N_countries] pop;
+}
+
+parameters {
+  // Since we use a non-centered parametrisation we first create normal(0, 1) variables for alpha and beta
+  
+  // Beta parameters
+  vector[N_countries] z_beta;
+  real mu_beta;
+  real<lower = 0> sigma_beta;
+  
+  // Alpha parameters
+  vector[N_countries] z_alpha;
+  real mu_alpha;
+  real<lower = 0> sigma_alpha;
+  
+  //  Asymptote/saturation parameters
+  // We model the beta distribution in terms of mean and sample size instead of a and b.
+  vector<lower = 0, upper = 1>[N_countries] S;
+  real<lower = 0, upper = 1> mu_s;
+  real<lower = 0> kappa_s;
+  
+  //  Overdispersion parameters. One for each country which is dependent on hyperparameter
+  vector<lower = 0>[N_countries] z_phi_inv_sqrt;
+  real<lower = 0> sigma_phi_inv_sqrt;
+  
+}
+
+transformed parameters {
+   // Non-Centerd parametrisations
+   // If B ~ normal(mu_b, sigma_b) then B = mu_b + sigma_b * normal(0, 1)
+  vector<lower = 0>[N_countries] beta = exp(mu_beta + sigma_beta * z_beta);
+  vector[N_countries] alpha = mu_alpha + sigma_alpha * z_alpha;
+   // If X ~ exponential(lambda) then X ~ lambda * exponential(1)
+  vector<lower = 0>[N_countries] phi_inv_sqrt = sigma_phi_inv_sqrt * z_phi_inv_sqrt;
+   // Overdispersion parameters
+  vector<lower = 0>[N_countries] phi_inv = square(phi_inv_sqrt);
+  vector<lower = 0>[N_countries] phi = inv(phi_inv);
+   // Asymptote hyperparameters
+  real<lower = 0> a_s = mu_s * kappa_s;
+  real<lower = 0> b_s = (1 - mu_s) * kappa_s;
+   // Logistic equation calculations
+  vector[N_obs] linear = alpha[country] + beta[country] .* days;
+  vector<lower = 0>[N_obs] difference;
+  for (i in 1:N_obs) {
+    difference[i] = beta[country[i]] * S[country[i]] * exp(-linear[i]) / square(exp(-linear[i]) + 1);
+  }
+}
+
+model {
+   // Alpha parameters
+  mu_alpha ~ normal(-2.5, 3);
+  sigma_alpha ~ exponential(1);
+  z_alpha ~ std_normal();
+  
+   // Beta parameters
+  mu_beta ~ normal(-3, 1);
+  sigma_beta ~ exponential(1);
+  z_beta ~ std_normal();
+  
+   // Asymptote parameters
+  mu_s ~ beta(1, 99);
+  kappa_s ~ exponential(0.001);
+  S ~ beta(a_s, b_s);
+  
+   // Overdispersion parameters
+  z_phi_inv_sqrt ~ exponential(1);
+  sigma_phi_inv_sqrt ~ exponential(1);
+  
+  //  Likelihood
+  new_cases ~ neg_binomial_2(difference .* pop[country], phi[country]);
+}
+
+
+```
+

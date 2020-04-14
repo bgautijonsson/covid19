@@ -57,13 +57,13 @@ transformed parameters {
 
 model {
   rho ~ inv_gamma(5, 5);
-  alpha ~ std_normal();
+  alpha ~ exponential(0.5);
   eta ~ std_normal();
   
-  log_beta_intercept ~ normal(-1.25, 1);
+  log_beta_intercept ~ normal(-1.5, 1);
   
-  first_ban_effect ~ normal(0, 1);
-  ban_speed ~ gamma(2, 100);
+  first_ban_effect ~ normal(0, 2);
+  ban_speed ~ gamma(4, 100);
   
   infectious_period ~ gamma(30, 2.5);
   phi_inv_sqrt ~ std_normal();
@@ -75,7 +75,8 @@ model {
 }
 
 generated quantities {
-  vector<lower = 0>[N_days] r0 = beta * infectious_period;
+  vector<lower = 0>[N_days] r = beta * infectious_period;
+  real<lower = 0> r0 = exp(log_beta_intercept) * infectious_period;
   vector[N_days] pred_beta = log_beta_intercept + f;
   int pred_dI[N_days] = neg_binomial_2_log_rng(pred_beta + log_I + log_S - log_N, phi);
 }
