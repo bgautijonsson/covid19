@@ -44,7 +44,7 @@ transformed parameters {
   
   // diagonal elements
   for (n in 1:N_days) {
-    K[n, n] = K[n, n] + 1e-9;
+    K[n, n] = K[n, n] + 1e-4;
   }
   
   L_K = cholesky_decompose(K);
@@ -57,13 +57,13 @@ transformed parameters {
 
 model {
   rho ~ inv_gamma(5, 5);
-  alpha ~ exponential(0.5);
+  alpha ~ std_normal();
   eta ~ std_normal();
   
   log_beta_intercept ~ normal(-1.5, 1);
   
   first_ban_effect ~ normal(0, 2);
-  ban_speed ~ gamma(4, 100);
+  ban_speed ~ gamma(2, 50);
   
   infectious_period ~ gamma(30, 2.5);
   phi_inv_sqrt ~ std_normal();

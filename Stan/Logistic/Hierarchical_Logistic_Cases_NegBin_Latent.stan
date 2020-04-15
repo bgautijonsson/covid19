@@ -31,11 +31,7 @@ parameters {
   vector<lower = 0, upper = 1>[N_countries] S;
   real<lower = 0, upper = 1> mu_s;
   real<lower = 0> kappa_s;
-  
-  //  Overdispersion parameters. One for each country which is dependent on hyperparameter
-  vector<lower = 0>[N_countries] z_phi_inv_sqrt;
-  real<lower = 0> sigma_phi_inv_sqrt;
-  
+
   
   real<lower = 0, upper = 1> mu_death_rate;
   real<lower = 0> kappa_death_rate;
@@ -44,8 +40,8 @@ parameters {
   real<lower = 0, upper = 1> mu_detected;
   real<lower = 0> kappa_detected;
   vector<lower = 0, upper = 1>[N_countries] country_mu_detected;
-  // vector<lower = 0>[N_countries] country_kappa_detected;
-  
+  vector<lower = 0>[N_countries] country_kappa_detected;
+  vector<lower = 0, upper = 1>[N_obs] perc_detected;
   
 }
 
@@ -57,11 +53,6 @@ transformed parameters {
   vector[N_countries] log_beta = mu_beta + sigma_beta * z_beta;
   vector<lower = 0>[N_countries] beta = exp(log_beta);
   vector[N_countries] alpha = mu_alpha + sigma_alpha * z_alpha;
-  // If X ~ exponential(lambda) then X ~ lambda * exponential(1)
-  vector<lower = 0>[N_countries] phi_inv_sqrt = sigma_phi_inv_sqrt * z_phi_inv_sqrt;
-  // Overdispersion parameters
-  vector<lower = 0>[N_countries] phi_inv = square(phi_inv_sqrt);
-  vector<lower = 0>[N_countries] phi = inv(phi_inv);
   // Asymptote hyperparameters
   real<lower = 0> a_s = mu_s * kappa_s;
   real<lower = 0> b_s = (1 - mu_s) * kappa_s;
@@ -71,6 +62,8 @@ transformed parameters {
   // Death Rate hyperparameters
   real<lower = 0> country_a_detected = mu_detected * kappa_detected;
   real<lower = 0> country_b_detected = (1 - mu_detected) * kappa_detected;
+  vector<lower = 0>[N_obs] a_detected = country_mu_detected[country] .* country_kappa_detected[country];
+  vector<lower = 0>[N_obs] b_detected = (1 - country_mu_detected[country]) .* country_kappa_detected[country];
   // Logistic equation calculations
   vector[N_obs] linear = alpha[country] + beta[country] .* days;
   vector<lower = 0>[N_obs] f;
@@ -107,14 +100,12 @@ model {
   // Diagnostic rate parameters
   mu_detected ~ beta(1, 1);
   kappa_detected ~ exponential(10);
+  country_kappa_detected ~ exponential(0.1);
   country_mu_detected ~ beta(country_a_detected, country_b_detected);
-  
-  // Overdispersion parameters
-  z_phi_inv_sqrt ~ exponential(1);
-  sigma_phi_inv_sqrt ~ exponential(1);
+  perc_detected ~ beta(a_detected, b_detected);
   
   //  Likelihood
   total_deaths ~ poisson(death_rate .* f[total_days] .* pop);
-  new_cases ~ neg_binomial_2(dfdt .* country_mu_detected[country] .* pop[country], phi[country]);
+  new_cases ~ poisson(dfdt .* perc_detected .* pop[country]);
 }
 

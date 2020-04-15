@@ -51,13 +51,13 @@ transformed parameters {
 
 
 model {
-  rho ~ inv_gamma(5, 5);
-  alpha ~ exponential(0.5);
+  rho ~ inv_gamma(3, 3);
+  alpha ~ exponential(1);
   eta ~ std_normal();
   
   log_beta_intercept ~ normal(-1.5, 1);
   
-  infectious_period ~ gamma(30, 2.5);
+  infectious_period ~ gamma(20, 2.5);
   phi_inv_sqrt ~ std_normal();
   
   
@@ -68,6 +68,7 @@ model {
 
 generated quantities {
   vector<lower = 0>[N_days] r = beta * infectious_period;
+  real<lower = 0> r0 = exp(log_beta_intercept) * infectious_period;
 }
 
 

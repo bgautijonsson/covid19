@@ -1,0 +1,242 @@
+---
+output: 
+    html_document:
+        theme: flatly
+runtime: shiny_prerendered
+---
+
+```{r setup, context = "setup", include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = F, message = F, 
+                      fig.asp = 0.621, out.width = "100%", fig.width = 8)
+
+library(tidyverse); library(knitr); library(kableExtra); library(broom); library(cowplot); 
+library(rstan); library(tidybayes); library(scales)
+
+theme_set(theme_classic(base_size = 12) + 
+            background_grid(color.major = "grey90", 
+                            color.minor = "grey95", 
+                            minor = "xy", major = "xy") +
+            theme(legend.position = "none"))
+
+```
+
+```{r, context = "data"}
+d <- read_csv("stan_data_GenLogistic.csv")
+m <- read_rds("Hierarchical_Model_GenLogistic.rds")
+```
+
+
+```{r, include = FALSE, eval = FALSE}
+results <- spread_draws(
+    m, 
+    alpha[country], 
+    beta[country], 
+    S[country],
+    phi[country]
+) %>% 
+    ungroup %>% 
+    filter(country == id) %>% 
+    mutate(iter = row_number()) %>% 
+    select(
+        iter, 
+        alpha, 
+        beta, 
+        S
+    )
+
+
+iceland_d %>% 
+    select(date, case_rate) %>% 
+    mutate(case_rate = case_rate / 1000) %>% 
+    expand_grid(results) %>% 
+    mutate(days = as.numeric(date - min(date)),
+           z = alpha + days * beta,
+           fp = log(case_rate / (S - case_rate))) %>% 
+    filter(iter >= max(iter) - 1000) %>% 
+    ggplot(aes(z, fp)) +
+    geom_line(aes(group = iter), alpha = 0.1) +
+    geom_abline(intercept = 0, slope = 1, size = 2, lty = 2) +
+    coord_cartesian(xlim = 6 * c(-1, 1), ylim = 6 * c(-1, 1)) +
+    xlab(latex2exp::TeX("$\\alpha + \\beta \\cdot t$")) +
+    ylab(latex2exp::TeX("$\\log\\left( \\frac{P_{t}}{S - P_{t}}\\right)$")) +
+    labs(title = "Fisher-Pry transform applied to observed Icelandic Data",
+         subtitle = "Comparing predictions to observations on the logit scale")
+```
+
+
+```{r, context = "render", fig.asp = 1}
+fluidRow(
+  column(2,
+         actionButton(inputId = "gobutton", label = "Predict")
+  ),
+  column(3,
+         selectInput(inputId = "country",
+                     label = "Country",
+                     choices = unique(d$country), selected = "Iceland")
+  ),
+  column(3,
+         numericInput(inputId = "conf",
+                      label = "Quantiles", min = 0.01, max = 0.99, value = 0.95, step = 0.01)
+  ),
+  column(3,
+         selectInput(inputId = "scale",
+                     label = "Scale", choices = c("Additive", "Log"), selected = "Additive")
+  )
+)
+
+plotOutput("pred_plot", height = "800px")
+```
+
+
+```{r, context = "server"}
+pred_plot <-  eventReactive(input$gobutton, {
+  
+  daily_cases <- function(alpha, beta, maximum, t) {
+    z <- alpha + beta * t
+    beta * maximum * exp(-z) / (exp(-z) + 1)^2
+  }
+  
+  req(input$country, input$conf)
+  
+  plot_dat <- d %>% filter(country == input$country)
+  id <- unique(plot_dat$country_id)
+  pop <- unique(plot_dat$pop)
+  alph <- 1 - input$conf
+  start_cases <- min(plot_dat$total_cases)
+  
+  days_in_data <- max(plot_dat$days) + 1
+  
+  results <- spread_draws(m, 
+                          alpha[country],
+                          beta[country], 
+                          S[country],
+                          phi[country],
+                          nu[country]
+  ) %>% 
+    ungroup %>% 
+    filter(country == id) %>% 
+    mutate(iter = row_number()) %>% 
+    select(iter, alpha, beta, S, phi, nu) %>% 
+    expand_grid(days = seq(-20, days_in_data + 50)) %>% 
+    mutate(z = alpha + beta * nu * days,
+           f = S / (1 + exp(-z))^(1/nu),
+           dfdt = beta * f * (1 - (f / S)^nu),
+           daily_cases = rnbinom(n(), mu = dfdt * pop, size = phi)) %>% 
+    group_by(iter) %>% 
+    mutate(cases = as.numeric(cumsum(daily_cases * (days > 0))) + start_cases,
+           cases_r0 = as.numeric(cumsum(daily_cases))) %>% 
+    ungroup %>% 
+    select(iter, days, new_cases = daily_cases, cumulative_cases = cases, cases_r0)
+  
+  
+  plot_lab1 <- str_c("New cases in  ", 
+                     input$country, 
+                     ": Prediction and observations")
+  
+  p1 <- results %>% 
+    mutate(date = days + min(plot_dat$date)) %>% 
+    filter(date <= max(plot_dat$date) + 21,
+           days > 0) %>% 
+    group_by(date) %>% 
+    summarise(median = median(new_cases),
+              lower = quantile(new_cases, alph / 2),
+              upper = quantile(new_cases, 1 - alph / 2)) %>% 
+    ggplot(aes(date, median, ymin = lower, ymax = upper)) +
+    geom_line(aes(y = lower), lty = 2) +
+    geom_line(aes(y = upper), lty = 2) +
+    geom_line() +
+    geom_point(data = plot_dat,
+               aes(date, new_cases), inherit.aes = F) +
+    scale_y_continuous(breaks = pretty_breaks(8)) +
+    labs(y = "Count",
+         title = plot_lab1,
+         subtitle = "Predicted median and PI") +
+    theme(axis.title.x = element_blank())
+  
+  plot_lab2 <- str_c("Cumulative cases in  ", 
+                     input$country, 
+                     ": Prediction and observations")
+  
+  p2 <- results %>% 
+    mutate(date = days + min(plot_dat$date)) %>% 
+    filter(date <= max(plot_dat$date) + 21,
+           days > 0) %>% 
+    group_by(date) %>% 
+    summarise(median = median(cumulative_cases),
+              lower = quantile(cumulative_cases, alph / 2),
+              upper = quantile(cumulative_cases, 1 - alph / 2)) %>% 
+    ggplot(aes(date, median, ymin = lower, ymax = upper)) +
+    geom_line(aes(y = lower), lty = 2) +
+    geom_line(aes(y = upper), lty = 2) +
+    geom_line() +
+    geom_point(data = plot_dat,
+               aes(date, total_cases), inherit.aes = F) +
+    scale_y_continuous(breaks = pretty_breaks(8)) +
+    labs(y = "Count",
+         title = plot_lab2,
+         subtitle = "Predicted median and PI") +
+    theme(axis.title.x = element_blank())
+  
+  p3 <- results %>% 
+    mutate(date = days + min(plot_dat$date)) %>% 
+    filter(date <= max(plot_dat$date) + 21,
+           days > 0) %>% 
+    filter(iter %in% sample(iter, size = 200)) %>% 
+    ggplot(aes(date, cumulative_cases, group = iter)) +
+    geom_line(alpha = 0.1) +
+    geom_point(data = plot_dat, col = "grey", size = 2,
+               aes(date, total_cases), inherit.aes = F) +
+    scale_y_continuous(breaks = pretty_breaks(8)) +
+    labs(y = "Count",
+         subtitle = "Possible growth curves drawn from posterior distribution") +
+    theme(axis.title.x = element_blank())
+  
+  p4 <- results %>% 
+    group_by(iter) %>% 
+    mutate(recovered_cases = lag(cases_r0, 15, default = 0),
+           dIdt = new_cases,
+           I = cases_r0 - recovered_cases,
+           N = pop,
+           S = N - cases_r0,
+           beta = dIdt * N / (S * I)) %>% 
+    ungroup %>% 
+    mutate(serial_interval = rgamma(n(), 30, 2.5),
+           r0 = beta * serial_interval) %>% 
+    group_by(date = days + min(plot_dat$date) - 1, days) %>% 
+    summarise(median = median(r0, na.rm = T),
+              upper = quantile(r0, 1 - alph/2, na.rm = T),
+              lower = quantile(r0, alph/2, na.rm = T)) %>% 
+    ungroup %>% 
+    filter(date <= max(plot_dat$date) + 21,
+           days > 0) %>% 
+    ggplot(aes(date, median)) +
+    geom_hline(yintercept = 1, lty = 1, size = 1, col = "grey70") +
+    geom_line() +
+    geom_line(aes(y = lower), lty = 2) +
+    geom_line(aes(y = upper), lty = 2) +
+    ggtitle(latex2exp::TeX("$R_t$ based on predicted growth and a Gamma(30, 2.5) serial interval"),
+            subtitle = "Diagnosed cases are assumed to recover in 15 days") +
+    ylab(latex2exp::TeX("$R_t$")) +
+    theme(axis.title.x = element_blank()) +
+    background_grid(major = "none", minor = "none")
+  
+  
+  if (input$scale == "Log") {
+    p1 <- p1 + scale_y_log10(breaks = c(1, 3, 10, 30, 100, 300, 1000, 3000,
+                                        10000, 30000, 100000, 300000, 1000000, 3000000))
+    p2 <- p2 + scale_y_log10(breaks = c(1, 3, 10, 30, 100, 300, 1000, 3000,
+                                        10000, 30000, 100000, 300000, 1000000, 3000000))
+    
+    p3 <- p3 + scale_y_log10(breaks = c(1, 3, 10, 30, 100, 300, 1000, 3000,
+                                        10000, 30000, 100000, 300000, 1000000, 3000000))
+  }
+  
+  
+  plot_grid(p1, p2, p3, p4, nrow = 4)
+  
+})
+
+output$pred_plot <- renderPlot({
+  pred_plot()
+})
+```

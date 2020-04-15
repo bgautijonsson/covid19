@@ -92,7 +92,7 @@ model {
   sigma_phi_inv_sqrt ~ exponential(1);
   
   // Generalized Logistic parameters
-  mu_nu ~ normal(0, 1);
+  mu_nu ~ normal(0, 2);
   sigma_nu ~ exponential(1);
   z_nu ~ std_normal();
   

@@ -1,7 +1,7 @@
 ---
-title: "Hierarchical Logistic Growth Curves"
+title: "Hierarchical Generalized Logistic Growth Curves"
 author: "Brynjólfur Gauti Jónsson"
-date: "04/02/2020"
+date: "`r Sys.Date()`"
 output: 
     html_document:
         theme: flatly
@@ -26,8 +26,8 @@ theme_set(theme_classic(base_size = 12) +
                             color.minor = "grey95", 
                             minor = "xy", major = "xy") +
             theme(legend.position = "none"))
-m <- read_rds("Hierarchical_Model_NegBin.rds")
-d <- read_csv("Interactive Model Checking/stan_data.csv")
+m <- read_rds("Hierarchical_Model_GenLogistic.rds")
+d <- read_csv("Interactive Model Checking/stan_data_GenLogistic.csv")
 countries <- d %>% distinct(country, country_id)
 which_iceland <- d %>% filter(country == "Iceland") %>% .$country_id %>% unique
 n_countries <- max(d$country_id)
@@ -352,7 +352,7 @@ We have examined the model carefully to find what causes these divergent transit
 
 ## Country Level Effects
 
-```{r}
+```{r, fig.asp = 2.5, fig.width = 10}
 results %>% 
   ungroup %>% 
   filter(par %in% c("beta", "alpha", "S", "phi_inv", "nu")) %>%
@@ -384,7 +384,7 @@ p <- results %>%
   geom_linerange() +
   geom_point() +
   coord_flip() +
-  facet_wrap("par", scales = "free_x") +
+  facet_wrap("par", scales = "free_x", ncol = 2) +
   scale_colour_manual(values = c("grey", "blue")) +
   labs(title = "Posterior medians and 95% PIs") +
   theme(axis.title = element_blank())

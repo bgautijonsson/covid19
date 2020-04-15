@@ -46,7 +46,7 @@ d <- d %>%
            S = lag(S, 1, default = 0),
            active_cases = lag(active_cases, 1, default = 0)) %>% 
     select(date, dI_dt = new_cases, total_cases, S,  I = active_cases, R = total_removed, N) %>% 
-    filter(date >= ymd("2020-03-03"))
+    filter(date >= ymd("2020-03-05"))
 
 d
 ```
@@ -94,8 +94,16 @@ tidyMCMC(m, conf.int = T, rhat = T, ess = T) %>%
 
 
 ```{r}
-tidyMCMC(m, pars = c("rho", "alpha", "phi_inv_sqrt", "log_beta_intercept"), conf.int = T, rhat = T, ess = T)
+tidyMCMC(m, pars = c("rho", "alpha", "phi_inv_sqrt", "log_beta_intercept", "r0"), conf.int = T, rhat = T, ess = T)
 ```
+
+```{r}
+spread_draws(m, r0) %>% 
+    ggplot(aes(r0)) +
+    geom_histogram() + 
+    scale_x_log10()
+```
+
 
 ```{r}
 curve(dgamma(x, 2, 1), from = 0, to = 5, n = 100)
@@ -146,10 +154,11 @@ tidyMCMC(m, pars = "r", conf.int = T, rhat = T, ess = T) %>%
     # Seinna samkomubann
     geom_vline(xintercept = ymd("2020-03-24"), lty = 2) +
     scale_y_continuous(breaks = pretty_breaks(8)) +
-    scale_x_date(breaks = ymd(c("2020-03-05", "2020-03-16", "2020-03-24", "2020-04-01")),
+    scale_x_date(breaks = ymd(c("2020-03-03", "2020-03-16", "2020-03-24", "2020-04-01", "2020-04-08")),
                  date_labels = "%d. %B") +
     labs(y = "R") +
     theme(axis.title.x = element_blank()) +
+    coord_cartesian(ylim = c(0, 10)) +
     background_grid(major = "none", minor = "none") +
     ggsave("r0_iceland.png", width = 6, height = 0.5 * 6, scale = 2)
 ```
@@ -171,3 +180,21 @@ spread_draws(m, r[day]) %>%
 ```
 
 
+```{r}
+tidyMCMC(m, pars = "f", conf.int = T, rhat = T, ess = T) %>% 
+    mutate(date = min(d$date) + row_number() - 1) %>% 
+    ggplot(aes(date, estimate, ymin = conf.low, ymax = conf.high)) +
+    geom_ribbon(alpha = 0.3) +
+    geom_line() +
+    geom_hline(yintercept = 1, lty = 2, col = "grey60") +
+    # Fyrra samkomubann
+    geom_vline(xintercept = ymd("2020-03-16"), lty = 2) +
+    # Seinna samkomubann
+    geom_vline(xintercept = ymd("2020-03-24"), lty = 2) +
+    scale_y_continuous(breaks = pretty_breaks(8)) +
+    scale_x_date(breaks = ymd(c("2020-03-03", "2020-03-16", "2020-03-24", "2020-04-01", "2020-04-08")),
+                 date_labels = "%d. %B") +
+    labs(y = "R") + 
+    theme(axis.title.x = element_blank()) +
+    background_grid(major = "none", minor = "none")
+```

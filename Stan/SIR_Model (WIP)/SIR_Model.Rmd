@@ -65,7 +65,7 @@ I <- d$I
 dI_dt <- d$dI_dt
 N <- 364220
 
-first_ban <- 1 * (d$date > ymd("2020-03-17")) 
+first_ban <- 1 * (d$date > ymd("2020-03-16")) 
 days_since_first_ban <- cumsum(first_ban)^2
 
 days <- seq_len(N_days) - 1
@@ -86,7 +86,8 @@ str(stan_data)
 
 ```{r}
 m <- sampling(stan_model("SIR_Model_Discrete.stan"), 
-              data  = stan_data, chains = 4, iter = 2000, warmup = 1000)
+              data  = stan_data, chains = 4, iter = 4000, warmup = 2000,
+              control = list(adapt_delta = 0.99))
 ```
 
 ```{r}
@@ -121,11 +122,42 @@ spread_draws(m, first_ban_effect, ban_speed) %>%
 ```
 
 ```{r}
+spread_draws(m, ban_speed) %>% 
+    ungroup %>% 
+    mutate(iter = row_number()) %>% 
+    expand_grid(days_since_ban = seq(0, 40, length.out = 200)) %>% 
+    mutate(first_effect = (1 - exp(-days_since_ban^2 * ban_speed))) %>% 
+    filter(iter >= max(iter) - 1000) %>% 
+    ggplot(aes(days_since_ban, first_effect, group = iter)) +
+    geom_line(alpha = 0.01) +
+    scale_y_continuous(labels = percent) +
+    labs(x = "Days since first ban",
+         y = "% of effect achieved",
+         title = "How quickly does governmental action affect R?")
+```
+
+
+```{r}
+spread_draws(m, first_ban_effect, ban_speed) %>% 
+    ungroup %>% 
+    mutate(iter = row_number()) %>% 
+    expand_grid(days_since_ban = seq(0, 40, length.out = 200)) %>% 
+    mutate(first_effect = exp(first_ban_effect * (1 - exp(-days_since_ban^2 * ban_speed))),) %>% 
+    filter(iter >= max(iter) - 500) %>% 
+    ggplot(aes(days_since_ban, first_effect - 1, group = iter)) +
+    geom_line(alpha = 0.2) +
+    scale_y_continuous(labels = percent) +
+    labs(x = "Days since first ban",
+         y = "% reduction in R",
+         title = "Effect of governmental action on R")
+```
+
+```{r}
 curve(dgamma(x, 2, 1), from = 0, to = 5, n = 100)
 ```
 
 ```{r}
-curve(dgamma(x, 30, 2.5), from = 0, to = 30)
+curve(dgamma(x, 20, 2.5), from = 0, to = 30)
 ```
 
 
@@ -173,8 +205,7 @@ tidyMCMC(m, pars = "r", conf.int = T, rhat = T, ess = T) %>%
                  date_labels = "%d. %B") +
     labs(y = "R") +
     theme(axis.title.x = element_blank()) +
-    background_grid(major = "none", minor = "none") +
-    ggsave("r0_iceland.png", width = 6, height = 0.5 * 6, scale = 2)
+    background_grid(major = "none", minor = "none")
 ```
 
 ```{r}
