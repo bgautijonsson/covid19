@@ -51,6 +51,10 @@ results <- tidyMCMC(m, conf.int = T, rhat = T, ess = T,
 
 # Updates
 
+## 2020-04-14
+
+* Added a link to dropbox containing [GIFs with historical predictions](https://www.dropbox.com/sh/svzyj9y0jhgpp4v/AABN02K8Y62QOiQRpMcQIhAka?dl=0).
+
 ## 2020-04-02
 
 * Model the $\beta_i$ as lognormal since they are strictly positive.
@@ -288,10 +292,10 @@ We use Icelandic data from the Directorate of Health and supplement with data on
 
 Data used for modeling were filtered according to
 
-* Only use data for countries with a population above 100.000.
+* Only use data for countries with a population above 200.000.
 * Only keep data for which cases per 1000 inhabitants $\geq$ 0.1.
 * Only keep data for countries for which the first observation after this filtering is $\leq$ 0.2
-* Only keep data for countries with more than 11 days of follow-up after the above steps.
+* Only keep data for countries with more than 6 days of follow-up after the above steps.
 * Countries that are not included for other reasons
   - China
   - South Korea
@@ -379,8 +383,7 @@ p <- results %>%
   inner_join(countries, by = c("num" = "country_id")) %>% 
   mutate(par = str_to_title(par)) %>% 
   mutate(plot_var = str_c(par, "_", country)) %>% 
-  mutate(country = fct_reorder(country, estimate)) %>% 
-  ggplot(aes(country, estimate, ymin = conf.low, ymax = conf.high, col = country == "Iceland")) +
+  ggplot(aes(rev(country), estimate, ymin = conf.low, ymax = conf.high, col = country == "Iceland")) +
   geom_linerange() +
   geom_point() +
   coord_flip() +
@@ -436,8 +439,12 @@ $$
 where $\gamma^{-1}$ is the length of the serial interval. After a literature review we put a $\mathrm{Gamma}(30, 2.5)$ distibution on the length of serial interval.
 
 ```{r}
-knitr::include_app("https://bgautijonsson.shinyapps.io/Hierarchical_Report_NegBin/", height = "600px")
+knitr::include_app("https://bgautijonsson.shinyapps.io/Hierarchical_Report_NegBin/", height = "900px")
 ```
+
+## Validation
+
+GIFs with historical predictions for some countries made by the model [can be seen here](https://www.dropbox.com/sh/svzyj9y0jhgpp4v/AABN02K8Y62QOiQRpMcQIhAka?dl=0).
 
 # Some things to keep in mind
 

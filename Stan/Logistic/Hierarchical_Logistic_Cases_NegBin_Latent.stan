@@ -71,16 +71,11 @@ transformed parameters {
   // Death Rate hyperparameters
   real<lower = 0> country_a_detected = mu_detected * kappa_detected;
   real<lower = 0> country_b_detected = (1 - mu_detected) * kappa_detected;
-  // Generalized Logistic Parameters
-  // vector<lower = 0>[N_countries] nu = exp(mu_nu + sigma_nu * z_nu);
   // Logistic equation calculations
-  // vector[N_obs] linear = alpha[country] + nu[country] .* beta[country] .* days;
   vector[N_obs] linear = alpha[country] + beta[country] .* days;
   vector<lower = 0>[N_obs] f;
   vector<lower = 0>[N_obs] dfdt;
   for (i in 1:N_obs) {
-    // f[i] = S[country[i]] / pow(1 + exp(-linear[i]), inv(nu[country[i]]));
-    // dfdt[i] = beta[country[i]] * f[i] * (1 - pow(f[i] / S[country[i]], nu[country[i]]));
     
     f[i] = S[country[i]] / (1 + exp(-linear[i]));
     dfdt[i] = beta[country[i]] * f[i] * (1 - f[i] / S[country[i]]);
@@ -105,13 +100,13 @@ model {
   S ~ beta(a_s, b_s);
   
   // Death rate parameters
-  mu_death_rate ~ beta(1, 99);
+  mu_death_rate ~ beta(6, 1000);
   kappa_death_rate ~ exponential(0.001);
   death_rate ~ beta(a_death_rate, b_death_rate);
   
   // Diagnostic rate parameters
-  mu_detected ~ beta(4, 4);
-  kappa_detected ~ exponential(0.1);
+  mu_detected ~ beta(1, 1);
+  kappa_detected ~ exponential(10);
   country_mu_detected ~ beta(country_a_detected, country_b_detected);
   
   // Overdispersion parameters

@@ -49,7 +49,7 @@ stan_data <- list(N_obs = N_obs,
 
 
 m <- sampling(stan_model("Stan/Logistic/Hierarchical_Logistic_Cases_NegBin_Latent.stan"), 
-              data  = stan_data, chains = 4, iter = 2000, warmup = 1000)
+              data  = stan_data, chains = 1, iter = 2000, warmup = 1000)
 
 
 

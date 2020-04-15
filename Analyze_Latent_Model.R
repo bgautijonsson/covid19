@@ -1,9 +1,11 @@
-tidyMCMC(Make_Stan_NegBin_Model_Latent_results$m,
+library(scales)
+
+tidyMCMC(m,
          pars = c("mu_death_rate", "mu_detected", "kappa_detected",  "mu_beta", "mu_alpha"), 
          ess = T, rhat = T, conf.int = T)
 
 
-results <- tidyMCMC(Make_Stan_NegBin_Model_Latent_results$m,
+results <- tidyMCMC(m,
          pars = c("country_mu_detected"), 
          ess = T, rhat = T, conf.int = T) %>% 
     mutate(country_id = row_number()) %>% 
@@ -19,7 +21,7 @@ results %>%
     coord_flip() 
 
 
-results <- tidyMCMC(Make_Stan_NegBin_Model_Latent_results$m,
+results <- tidyMCMC(m,
                     pars = c("death_rate"), 
                     ess = T, rhat = T, conf.int = T) %>% 
     mutate(country_id = row_number()) %>% 

@@ -179,44 +179,63 @@ summary {
 <div class="form-group shiny-input-container">
 <label class="control-label" for="country">Country</label>
 <div>
-<select id="country"><option value="Armenia">Armenia</option>
+<select id="country"><option value="Albania">Albania</option>
+<option value="Armenia">Armenia</option>
+<option value="Australia">Australia</option>
 <option value="Austria">Austria</option>
 <option value="Bahrain">Bahrain</option>
+<option value="Barbados">Barbados</option>
 <option value="Belgium">Belgium</option>
+<option value="Bosnia And Herzegovina">Bosnia And Herzegovina</option>
 <option value="Canada">Canada</option>
 <option value="Chile">Chile</option>
 <option value="Croatia">Croatia</option>
 <option value="Cyprus">Cyprus</option>
 <option value="Denmark">Denmark</option>
+<option value="Djibouti">Djibouti</option>
+<option value="Dominican Republic">Dominican Republic</option>
+<option value="Ecuador">Ecuador</option>
 <option value="Estonia">Estonia</option>
 <option value="Finland">Finland</option>
 <option value="France">France</option>
+<option value="French Polynesia">French Polynesia</option>
 <option value="Germany">Germany</option>
+<option value="Greece">Greece</option>
 <option value="Iran">Iran</option>
 <option value="Ireland">Ireland</option>
 <option value="Israel">Israel</option>
 <option value="Italy">Italy</option>
+<option value="Kuwait">Kuwait</option>
 <option value="Latvia">Latvia</option>
 <option value="Lithuania">Lithuania</option>
 <option value="Luxembourg">Luxembourg</option>
+<option value="Malaysia">Malaysia</option>
 <option value="Malta">Malta</option>
+<option value="Mauritius">Mauritius</option>
 <option value="Moldova">Moldova</option>
 <option value="Montenegro">Montenegro</option>
 <option value="Netherlands">Netherlands</option>
+<option value="New Zealand">New Zealand</option>
 <option value="North Macedonia">North Macedonia</option>
 <option value="Norway">Norway</option>
 <option value="Panama">Panama</option>
+<option value="Poland">Poland</option>
 <option value="Portugal">Portugal</option>
+<option value="Puerto Rico">Puerto Rico</option>
 <option value="Qatar">Qatar</option>
+<option value="Romania">Romania</option>
 <option value="Serbia">Serbia</option>
 <option value="Singapore">Singapore</option>
+<option value="Slovakia">Slovakia</option>
 <option value="Slovenia">Slovenia</option>
 <option value="Spain">Spain</option>
 <option value="Sweden">Sweden</option>
 <option value="Switzerland">Switzerland</option>
 <option value="Turkey">Turkey</option>
+<option value="United Arab Emirates">United Arab Emirates</option>
 <option value="United Kingdom">United Kingdom</option>
 <option value="United States">United States</option>
+<option value="Uruguay">Uruguay</option>
 <option value="Iceland" selected>Iceland</option></select>
 <script type="application/json" data-for="country" data-nonempty="">{}</script>
 </div>
@@ -238,7 +257,7 @@ summary {
 </div>
 </div>
 </div>
-</div><div id="pred_plot" class="shiny-plot-output" style="width: 100% ; height: 600px"></div></p>
+</div><div id="pred_plot" class="shiny-plot-output" style="width: 100% ; height: 800px"></div></p>
 
 <script type="application/shiny-prerendered" data-context="server-start">
 knitr::opts_chunk$set(echo = FALSE, warning = F, message = F, 
@@ -300,11 +319,35 @@ pred_plot <-  eventReactive(input$gobutton, {
     select(iter, days, new_cases = daily_cases, cumulative_cases = cases, cases_r0)
   
   
-  plot_lab1 <- str_c("Cumulative cases in  ", 
+  plot_lab1 <- str_c("New cases in  ", 
                      input$country, 
                      ": Prediction and observations")
   
   p1 <- results %>% 
+    mutate(date = days + min(plot_dat$date)) %>% 
+    filter(date <= max(plot_dat$date) + 21,
+           days > 0) %>% 
+    group_by(date) %>% 
+    summarise(median = median(new_cases),
+              lower = quantile(new_cases, alph / 2),
+              upper = quantile(new_cases, 1 - alph / 2)) %>% 
+    ggplot(aes(date, median, ymin = lower, ymax = upper)) +
+    geom_line(aes(y = lower), lty = 2) +
+    geom_line(aes(y = upper), lty = 2) +
+    geom_line() +
+    geom_point(data = plot_dat,
+               aes(date, new_cases), inherit.aes = F) +
+    scale_y_continuous(breaks = pretty_breaks(8)) +
+    labs(y = "Count",
+         title = plot_lab1,
+         subtitle = "Predicted median and PI") +
+    theme(axis.title.x = element_blank())
+  
+  plot_lab2 <- str_c("Cumulative cases in  ", 
+                     input$country, 
+                     ": Prediction and observations")
+  
+  p2 <- results %>% 
     mutate(date = days + min(plot_dat$date)) %>% 
     filter(date <= max(plot_dat$date) + 21,
            days > 0) %>% 
@@ -320,11 +363,11 @@ pred_plot <-  eventReactive(input$gobutton, {
                aes(date, total_cases), inherit.aes = F) +
     scale_y_continuous(breaks = pretty_breaks(8)) +
     labs(y = "Count",
-         title = plot_lab1,
+         title = plot_lab2,
          subtitle = "Predicted median and PI") +
     theme(axis.title.x = element_blank())
   
-  p2 <- results %>% 
+  p3 <- results %>% 
     mutate(date = days + min(plot_dat$date)) %>% 
     filter(date <= max(plot_dat$date) + 21,
            days > 0) %>% 
@@ -338,7 +381,7 @@ pred_plot <-  eventReactive(input$gobutton, {
          subtitle = "Possible growth curves drawn from posterior distribution") +
     theme(axis.title.x = element_blank())
   
-  p3 <- results %>% 
+  p4 <- results %>% 
     group_by(iter) %>% 
     mutate(recovered_cases = lag(cases_r0, 15, default = 0),
            dIdt = new_cases,
@@ -373,10 +416,13 @@ pred_plot <-  eventReactive(input$gobutton, {
                                         10000, 30000, 100000, 300000, 1000000, 3000000))
     p2 <- p2 + scale_y_log10(breaks = c(1, 3, 10, 30, 100, 300, 1000, 3000,
                                         10000, 30000, 100000, 300000, 1000000, 3000000))
+    
+    p3 <- p3 + scale_y_log10(breaks = c(1, 3, 10, 30, 100, 300, 1000, 3000,
+                                        10000, 30000, 100000, 300000, 1000000, 3000000))
   }
   
   
-  plot_grid(p1, p2, p3, nrow = 3)
+  plot_grid(p1, p2, p3, p4, nrow = 4)
   
 })
 

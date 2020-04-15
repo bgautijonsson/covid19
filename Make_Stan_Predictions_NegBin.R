@@ -5,7 +5,7 @@ days_from_infection_to_healthy <- 21
 days_in_hospital <- 14
 days_in_icu <- 10
 
-N_iter <- 1000
+N_iter <- 2000
 
 ##### Packages #####
 library(tidyverse)
@@ -64,7 +64,7 @@ results <- spread_draws(
         S,
         phi
     ) %>% 
-    expand_grid(days = seq(1, 80)) %>% 
+    expand_grid(days = seq(-4, 80)) %>% 
     mutate(
         # Calculate from model
         z = alpha + beta * days,
@@ -234,9 +234,37 @@ out_path <- str_c("Output/Iceland_Predictions/Iceland_Predictions_", Sys.Date(),
 write_csv(out, out_path)
 
 
+posterior_results <- spread_draws(
+    m, 
+    alpha[country], 
+    beta[country], 
+    S[country],
+    phi[country]
+) %>% 
+    ungroup %>% 
+    filter(country == id) %>% 
+    mutate(iter = row_number()) %>% 
+    select(
+        iter, 
+        alpha, 
+        beta, 
+        S,
+        phi
+    ) %>% 
+    expand_grid(days = seq(as.numeric(ymd("2020-03-01") - start_date), 80)) %>% 
+    mutate(
+        # Calculate from model
+        z = alpha + beta * days,
+        f = S / (1 + exp(-z)),
+        dfdt = beta * f * (1 - (f / S)),
+        new_cases = rnbinom(n(), mu = dfdt * pop, size = phi),
+    ) %>% 
+    select(iter, days, new_cases)
+
 out_path_posterior <- str_c("Output/Iceland_Posterior/Iceland_Posterior_", Sys.Date(), ".csv")
-results %>% 
-    mutate(date = days - 1 + min(iceland_d$date)) %>% 
+
+posterior_results %>% 
+    mutate(date = days + min(iceland_d$date)) %>% 
     select(date, iter, new_cases) %>% 
     write_csv(out_path_posterior)
 

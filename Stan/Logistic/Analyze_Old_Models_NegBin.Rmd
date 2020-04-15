@@ -35,102 +35,128 @@ saved_dates <- list.files("Past_Models_NegBin") %>%
   .[, 2] %>% unique
 ```
 
+
 ```{r}
-d %>% distinct(country)
+make_gif <- function(chosen_country) {
+  for (i in seq_along(saved_dates)) {
+    d <- str_c("Past_Models_NegBin/Stan_Data_", saved_dates[i], ".csv") %>% 
+      read_csv
+    
+    if (chosen_country %in% d$country) break
+    else next
+    
+  }
+  
+  dates_drop <- seq_len(i - 1)
+  
+  if (length(dates_drop) == 0) dates_drop <- 999
+  
+  
+  results <- list()
+  for (i in seq_along(saved_dates)[-dates_drop]) {
+    m <- str_c("Past_Models_NegBin/Model_", saved_dates[i], ".rds") %>% 
+      read_rds
+    d <- str_c("Past_Models_NegBin/Stan_Data_", saved_dates[i], ".csv") %>% 
+      read_csv
+    
+    plot_dat <- d %>% filter(country == chosen_country)
+    id <- unique(plot_dat$country_id)
+    pop <- unique(plot_dat$pop)
+    start_cases <- min(plot_dat$total_cases)
+    days_in_data <- max(plot_dat$days)
+    number_na <- 60 - days_in_data
+    
+    results[[i]] <- spread_draws(
+      m, 
+      alpha[country], 
+      beta[country], 
+      S[country],
+      phi[country]
+    ) %>% 
+      ungroup %>% 
+      filter(country == id) %>% 
+      mutate(iter = row_number()) %>% 
+      select(
+        iter, 
+        alpha, 
+        beta, 
+        S,
+        phi
+      ) %>% 
+      expand_grid(days = seq(1, 60)) %>% 
+      mutate(
+        # Calculate from model
+        z = alpha + beta * days,
+        f = S / (1 + exp(-z)),
+        dfdt = beta * f * (1 - (f / S)),
+        new_cases = rnbinom(n(), mu = dfdt * pop, size = phi),
+      ) %>% 
+      group_by(iter) %>% 
+      mutate(
+        # Total cases is cumulative sum of daily cases plus starting cases since we
+        # don't start at the beginning of the epidemic
+        total_cases = cumsum(new_cases) + start_cases,
+        # Make assumption that infected recover in 21 days
+        recovered_cases = lag(total_cases, n = 21, default = 0),
+        # Then active cases is difference between total and recovered
+        active_cases = total_cases - recovered_cases
+      ) %>%  
+      ungroup %>% 
+      select(iter, days, new_cases, total_cases, recovered_cases, active_cases) %>% 
+      mutate(date = days + min(plot_dat$date)) %>% 
+      select(date, new_cases, total_cases) %>% 
+      pivot_longer(-date) %>% 
+      group_by(date, name) %>% 
+      summarise(median = median(value),
+                lower = quantile(value, 0.025),
+                upper = quantile(value, 0.975)) %>% 
+      mutate(pred_date = saved_dates[i]) %>% 
+      left_join(
+        plot_dat %>% 
+          select(date, new_cases, total_cases) %>% 
+          pivot_longer(-date, values_to = "observed"),
+        by = c("name", "date")
+      )
+  }
+  
+  
+  results <- results %>% 
+    reduce(bind_rows) %>% 
+    group_by(date, name) %>% 
+    mutate(observed = max(observed, na.rm = T),
+           observed = ifelse(observed < 0, NA, observed)) %>% 
+    ungroup
+  
+  p <- results %>% 
+    mutate(pred_date = lubridate::ymd(pred_date)) %>% 
+    filter(pred_date <= max(plot_dat$date)) %>% 
+    ggplot(aes(date, median, group = pred_date)) +
+    geom_line() +
+    geom_line(aes(y = upper), lty = 2) +
+    geom_line(aes(y = lower), lty = 2) +
+    geom_point(aes(x = date, y = observed, col = date <= pred_date), size = 3) +
+    scale_colour_manual(values = c("grey", "black")) +
+    scale_y_log10(breaks = c(1, 3, 10, 30, 100, 300, 1000, 3000, 10000,
+                             30000, 100000, 300000, 1000000)) +
+    facet_wrap("name", scales = "free") +
+    labs(title = "Logistic model fit to current data using past data",
+         subtitle = "Data up to date: {frame_time}") +
+    theme(axis.title = element_blank()) +
+    transition_time(pred_date) +
+    ease_aes()
+  
+  anim_save(str_c("GIF/", chosen_country, "_past_fits_NegBin.gif"), animate(p, width = 1000, height = 0.5 * 1000))
+}
 ```
 
 
 ```{r}
+countries <- c("Italy", "Spain", "Germany", "France", "United States", "United Kingdom",
+               "Switzerland", "Austria", "Belgium", "Denmark", "Sweden", "Finland", "Norway",
+               "Iceland", "Estonia", "Iran", "Ireland", "Israel", "Luxembourg",
+               "Malta", "Netherlands", "Portugal", "Slovenia")
 
-chosen_country = "France"
-
-results <- list()
-for (i in seq_along(saved_dates)[-(1:4)]) {
-  m <- str_c("Past_Models_NegBin/Model_", saved_dates[i], ".rds") %>% 
-    read_rds
-  d <- str_c("Past_Models_NegBin/Stan_Data_", saved_dates[i], ".csv") %>% 
-    read_csv
-  
-  # if ("France" %in% d$country) break
-  # else next
-
-  
-  plot_dat <- d %>% filter(country == chosen_country)
-  id <- unique(plot_dat$country_id)
-  pop <- unique(plot_dat$pop)
-  start_cases <- min(plot_dat$total_cases)
-  days_in_data <- max(plot_dat$days)
-  number_na <- 40 - days_in_data
-  
-  results[[i]] <- spread_draws(
-    m, 
-    alpha[country], 
-    beta[country], 
-    S[country],
-    phi[country]
-  ) %>% 
-    ungroup %>% 
-    filter(country == id) %>% 
-    mutate(iter = row_number()) %>% 
-    select(
-      iter, 
-      alpha, 
-      beta, 
-      S,
-      phi
-    ) %>% 
-    expand_grid(days = seq(1, 40)) %>% 
-    mutate(
-      # Calculate from model
-      z = alpha + beta * days,
-      f = S / (1 + exp(-z)),
-      dfdt = beta * f * (1 - (f / S)),
-      new_cases = rnbinom(n(), mu = dfdt * pop, size = phi),
-    ) %>% 
-    group_by(iter) %>% 
-    mutate(
-      # Total cases is cumulative sum of daily cases plus starting cases since we
-      # don't start at the beginning of the epidemic
-      total_cases = cumsum(new_cases) + start_cases,
-      # Make assumption that infected recover in 21 days
-      recovered_cases = lag(total_cases, n = 21, default = 0),
-      # Then active cases is difference between total and recovered
-      active_cases = total_cases - recovered_cases
-    ) %>%  
-    ungroup %>% 
-    select(iter, days, new_cases, total_cases, recovered_cases, active_cases) %>% 
-    mutate(date = days + min(plot_dat$date)) %>% 
-    group_by(date) %>% 
-    summarise(median = median(total_cases),
-              lower = quantile(total_cases, 0.025),
-              upper = quantile(total_cases, 0.975)) %>% 
-    mutate(pred_date = saved_dates[i],
-           observed = c(plot_dat$total_cases[-1], rep(NA, number_na)))
-}
-
-results <- results %>% 
-  reduce(bind_rows) %>% 
-  group_by(date) %>% 
-  mutate(observed = max(observed, na.rm = T),
-         observed = ifelse(observed < 0, NA, observed)) %>% 
-  ungroup
-
-p <- results %>% 
-  mutate(pred_date = lubridate::ymd(pred_date)) %>% 
-  ggplot(aes(date, median, group = pred_date)) +
-  geom_line() +
-  geom_line(aes(y = upper), lty = 2) +
-  geom_line(aes(y = lower), lty = 2) +
-  geom_point(aes(y = observed, col = date <= pred_date), size = 3) +
-  scale_colour_manual(values = c("grey", "black")) +
-  scale_y_log10(breaks = c(1, 3, 10, 30, 100, 300, 1000, 3000, 10000,
-                           30000, 100000, 300000, 1000000)) +
-  labs(title = "Logistic model fit to current data using past data",
-       subtitle = "Data up to date: {frame_time}") +
-  theme(axis.title = element_blank()) +
-  transition_time(pred_date) +
-  ease_aes()
-anim_save(str_c(chosen_country, "_past_fits_NegBin.gif"), p)
+for (chosen_country in countries) make_gif(chosen_country)
 ```
 
 ```{r}
