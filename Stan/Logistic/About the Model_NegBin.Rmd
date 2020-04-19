@@ -383,7 +383,7 @@ p <- results %>%
   inner_join(countries, by = c("num" = "country_id")) %>% 
   mutate(par = str_to_title(par)) %>% 
   mutate(plot_var = str_c(par, "_", country)) %>% 
-  ggplot(aes(rev(country), estimate, ymin = conf.low, ymax = conf.high, col = country == "Iceland")) +
+  ggplot(aes(country, estimate, ymin = conf.low, ymax = conf.high, col = country == "Iceland")) +
   geom_linerange() +
   geom_point() +
   coord_flip() +

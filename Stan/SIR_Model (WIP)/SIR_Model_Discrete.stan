@@ -56,8 +56,8 @@ transformed parameters {
 
 
 model {
-  rho ~ inv_gamma(5, 5);
-  alpha ~ std_normal();
+  rho ~ inv_gamma(2, 2);
+  alpha ~ normal(0, 4);
   eta ~ std_normal();
   
   log_beta_intercept ~ normal(-1.5, 1);
@@ -66,7 +66,7 @@ model {
   ban_speed ~ gamma(2, 50);
   
   infectious_period ~ gamma(30, 2.5);
-  phi_inv_sqrt ~ std_normal();
+  phi_inv_sqrt ~ exponential(1);
   
   
   dI_dt ~ neg_binomial_2_log(log_beta + log_I + log_S - log_N, phi);

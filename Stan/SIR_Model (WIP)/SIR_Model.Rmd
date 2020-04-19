@@ -46,7 +46,7 @@ d <- d %>%
            S = lag(S, 1, default = 0),
            active_cases = lag(active_cases, 1, default = 0)) %>% 
     select(date, dI_dt = new_cases, total_cases, S,  I = active_cases, R = total_removed, N) %>% 
-    filter(date >= ymd("2020-03-03"))
+    filter(date >= ymd("2020-03-05"))
 
 d
 ```
