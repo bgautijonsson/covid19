@@ -57,7 +57,7 @@ model {
   
   log_beta_intercept ~ normal(-1, 0.5);
   
-  infectious_period ~ gamma(20, 2.5);
+  infectious_period ~ gamma(4.95, 0.66);
   phi_inv_sqrt ~ exponential(1);;
   
   

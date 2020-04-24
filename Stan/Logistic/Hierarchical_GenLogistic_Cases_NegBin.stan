@@ -73,13 +73,13 @@ transformed parameters {
 
 model {
   // Alpha parameters
-  mu_alpha ~ normal(-2.5, 3);
-  sigma_alpha ~ exponential(1);
+  mu_alpha ~ normal(0, 3);
+  sigma_alpha ~ exponential(0.2);
   z_alpha ~ std_normal();
   
   // Beta parameters
-  mu_beta ~ normal(-3, 1);
-  sigma_beta ~ exponential(1);
+  mu_beta ~ normal(-2, 2);
+  sigma_beta ~ exponential(0.5);
   z_beta ~ std_normal();
   
   // Asymptote parameters
@@ -89,10 +89,10 @@ model {
   
   // Overdispersion parameters
   z_phi_inv_sqrt ~ exponential(1);
-  sigma_phi_inv_sqrt ~ exponential(1);
+  sigma_phi_inv_sqrt ~ exponential(0.5);
   
   // Generalized Logistic parameters
-  mu_nu ~ normal(0, 2);
+  mu_nu ~ normal(0, 3);
   sigma_nu ~ exponential(1);
   z_nu ~ std_normal();
   

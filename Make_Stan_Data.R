@@ -28,7 +28,7 @@ Make_Stan_Data <- function(min_case_rate = 0.1, min_days = 7, upper_mult = 2) {
     
     stan_data <- read_xlsx(temp) %>% 
         select(country = "countriesAndTerritories", 
-               date = dateRep, 
+               date = 1, 
                new_cases = cases, 
                new_deaths = deaths) %>% 
         mutate(date = as_date(date),
