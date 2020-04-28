@@ -6,7 +6,8 @@ library(magrittr)
 options(mc.cores = parallel::detectCores())
 source("Make_Stan_Data.R")
 
-d <- Make_Stan_Data()
+d <- Make_Stan_Data() %>% 
+    filter(new_cases >= 0)
 
 
 N_obs <- nrow(d)

@@ -9,8 +9,7 @@ data {
   
   int<lower = 0> N_countries;
   vector[N_countries] pop;
-  int total_deaths[N_countries];
-  int total_days[N_countries];
+  int total_deaths[N_obs];
 }
 
 parameters {
@@ -98,14 +97,14 @@ model {
   death_rate ~ beta(a_death_rate, b_death_rate);
   
   // Diagnostic rate parameters
-  mu_detected ~ beta(1, 1);
-  kappa_detected ~ exponential(10);
+  mu_detected ~ beta(2, 2);
+  kappa_detected ~ exponential(1);
   country_kappa_detected ~ exponential(0.1);
   country_mu_detected ~ beta(country_a_detected, country_b_detected);
   perc_detected ~ beta(a_detected, b_detected);
   
   //  Likelihood
-  total_deaths ~ poisson(death_rate .* f[total_days] .* pop);
+  total_deaths ~ poisson(death_rate[country] .* f .* pop[country]);
   new_cases ~ poisson(dfdt .* perc_detected .* pop[country]);
 }
 

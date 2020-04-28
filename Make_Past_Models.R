@@ -12,7 +12,7 @@ i <- 0
 
 while (TRUE) {
     
-    d <- Make_Stan_Data(min_case_rat = 0.1, min_days = 8 + i) %>% 
+    d <- Make_Stan_Data(min_case_rate = 0.1, min_days = 7 + i) %>% 
         filter(date <= cur_date)
     
     N_obs <- nrow(d)
