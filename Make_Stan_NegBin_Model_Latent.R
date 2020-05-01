@@ -7,7 +7,7 @@ library(broom)
 options(mc.cores = parallel::detectCores())
 source("Make_Stan_Data.R")
 
-d <- Make_Stan_Data() %>% 
+d <- Make_Stan_Data(min_case_rate = 0.25) %>% 
     filter(new_cases >= 0)
 
 

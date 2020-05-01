@@ -92,14 +92,14 @@ model {
   S ~ beta(a_s, b_s);
   
   // Death rate parameters
-  mu_death_rate ~ beta(6, 1000);
+  mu_death_rate ~ beta(1, 99);
   kappa_death_rate ~ exponential(0.001);
   death_rate ~ beta(a_death_rate, b_death_rate);
   
   // Diagnostic rate parameters
   mu_detected ~ beta(2, 2);
-  kappa_detected ~ exponential(1);
-  country_kappa_detected ~ exponential(0.1);
+  kappa_detected ~ exponential(0.01);
+  country_kappa_detected ~ exponential(0.01);
   country_mu_detected ~ beta(country_a_detected, country_b_detected);
   perc_detected ~ beta(a_detected, b_detected);
   

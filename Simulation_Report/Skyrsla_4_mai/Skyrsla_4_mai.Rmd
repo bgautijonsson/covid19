@@ -1,0 +1,18 @@
+---
+title: "COVID-19 á Íslandi"
+subtitle: "Spálíkan fyrir fjölda tilfella og álag á heilbrigðisþjónustu"
+date: "`r Sys.Date()`"
+output: 
+    html_document:
+        theme: flatly
+        toc: true
+        toc_float: true
+        toc_depth: 3
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE,
+                      fig.width = 8, out.width = "100%", fig.asp =  0.621)
+```
+
+

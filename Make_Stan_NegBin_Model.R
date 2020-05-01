@@ -4,6 +4,7 @@ library(rstan)
 library(magrittr)
 
 options(mc.cores = parallel::detectCores())
+parallel:::setDefaultClusterOptions(setup_strategy = "sequential")
 source("Make_Stan_Data.R")
 
 d <- Make_Stan_Data() %>% 
@@ -33,7 +34,6 @@ m <- sampling(stan_model("Stan/Logistic/Hierarchical_Logistic_Cases_NegBin.stan"
               data  = stan_data, chains = 4, iter = 4000, warmup = 2000)
 
 write_rds(m, "Stan/Logistic/Hierarchical_Model_NegBin.rds")
-write_rds(m, str_c("Stan/Logistic/Saved_Models/Hierarchical_Model_NegBin_", Sys.Date(), ".rds"))
 write_rds(m, "Stan/Logistic/Interactive Model Checking/Hierarchical_Model_NegBin.rds")
 write_csv(d, "Stan/Logistic/Interactive Model Checking/stan_data.csv")
 write_csv(d, str_c("Input/Stan_Data/Stan_Data_", Sys.Date(), ".csv"))

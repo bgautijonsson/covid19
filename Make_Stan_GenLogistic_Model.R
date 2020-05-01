@@ -6,7 +6,7 @@ library(magrittr)
 options(mc.cores = parallel::detectCores())
 source("Make_Stan_Data.R")
 
-d <- Make_Stan_Data(min_case_rate = 0.02, min_days = 14, upper_mult = 5) %>% 
+d <- Make_Stan_Data() %>% 
     filter(new_cases >= 0)
 
 
@@ -33,7 +33,6 @@ m <- sampling(stan_model("Stan/Logistic/Hierarchical_GenLogistic_Cases_NegBin.st
               data  = stan_data, chains = 4, iter = 4000, warmup = 2000)
 
 write_rds(m, "Stan/Logistic/Hierarchical_Model_GenLogistic.rds")
-write_rds(m, str_c("Stan/Logistic/Saved_Models/Hierarchical_Model_GenLogistic_", Sys.Date(), ".rds"))
 write_rds(m, "Stan/Logistic/Interactive Model Checking/Hierarchical_Model_GenLogistic.rds")
 write_csv(d, "Stan/Logistic/Interactive Model Checking/stan_data_GenLogistic.csv")
 write_csv(d, str_c("Input/Stan_Data/Stan_Data_GenLogistic_", Sys.Date(), ".csv"))

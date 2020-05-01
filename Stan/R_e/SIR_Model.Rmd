@@ -1,0 +1,272 @@
+---
+title: "Modeling"
+author: "Brynjólfur Gauti Jónsson"
+date: "3/15/2020"
+output: 
+    html_document:
+        theme: flaty
+        code_folding: hide
+        toc: true
+        toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, 
+                      fig.width = 8, fig.asp = 0.621, out.width = "100%")
+```
+
+```{r}
+library(tidyverse); library(knitr); library(kableExtra); library(broom); library(cowplot); 
+library(rstan); library(tidybayes); library(scales)
+library(lubridate); library(ggtext)
+theme_set(theme_bw() + 
+              panel_border(colour = "grey30", size = 1) + 
+              background_grid(color.major = "grey90", 
+                              color.minor = "grey95", 
+                              minor = "xy", major = "xy"))
+options(mc.cores = parallel::detectCores())
+
+
+d <- read_csv("https://docs.google.com/spreadsheets/d/1xgDhtejTtcyy6EN5dbDp5W3TeJhKFRRgm6Xk0s0YFeA/export?format=csv&id=1xgDhtejTtcyy6EN5dbDp5W3TeJhKFRRgm6Xk0s0YFeA&gid=1788393542") %>% 
+    select(
+        date = "Dagsetning",
+        new_cases = "Ny_Smit",
+        new_deaths = "Dauðsföll",
+        new_recovered = "Batnað", 
+        total_cases = "Smit_Samtals",
+        total_deaths = "Dauðsföll_Samtals",
+        total_recovered = "Batnað_Samtals",
+        total_removed = "Removed_Samtals",
+        active_cases = "Virk_Smit")
+
+d <- d %>% 
+    mutate(date = ymd(date),
+           N = 364220,
+           S = N - total_cases,
+           S = lag(S, 1, default = 0),
+           active_cases = lag(active_cases, 1, default = 0)) %>% 
+    select(date, dI_dt = new_cases, total_cases, S,  I = active_cases, R = total_removed, N) %>% 
+    filter(date >= ymd("2020-03-05"))
+
+d
+```
+
+Let $D$ be the days since the government introduced actions. Then we can model
+
+$$
+\log(\beta) = \beta_0 + \alpha (1 - e^{-\rho D}) + \varepsilon_\beta
+$$
+
+```{r}
+N_days <- nrow(d)
+
+S <- d$S
+I <- d$I
+dI_dt <- d$dI_dt
+N <- 364220
+
+first_ban <- 1 * (d$date > ymd("2020-03-16")) 
+days_since_first_ban <- cumsum(first_ban)^2
+
+days <- seq_len(N_days) - 1
+
+stan_data <- list(
+    N_days = N_days,
+    N = N,
+    S  = S,
+    I = I,
+    dI_dt = dI_dt,
+    days = days,
+    days_since_first_ban = days_since_first_ban
+)
+
+str(stan_data)
+```
+
+
+```{r}
+m <- sampling(stan_model("SIR_Model_Discrete.stan"), 
+              data  = stan_data, chains = 4, iter = 2000, warmup = 1000)
+```
+
+```{r}
+tidyMCMC(m, conf.int = T, rhat = T, ess = T) %>% 
+    arrange(desc(rhat))
+```
+
+
+```{r}
+tidyMCMC(m, pars = c("rho", "alpha", "phi_inv_sqrt", "log_beta_intercept", 
+                      "ban_speed", "first_ban_effect", "r0"), conf.int = T, rhat = T, ess = T)
+```
+
+```{r}
+spread_draws(m, first_ban_effect, ban_speed) %>% 
+    ungroup %>% 
+    mutate(iter = row_number()) %>% 
+    expand_grid(days_since_ban = seq(0, 40, length.out = 200)) %>% 
+    mutate(first_effect = exp(first_ban_effect * (1 - exp(-days_since_ban^2 * ban_speed))),) %>% 
+    group_by(days_since_ban) %>% 
+    summarise(median = median(first_effect) - 1,
+              upper = quantile(first_effect, 0.975) - 1,
+              lower = quantile(first_effect, 0.025) - 1) %>% 
+    ggplot(aes(days_since_ban, median)) +
+    geom_line() +
+    geom_line(aes(y = upper), lty = 2) +
+    geom_line(aes(y = lower), lty = 2) +
+    scale_y_continuous(labels = percent) +
+    labs(x = "Days since first ban",
+         y = "% reduction in R",
+         title = "Effect of governmental action on R")
+```
+
+```{r}
+spread_draws(m, ban_speed) %>% 
+    ungroup %>% 
+    mutate(iter = row_number()) %>% 
+    expand_grid(days_since_ban = seq(0, 40, length.out = 200)) %>% 
+    mutate(first_effect = (1 - exp(-days_since_ban^2 * ban_speed))) %>% 
+    filter(iter >= max(iter) - 1000) %>% 
+    ggplot(aes(days_since_ban, first_effect, group = iter)) +
+    geom_line(alpha = 0.01) +
+    scale_y_continuous(labels = percent) +
+    labs(x = "Days since first ban",
+         y = "% of effect achieved",
+         title = "How quickly does governmental action affect R?")
+```
+
+
+```{r}
+spread_draws(m, first_ban_effect, ban_speed) %>% 
+    ungroup %>% 
+    mutate(iter = row_number()) %>% 
+    expand_grid(days_since_ban = seq(0, 40, length.out = 200)) %>% 
+    mutate(first_effect = exp(first_ban_effect * (1 - exp(-days_since_ban^2 * ban_speed))),) %>% 
+    filter(iter >= max(iter) - 500) %>% 
+    ggplot(aes(days_since_ban, first_effect - 1, group = iter)) +
+    geom_line(alpha = 0.2) +
+    scale_y_continuous(labels = percent) +
+    labs(x = "Days since first ban",
+         y = "% reduction in R",
+         title = "Effect of governmental action on R")
+```
+
+```{r}
+curve(dgamma(x, 2, 1), from = 0, to = 5, n = 100)
+```
+
+```{r}
+curve(dgamma(x, 20, 2.5), from = 0, to = 30)
+```
+
+
+```{r}
+tidyMCMC(m, pars = "r0", conf.int = T, rhat = T, ess = T) %>% 
+    mutate(date = min(d$date) + row_number() - 1) %>% 
+    ggplot(aes(date, estimate, ymin = conf.low, ymax = conf.high)) +
+    geom_ribbon(alpha = 0.3) +
+    geom_line() +
+    geom_hline(yintercept = 1, lty = 2, col = "grey60") +
+    # Fyrra samkomubann
+    geom_vline(xintercept = ymd("2020-03-16"), lty = 2) +
+    geom_text(data = tibble(), 
+              aes(x = ymd("2020-03-16"), y = 0.2, label = "Fyrri samkomubann"), 
+              inherit.aes = F, nudge_x = 2.4) +
+    # Seinna samkomubann
+    geom_vline(xintercept = ymd("2020-03-24"), lty = 2) +
+    geom_text(data = tibble(), 
+              aes(x = ymd("2020-03-24"), y = 3.5, label = "Seinni samkomubann"), 
+              inherit.aes = F, nudge_x = 2.4) +
+    scale_y_continuous(breaks = pretty_breaks(8)) +
+    scale_x_date(breaks = ymd(c("2020-03-05", "2020-03-16", "2020-03-24", "2020-04-01")),
+                 date_labels = "%d. %B") +
+    ylab(latex2exp::TeX("$R_t$")) + 
+    ggtitle(latex2exp::TeX("Þróun $R_t$ á Íslandi")) +
+    theme(axis.title.x = element_blank()) +
+    background_grid(major = "none", minor = "none") +
+    ggsave("r0_islandi.png", width = 6, height = 0.5 * 6, scale = 2)
+```
+
+
+```{r}
+tidyMCMC(m, pars = "r", conf.int = T, rhat = T, ess = T) %>% 
+    mutate(date = min(d$date) + row_number() - 1) %>% 
+    ggplot(aes(date, estimate, ymin = conf.low, ymax = conf.high)) +
+    geom_ribbon(alpha = 0.3) +
+    geom_line() +
+    geom_hline(yintercept = 1, lty = 2, col = "grey60") +
+    # Fyrra samkomubann
+    geom_vline(xintercept = ymd("2020-03-16"), lty = 2) +
+    # Seinna samkomubann
+    geom_vline(xintercept = ymd("2020-03-24"), lty = 2) +
+    scale_y_continuous(breaks = pretty_breaks(8)) +
+    scale_x_date(breaks = ymd(c("2020-03-05", "2020-03-16", "2020-03-24", "2020-04-01")),
+                 date_labels = "%d. %B") +
+    labs(y = "R") +
+    theme(axis.title.x = element_blank()) +
+    background_grid(major = "none", minor = "none")
+```
+
+```{r}
+spread_draws(m, r[day]) %>% 
+    ungroup %>% 
+    mutate(date = min(d$date) + day - 1) %>% 
+    select(date, r) %>% 
+    group_by(date) %>% 
+    mutate(iter = row_number()) %>% 
+    ungroup %>% 
+    filter(iter >= max(iter) - 1000) %>% 
+    ggplot(aes(date, r, group = iter)) +
+    geom_line(alpha = 0.05) +
+    geom_smooth(aes(group = "none")) +
+    geom_hline(yintercept = 1, lty = 2, size = 1.5, col = "grey") +
+    coord_cartesian(ylim = c(0, 7))
+```
+
+
+```{r}
+tidyMCMC(m, pars = "f", conf.int = T, rhat = T, ess = T) %>% 
+    mutate(date = min(d$date) + row_number() - 1) %>% 
+    ggplot(aes(date, estimate, ymin = conf.low, ymax = conf.high)) +
+    geom_ribbon(alpha = 0.3) +
+    geom_line() +
+    geom_hline(yintercept = 0, lty = 2, col = "grey60") +
+    scale_y_continuous(breaks = pretty_breaks(8)) +
+    scale_x_date(breaks = ymd(c("2020-03-05", "2020-03-16", "2020-03-24", "2020-04-01")),
+                 date_labels = "%d. %B") +
+    theme(axis.title.x = element_blank()) +
+    background_grid(major = "none", minor = "none")
+```
+
+```{r}
+spread_draws(m, pred_dI[days]) %>% 
+    group_by(days) %>% 
+    mutate(iter = row_number()) %>% 
+    ungroup %>% 
+    mutate(date = min(d$date) + days - 1) %>% 
+    inner_join(d %>% select(date, dI_dt), by = "date") %>% 
+    mutate(saved = pred_dI - dI_dt) %>% 
+    group_by(iter) %>% 
+    summarise(total = sum(saved)) %>% 
+    summarise(median = median(total),
+              lower = quantile(total, 0.025),
+              upper = quantile(total, 0.975))
+```
+
+```{r}
+spread_draws(m, pred_dI[days]) %>% 
+    group_by(days) %>% 
+    mutate(iter = row_number()) %>% 
+    ungroup %>% 
+    mutate(date = min(d$date) + days - 1) %>% 
+    inner_join(d %>% select(date, dI_dt), by = "date") %>% 
+    mutate(saved = pred_dI - dI_dt) %>% 
+    group_by(date) %>% 
+    summarise(median = median(saved),
+              lower = quantile(saved, 0.025),
+              upper = quantile(saved, 0.975)) %>% 
+    ggplot(aes(date, median)) +
+    geom_line() +
+    geom_line(aes(y = lower), lty = 2) +
+    geom_line(aes(y = upper), lty = 2)
+```
