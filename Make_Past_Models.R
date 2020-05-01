@@ -13,7 +13,7 @@ i <- 0
 while (TRUE) {
     
     d <- Make_Stan_Data(min_case_rate = 0.1, min_days = 7 + i) %>% 
-        filter(date <= cur_date)
+        filter(date <= cur_date, new_cases >= 0)
     
     N_obs <- nrow(d)
     N_countries <- max(d$country_id)

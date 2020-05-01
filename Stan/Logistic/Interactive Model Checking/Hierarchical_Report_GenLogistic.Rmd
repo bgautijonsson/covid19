@@ -135,7 +135,7 @@ pred_plot <-  eventReactive(input$gobutton, {
   
   p1 <- results %>% 
     mutate(date = days + min(plot_dat$date)) %>% 
-    filter(date <= max(plot_dat$date) + 21,
+    filter(date <= max(plot_dat$date) + 28,
            days > 0) %>% 
     group_by(date) %>% 
     summarise(median = median(new_cases),
@@ -159,7 +159,7 @@ pred_plot <-  eventReactive(input$gobutton, {
   
   p2 <- results %>% 
     mutate(date = days + min(plot_dat$date)) %>% 
-    filter(date <= max(plot_dat$date) + 21,
+    filter(date <= max(plot_dat$date) + 28,
            days > 0) %>% 
     group_by(date) %>% 
     summarise(median = median(cumulative_cases),
@@ -179,7 +179,7 @@ pred_plot <-  eventReactive(input$gobutton, {
   
   p3 <- results %>% 
     mutate(date = days + min(plot_dat$date)) %>% 
-    filter(date <= max(plot_dat$date) + 21,
+    filter(date <= max(plot_dat$date) + 28,
            days > 0) %>% 
     filter(iter %in% sample(iter, size = 200)) %>% 
     ggplot(aes(date, cumulative_cases, group = iter)) +
@@ -207,7 +207,7 @@ pred_plot <-  eventReactive(input$gobutton, {
               upper = quantile(r0, 1 - alph/2, na.rm = T),
               lower = quantile(r0, alph/2, na.rm = T)) %>% 
     ungroup %>% 
-    filter(date <= max(plot_dat$date) + 21,
+    filter(date <= max(plot_dat$date) + 28,
            days > 0) %>% 
     ggplot(aes(date, median)) +
     geom_hline(yintercept = 1, lty = 1, size = 1, col = "grey70") +

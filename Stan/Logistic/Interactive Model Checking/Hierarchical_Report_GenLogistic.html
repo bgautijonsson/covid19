@@ -203,6 +203,7 @@ summary {
 <option value="Djibouti">Djibouti</option>
 <option value="Dominican Republic">Dominican Republic</option>
 <option value="Ecuador">Ecuador</option>
+<option value="Equatorial Guinea">Equatorial Guinea</option>
 <option value="Estonia">Estonia</option>
 <option value="Finland">Finland</option>
 <option value="France">France</option>
@@ -215,17 +216,22 @@ summary {
 <option value="Ireland">Ireland</option>
 <option value="Israel">Israel</option>
 <option value="Italy">Italy</option>
+<option value="Japan">Japan</option>
 <option value="Kazakhstan">Kazakhstan</option>
 <option value="Kuwait">Kuwait</option>
+<option value="Kyrgyzstan">Kyrgyzstan</option>
 <option value="Latvia">Latvia</option>
+<option value="Lebanon">Lebanon</option>
 <option value="Lithuania">Lithuania</option>
 <option value="Luxembourg">Luxembourg</option>
 <option value="Malaysia">Malaysia</option>
 <option value="Maldives">Maldives</option>
 <option value="Malta">Malta</option>
 <option value="Mauritius">Mauritius</option>
+<option value="Mexico">Mexico</option>
 <option value="Moldova">Moldova</option>
 <option value="Montenegro">Montenegro</option>
+<option value="Morocco">Morocco</option>
 <option value="Netherlands">Netherlands</option>
 <option value="New Zealand">New Zealand</option>
 <option value="North Macedonia">North Macedonia</option>
@@ -244,6 +250,7 @@ summary {
 <option value="Singapore">Singapore</option>
 <option value="Slovakia">Slovakia</option>
 <option value="Slovenia">Slovenia</option>
+<option value="South Korea">South Korea</option>
 <option value="Spain">Spain</option>
 <option value="Sweden">Sweden</option>
 <option value="Switzerland">Switzerland</option>
@@ -343,7 +350,7 @@ pred_plot <-  eventReactive(input$gobutton, {
   
   p1 <- results %>% 
     mutate(date = days + min(plot_dat$date)) %>% 
-    filter(date <= max(plot_dat$date) + 21,
+    filter(date <= max(plot_dat$date) + 28,
            days > 0) %>% 
     group_by(date) %>% 
     summarise(median = median(new_cases),
@@ -367,7 +374,7 @@ pred_plot <-  eventReactive(input$gobutton, {
   
   p2 <- results %>% 
     mutate(date = days + min(plot_dat$date)) %>% 
-    filter(date <= max(plot_dat$date) + 21,
+    filter(date <= max(plot_dat$date) + 28,
            days > 0) %>% 
     group_by(date) %>% 
     summarise(median = median(cumulative_cases),
@@ -387,7 +394,7 @@ pred_plot <-  eventReactive(input$gobutton, {
   
   p3 <- results %>% 
     mutate(date = days + min(plot_dat$date)) %>% 
-    filter(date <= max(plot_dat$date) + 21,
+    filter(date <= max(plot_dat$date) + 28,
            days > 0) %>% 
     filter(iter %in% sample(iter, size = 200)) %>% 
     ggplot(aes(date, cumulative_cases, group = iter)) +
@@ -415,7 +422,7 @@ pred_plot <-  eventReactive(input$gobutton, {
               upper = quantile(r0, 1 - alph/2, na.rm = T),
               lower = quantile(r0, alph/2, na.rm = T)) %>% 
     ungroup %>% 
-    filter(date <= max(plot_dat$date) + 21,
+    filter(date <= max(plot_dat$date) + 28,
            days > 0) %>% 
     ggplot(aes(date, median)) +
     geom_hline(yintercept = 1, lty = 1, size = 1, col = "grey70") +
