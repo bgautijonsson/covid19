@@ -89,15 +89,15 @@ d %>%
     # ), 
     # aes(x = x, y = y, label = label), colour = "blue",
     # inherit.aes = F) +
-    scale_x_log10(breaks = c(1, 10, 1e2, 1e3, 1e4, 1e5, 1e6),
+    scale_x_log10(breaks = c(1, 10, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7),
                   labels = label_number(accuracy = 1)) +
-    scale_y_log10(breaks = c(1, 10, 1e2, 1e3, 1e4, 1e5, 1e6),
+    scale_y_log10(breaks = c(1, 10, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7),
                   labels = label_number(accuracy = 1)) +
     scale_colour_manual(values = c("black", "blue", "goldenrod", "red")) +
     scale_size_manual(values = c(1, 2)) +
     scale_alpha_manual(values = c(0.5, 1)) +
-    coord_cartesian(xlim = c(1, 1e6),
-                    ylim = c(1, 1e5)) +
+    coord_cartesian(xlim = c(1, 1e7),
+                    ylim = c(1, 1e6)) +
     theme(aspect.ratio = 0.621,
           plot.title = element_markdown()) +
     labs(title = "Þróun COVID-19 á <i style='color:blue'>Íslandi</i> og heimsvísu",

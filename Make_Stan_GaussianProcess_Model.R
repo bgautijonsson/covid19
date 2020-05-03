@@ -22,7 +22,7 @@ country <- d$country_id %>% as.integer
 pop <- d %>% distinct(country_id, pop) %>% arrange(country_id) %>%  .$pop
 
 X_GP <- d %>% 
-    mutate(X = days + 1000 * country_id) %>% 
+    mutate(X = days + 1e3 * country_id) %>% 
     .$X
 
 stan_data <- list(N_obs = N_obs,

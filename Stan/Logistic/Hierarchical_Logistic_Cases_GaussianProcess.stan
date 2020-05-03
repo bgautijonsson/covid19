@@ -84,6 +84,9 @@ model {
   z_gp ~ std_normal();
   rho_gp ~ inv_gamma(5, 5);
   eta_gp ~ std_normal();
+  sigma_gp ~ exponential(1);
+  
+  log_error_gp ~ normal(f_gp, sigma_gp);
   
   
   // Alpha parameters

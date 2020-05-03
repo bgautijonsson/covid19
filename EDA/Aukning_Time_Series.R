@@ -18,10 +18,7 @@ theme_set(theme_classic(base_size = 12) +
               theme(legend.position = "none"))
 
 d <- read_csv("Input/ECDC_Data.csv") %>% 
-    filter(continent == "Europe", total_cases > 0, country != "San Marino", date <= ymd("2020-04-01")) %>% 
-    group_by(country) %>% 
-    filter(any(date == ymd("2020-03-01"))) %>% 
-    ungroup
+    filter(continent == "Europe", date >= ymd("2020-03-01"))
 
 
 get_rates <- function(start_date) {
@@ -41,7 +38,7 @@ get_rates <- function(start_date) {
                               rate = evo[, 1])))
 }
 
-dates <- ymd("2020-03-01") + seq_len(26)
+dates <- ymd("2020-03-01") + seq_len(as.numeric(Sys.Date() - ymd("2020-04-01") - 7))
 
 results <- map_df(dates, get_rates)
 
