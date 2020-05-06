@@ -6,105 +6,134 @@ data {
   vector[N_obs] days;
   // We model the daily number of newly diagnosed cases instead of cumulative numbers
   int new_cases[N_obs];
+  // Model the daily number of deaths
+  int new_deaths[N_obs];
   
   int<lower = 0> N_countries;
   vector[N_countries] pop;
-  int total_deaths[N_obs];
 }
 
 parameters {
   // Since we use a non-centered parametrisation we first create normal(0, 1) variables for alpha and beta
   
   // Beta parameters
-  vector[N_countries] z_beta;
-  real mu_beta;
-  real<lower = 0> sigma_beta;
+  // Cases
+  vector[N_countries] z_beta_cases;
+  real mu_beta_cases;
+  real<lower = 0> sigma_beta_cases;
+  // Deaths
+  vector[N_countries] z_beta_deaths;
+  real mu_beta_deaths;
+  real<lower = 0> sigma_beta_deaths;
   
   // Alpha parameters
-  vector[N_countries] z_alpha;
-  real mu_alpha;
-  real<lower = 0> sigma_alpha;
+  // Cases
+  vector[N_countries] z_alpha_cases;
+  real mu_alpha_cases;
+  real<lower = 0> sigma_alpha_cases;
+  // Deaths
+  vector[N_countries] z_alpha_deaths;
+  real mu_alpha_deaths;
+  real<lower = 0> sigma_alpha_deaths;
   
   //  Asymptote/saturation parameters
   // We model the beta distribution in terms of mean and sample size instead of a and b.
-  vector<lower = 0, upper = 1>[N_countries] S;
-  real<lower = 0, upper = 1> mu_s;
-  real<lower = 0> kappa_s;
-
+  // Cases
+  vector<lower = 0, upper = 1>[N_countries] S_cases;
+  real<lower = 0, upper = 1> mu_s_cases;
+  real<lower = 0> kappa_s_cases;
+  // Deaths
+  vector<lower = 0, upper = 1>[N_countries] S_deaths;
+  real<lower = 0, upper = 1> mu_s_deaths;
+  real<lower = 0> kappa_s_deaths;
   
-  real<lower = 0, upper = 1> mu_death_rate;
-  real<lower = 0> kappa_death_rate;
-  vector<lower = 0, upper = 1>[N_countries] death_rate;
-  
-  real<lower = 0, upper = 1> mu_detected;
-  real<lower = 0> kappa_detected;
-  vector<lower = 0, upper = 1>[N_countries] country_mu_detected;
-  vector<lower = 0>[N_countries] country_kappa_detected;
-  vector<lower = 0, upper = 1>[N_obs] perc_detected;
-  
+  //  Overdispersion parameters. One for each country which is dependent on hyperparameter
+  // Cases
+  vector<lower = 0>[N_countries] z_phi_inv_sqrt_cases;
+  real<lower = 0> sigma_phi_inv_sqrt_cases;
+  // Deaths
+  vector<lower = 0>[N_countries] z_phi_inv_sqrt_deaths;
+  real<lower = 0> sigma_phi_inv_sqrt_deaths;
 }
 
 transformed parameters {
-  // real<lower = 0> a_detected = mu_detected * kappa_detected;
-  // real<lower = 0> b_detected = (1 - mu_detected) * kappa_detected;
   // Non-Centerd parametrizations
   // If B ~ normal(mu_b, sigma_b) then B = mu_b + sigma_b * normal(0, 1)
-  vector[N_countries] log_beta = mu_beta + sigma_beta * z_beta;
-  vector<lower = 0>[N_countries] beta = exp(log_beta);
-  vector[N_countries] alpha = mu_alpha + sigma_alpha * z_alpha;
+  vector[N_countries] log_beta_cases = mu_beta_cases + sigma_beta_cases * z_beta_cases;
+  vector[N_countries] log_beta_deaths = mu_beta_deaths + sigma_beta_deaths * z_beta_deaths;
+  vector<lower = 0>[N_countries] beta_cases = exp(log_beta_cases);
+  vector<lower = 0>[N_countries] beta_deaths = exp(log_beta_deaths);
+  vector[N_countries] alpha_cases = mu_alpha_cases + sigma_alpha_cases * z_alpha_cases;
+  vector[N_countries] alpha_deaths = mu_alpha_deaths + sigma_alpha_deaths * z_alpha_deaths;
+  // If X ~ exponential(lambda) then X ~ lambda * exponential(1)
+  vector<lower = 0>[N_countries] phi_inv_sqrt_cases = sigma_phi_inv_sqrt_cases * z_phi_inv_sqrt_cases;
+  vector<lower = 0>[N_countries] phi_inv_sqrt_deaths = sigma_phi_inv_sqrt_deaths * z_phi_inv_sqrt_deaths;
+  // Overdispersion parameters
+  vector<lower = 0>[N_countries] phi_inv_cases = square(phi_inv_sqrt_cases);
+  vector<lower = 0>[N_countries] phi_inv_deaths = square(phi_inv_sqrt_deaths);
+  vector<lower = 0>[N_countries] phi_cases = inv(phi_inv_cases);
+  vector<lower = 0>[N_countries] phi_deaths = inv(phi_inv_deaths);
   // Asymptote hyperparameters
-  real<lower = 0> a_s = mu_s * kappa_s;
-  real<lower = 0> b_s = (1 - mu_s) * kappa_s;
-  // Death Rate hyperparameters
-  real<lower = 0> a_death_rate = mu_death_rate * kappa_death_rate;
-  real<lower = 0> b_death_rate = (1 - mu_death_rate) * kappa_death_rate;
-  // Death Rate hyperparameters
-  real<lower = 0> country_a_detected = mu_detected * kappa_detected;
-  real<lower = 0> country_b_detected = (1 - mu_detected) * kappa_detected;
-  vector<lower = 0>[N_obs] a_detected = country_mu_detected[country] .* country_kappa_detected[country];
-  vector<lower = 0>[N_obs] b_detected = (1 - country_mu_detected[country]) .* country_kappa_detected[country];
-  // Logistic equation calculations
-  vector[N_obs] linear = alpha[country] + beta[country] .* days;
-  vector<lower = 0>[N_obs] f;
-  vector<lower = 0>[N_obs] dfdt;
+  real<lower = 0> a_s_cases = mu_s_cases * kappa_s_cases;
+  real<lower = 0> b_s_cases = (1 - mu_s_cases) * kappa_s_cases;
+  real<lower = 0> a_s_deaths = mu_s_deaths * kappa_s_deaths;
+  real<lower = 0> b_s_deaths = (1 - mu_s_deaths) * kappa_s_deaths;
+  vector[N_obs] linear_cases = alpha_cases[country] + beta_cases[country] .* days;
+  vector[N_obs] linear_deaths = alpha_deaths[country] + beta_deaths[country] .* days;
+  vector<lower = 0>[N_obs] f_cases;
+  vector<lower = 0>[N_obs] f_deaths;
+  vector<lower = 0>[N_obs] dfdt_cases;
+  vector<lower = 0>[N_obs] dfdt_deaths;
   for (i in 1:N_obs) {
-    
-    f[i] = S[country[i]] / (1 + exp(-linear[i]));
-    dfdt[i] = beta[country[i]] * f[i] * (1 - f[i] / S[country[i]]);
+    f_cases[i] = S_cases[country[i]] / (1 + exp(-linear_cases[i]));
+    f_deaths[i] = S_deaths[country[i]] / (1 + exp(-linear_deaths[i]));
+    dfdt_cases[i] = beta_cases[country[i]] * f_cases[i] * (1 - f_cases[i] / S_cases[country[i]]);
+    dfdt_deaths[i] = beta_deaths[country[i]] * f_deaths[i] * (1 - f_deaths[i] / S_deaths[country[i]]);
     
   }
 }
 
 model {
   // Alpha parameters
-  mu_alpha ~ normal(-2.5, 3);
-  sigma_alpha ~ exponential(1);
-  z_alpha ~ std_normal();
+  // Cases
+  mu_alpha_cases ~ normal(0, 3);
+  sigma_alpha_cases ~ exponential(0.2);
+  z_alpha_cases ~ std_normal();
+  // Deaths
+  mu_alpha_deaths ~ normal(0, 3);
+  sigma_alpha_deaths ~ exponential(0.2);
+  z_alpha_deaths ~ std_normal();
   
   // Beta parameters
-  mu_beta ~ normal(-3, 1);
-  sigma_beta ~ exponential(1);
-  z_beta ~ std_normal();
+  // Cases
+  mu_beta_cases ~ normal(-2, 1);
+  sigma_beta_cases ~ exponential(0.5);
+  z_beta_cases ~ std_normal();
+  // Deaths
+  mu_beta_deaths ~ normal(-2, 1);
+  sigma_beta_deaths ~ exponential(0.5);
+  z_beta_deaths ~ std_normal();
   
   // Asymptote parameters
-  mu_s ~ beta(1, 99);
-  kappa_s ~ exponential(0.001);
-  S ~ beta(a_s, b_s);
+  // Cases
+  mu_s_cases ~ beta(1, 99);
+  kappa_s_cases ~ exponential(0.001);
+  S_cases ~ beta(a_s_cases, b_s_cases);
+  // Deaths
+  mu_s_deaths ~ beta(1, 99);
+  kappa_s_deaths ~ exponential(0.001);
+  S_deaths ~ beta(a_s_cases, b_s_cases);
   
-  // Death rate parameters
-  mu_death_rate ~ beta(1, 99);
-  kappa_death_rate ~ exponential(0.001);
-  death_rate ~ beta(a_death_rate, b_death_rate);
-  
-  // Diagnostic rate parameters
-  mu_detected ~ beta(2, 2);
-  kappa_detected ~ exponential(0.01);
-  country_kappa_detected ~ exponential(0.01);
-  country_mu_detected ~ beta(country_a_detected, country_b_detected);
-  perc_detected ~ beta(a_detected, b_detected);
+  // Overdispersion parameters
+  // Cases
+  z_phi_inv_sqrt_cases ~ exponential(1);
+  sigma_phi_inv_sqrt_cases ~ exponential(0.5);
+  // Deaths
+  z_phi_inv_sqrt_deaths ~ exponential(1);
+  sigma_phi_inv_sqrt_deaths ~ exponential(0.5);
   
   //  Likelihood
-  total_deaths ~ poisson(death_rate[country] .* f .* pop[country]);
-  new_cases ~ poisson(dfdt .* perc_detected .* pop[country]);
+  new_cases ~ neg_binomial_2(dfdt_cases .* pop[country], phi_cases[country]);
+  new_deaths ~ neg_binomial_2(dfdt_deaths .* pop[country], phi_deaths[country]);
 }
 
