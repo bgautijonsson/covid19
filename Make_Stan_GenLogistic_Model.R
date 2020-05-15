@@ -28,9 +28,16 @@ stan_data <- list(N_obs = N_obs,
                   country = country,
                   pop = pop)
 
-
-m <- sampling(stan_model("Stan/Logistic/Hierarchical_GenLogistic_Cases_NegBin.stan"), 
-              data  = stan_data, chains = 4, iter = 4000, warmup = 2000)
+m <- stan(
+    file = "Stan/Logistic/Hierarchical_GenLogistic_Cases_NegBin.stan", 
+    data  = stan_data, 
+    chains = 4, 
+    iter = 3000, 
+    warmup = 1000,
+    cores = 4,
+    save_warmup = FALSE,
+    control = list(adapt_delta = 0.9, max_treedepth = 15)
+)
 
 write_rds(m, "Stan/Logistic/Hierarchical_Model_GenLogistic.rds")
 write_rds(m, "Stan/Logistic/Interactive Model Checking/Hierarchical_Model_GenLogistic.rds")

@@ -31,7 +31,7 @@ daily_cases <- function(alpha, beta, maximum, t) {
 }
 
 saved_dates <- list.files("Past_Models_NegBin") %>% 
-  str_match("(2020-0[34]-[0-9]{2})\\.") %>% 
+  str_match("(2020-0[345]-[0-9]{2})\\.") %>% 
   .[, 2] %>% unique
 ```
 
@@ -145,7 +145,8 @@ make_gif <- function(chosen_country) {
     transition_time(pred_date) +
     ease_aes()
   
-  anim_save(str_c("GIF/", chosen_country, "_past_fits_NegBin.gif"), animate(p, width = 1000, height = 0.5 * 1000))
+  anim_save(str_c("GIF/", chosen_country, "_past_fits_NegBin.gif"), 
+            animate(p, width = 1000, height = 0.5 * 1000))
 }
 ```
 

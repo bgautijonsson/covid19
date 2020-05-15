@@ -1,0 +1,151 @@
+---
+title: "Hierarchical Generalized Logistic Growth Curves"
+author: "Brynjólfur Gauti Jónsson"
+date: "`r Sys.Date()`"
+output: 
+    html_document:
+        theme: flatly
+        toc: true
+        toc_float: true
+        code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = F, 
+                      fig.asp = 0.621, out.width = "100%", fig.width = 8)
+```
+
+```{r}
+library(tidyverse); library(knitr); library(kableExtra); library(broom); library(cowplot); 
+library(rstan); library(tidybayes); library(scales); library(DT); library(plotly)
+
+
+
+theme_set(theme_classic(base_size = 12) + 
+            background_grid(color.major = "grey90", 
+                            color.minor = "grey95", 
+                            minor = "xy", major = "xy") +
+            theme(legend.position = "none"))
+m <- read_rds("Hierarchical_Model_GenLogistic_Deaths.rds")
+d <- read_csv("Interactive Model Checking/stan_data_GenLogistic_Deaths.csv")
+countries <- d %>% distinct(country, country_id)
+which_iceland <- d %>% filter(country == "Iceland") %>% .$country_id %>% unique
+n_countries <- max(d$country_id)
+```
+
+
+```{r, include = F, eval = F}
+# library(shinystan)
+# stan_obj <- launch_shinystan(m)
+# deploy_shinystan(stan_obj, appName = "LogisticGrowthCurves", account = "bgautijonsson")
+```
+
+
+```{r}
+results <- tidyMCMC(m, conf.int = T, rhat = T, ess = T, 
+                    estimate.method = "median", conf.method = "quantile") %>% 
+  mutate(par = str_match(term, "[a-zA-Z_2]+")) %>% 
+  group_by(par) %>% 
+  mutate(num = row_number() %>% as.numeric)
+```
+
+## Data
+
+```{r}
+d %>% 
+  group_by(country) %>% 
+  summarise(First = min(date),
+            Days_In_Data = n(),
+            Start_Rate = min(death_rate),
+            End_Rate = max(death_rate)) %>% 
+  set_names(c("Country", "Entry", "Days in data", "Start", "End")) %>% 
+  kable(caption = "Table 1. Summary information about countries used in modeling",
+        align = c("l", rep("c", ncol(.) - 1)),
+        digits = 3) %>% 
+  kable_styling(bootstrap_options = c("striped", "hover")) %>% 
+  row_spec(which_iceland, bold = T) %>% 
+  add_header_above(c("", "", "", "Rate per 1000" = 2)) %>%
+  scroll_box(height = "500px")
+```
+
+
+```{r, fig.asp = 0.8}
+p <- d %>% 
+  ggplot(aes(days, death_rate, group = country, col = country == "Iceland")) +
+  geom_line() +
+  scale_y_log10() +
+  scale_colour_manual(values = c("grey", "blue")) +
+  labs(x = "Days since rate reached 0.02 per 1000",
+       y = "Cases per 1000",
+       title = "Observed trends for countries used in data",
+       subtitle = "Shown as days since a country entered the modeling data")
+ggplotly(p)
+```
+
+## Software
+
+The model is fit using [Stan's](https://mc-stan.org/) R interface, and the model code can be found in the appendix.
+
+All code is available at https://github.com/bgautijonsson/covid19. We're sorry for the mess and we're working on it. We are also going to translate the README files into English.
+
+# Results
+
+## Country Level Effects
+
+```{r, fig.asp = 3, fig.width = 10}
+results %>% 
+  ungroup %>% 
+  filter(par %in% c("beta", "alpha", "S", "phi_inv", "nu")) %>%
+  mutate(par = str_replace(par, "phi_inv", "phi")) %>% 
+  inner_join(countries, by = c("num" = "country_id")) %>% 
+  mutate(par = str_to_title(par)) %>% 
+  select(par, country, num, everything(), -num, -term, -std.error) %>% 
+  set_names(c("Parameter", "Country", "Median", "Lower", "Upper", "Rhat", "ESS")) %>% 
+  kable(digits = 4, align = c("l", "l", rep("c", ncol(.) - 2)),
+        caption = "Table 2. Summary of posterior samples of country level effects") %>% 
+  kable_styling(bootstrap_options = c("striped", "hover")) %>% 
+  add_header_above(c("", "", "", "95% PI" = 2, "Convergence" = 2)) %>% 
+  column_spec(1, bold = T) %>% 
+  row_spec(which_iceland + c(0, 1, 2) * n_countries, bold = T) %>% 
+  collapse_rows(1, valign = "top") %>% 
+  scroll_box(height = "600px")
+```
+
+```{r, fig.width = 10, fig.asp = 2}
+p <- results %>% 
+  ungroup %>% 
+  filter(par %in% c("beta", "alpha", "S", "phi_inv", "nu")) %>% 
+  mutate(par = str_replace(par, "phi_inv", "phi")) %>% 
+  inner_join(countries, by = c("num" = "country_id")) %>% 
+  mutate(par = str_to_title(par)) %>% 
+  mutate(plot_var = str_c(par, "_", country)) %>% 
+  ggplot(aes(country, estimate, ymin = conf.low, ymax = conf.high, col = country == "Iceland")) +
+  geom_linerange() +
+  geom_point() +
+  coord_flip() +
+  facet_wrap("par", scales = "free_x", ncol = 2) +
+  scale_colour_manual(values = c("grey", "blue")) +
+  labs(title = "Posterior medians and 95% PIs") +
+  theme(axis.title = element_blank())
+
+ggplotly(p)
+```
+
+## Hyperparameters
+
+```{r}
+results %>% 
+  ungroup %>% 
+  filter(par %in% c("mu_beta", "sigma_beta", 
+                    "mu_alpha", "sigma_alpha", 
+                    "mu_s", "kappa_s",
+                    "sigma_phi_inv_sqrt", "mu_nu", "sigma_nu")) %>% 
+  mutate(par = str_replace(par, "sigma_phi_inv_sqrt", "sigma_phi_sqrt")) %>% 
+  select(par, everything(), -num, -term, -std.error) %>% 
+  set_names(c("Parameter",  "Median", "Lower", "Upper", "Rhat", "ESS")) %>% 
+  kable(digits = 4, align = c("l", "l", rep("c", ncol(.) - 2)),
+        caption = "Table 3. Summary of posterior samples of hyperparameters") %>% 
+  kable_styling(bootstrap_options = c("striped", "hover")) %>% 
+  add_header_above(c("", "", "95% PI" = 2, "Convergence" = 2)) %>% 
+  column_spec(1, bold = T)
+```

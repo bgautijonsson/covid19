@@ -180,6 +180,8 @@ summary {
 <label class="control-label" for="country">Country</label>
 <div>
 <select id="country"><option value="Albania">Albania</option>
+<option value="Algeria">Algeria</option>
+<option value="Argentina">Argentina</option>
 <option value="Armenia">Armenia</option>
 <option value="Australia">Australia</option>
 <option value="Austria">Austria</option>
@@ -189,6 +191,7 @@ summary {
 <option value="Barbados">Barbados</option>
 <option value="Belarus">Belarus</option>
 <option value="Belgium">Belgium</option>
+<option value="Bolivia">Bolivia</option>
 <option value="Bosnia And Herzegovina">Bosnia And Herzegovina</option>
 <option value="Brazil">Brazil</option>
 <option value="Bulgaria">Bulgaria</option>
@@ -200,19 +203,26 @@ summary {
 <option value="Croatia">Croatia</option>
 <option value="Cuba">Cuba</option>
 <option value="Cyprus">Cyprus</option>
+<option value="Congo">Congo</option>
 <option value="Denmark">Denmark</option>
 <option value="Djibouti">Djibouti</option>
 <option value="Dominican Republic">Dominican Republic</option>
 <option value="Ecuador">Ecuador</option>
+<option value="El Salvador">El Salvador</option>
 <option value="Equatorial Guinea">Equatorial Guinea</option>
 <option value="Estonia">Estonia</option>
+<option value="Eswatini">Eswatini</option>
 <option value="Finland">Finland</option>
 <option value="France">France</option>
 <option value="French Polynesia">French Polynesia</option>
 <option value="Gabon">Gabon</option>
 <option value="Georgia">Georgia</option>
 <option value="Germany">Germany</option>
+<option value="Ghana">Ghana</option>
 <option value="Greece">Greece</option>
+<option value="Guinea">Guinea</option>
+<option value="Guyana">Guyana</option>
+<option value="Honduras">Honduras</option>
 <option value="Hungary">Hungary</option>
 <option value="Iran">Iran</option>
 <option value="Ireland">Ireland</option>
@@ -240,6 +250,7 @@ summary {
 <option value="North Macedonia">North Macedonia</option>
 <option value="Norway">Norway</option>
 <option value="Oman">Oman</option>
+<option value="Pakistan">Pakistan</option>
 <option value="Panama">Panama</option>
 <option value="Peru">Peru</option>
 <option value="Poland">Poland</option>
@@ -253,6 +264,7 @@ summary {
 <option value="Singapore">Singapore</option>
 <option value="Slovakia">Slovakia</option>
 <option value="Slovenia">Slovenia</option>
+<option value="South Africa">South Africa</option>
 <option value="Spain">Spain</option>
 <option value="Sweden">Sweden</option>
 <option value="Switzerland">Switzerland</option>
@@ -267,13 +279,13 @@ summary {
 </div>
 </div>
 </div>
-<div class="col-sm-3">
+<div class="col-sm-2">
 <div class="form-group shiny-input-container">
 <label class="control-label" for="conf">Quantiles</label>
 <input id="conf" type="number" class="form-control" value="0.95" min="0.01" max="0.99" step="0.01"/>
 </div>
 </div>
-<div class="col-sm-3">
+<div class="col-sm-2">
 <div class="form-group shiny-input-container">
 <label class="control-label" for="scale">Scale</label>
 <div>
@@ -281,6 +293,12 @@ summary {
 <option value="Log">Log</option></select>
 <script type="application/json" data-for="scale" data-nonempty="">{}</script>
 </div>
+</div>
+</div>
+<div class="col-sm-2">
+<div class="form-group shiny-input-container">
+<label class="control-label" for="days">Prediction length</label>
+<input id="days" type="number" class="form-control" value="50" min="1" max="100" step="1"/>
 </div>
 </div>
 </div><div id="pred_plot" class="shiny-plot-output" style="width: 100% ; height: 800px"></div></p>
@@ -303,6 +321,14 @@ theme_set(theme_classic(base_size = 12) +
 <script type="application/shiny-prerendered" data-context="data">
 d <- read_csv("stan_data_GenLogistic.csv")
 m <- read_rds("Hierarchical_Model_GenLogistic.rds")
+res <- spread_draws(m, 
+                    alpha[country],
+                    beta[country], 
+                    S[country],
+                    phi[country],
+                    nu[country],
+                    n = 2000) %>% 
+  ungroup
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
@@ -323,27 +349,19 @@ pred_plot <-  eventReactive(input$gobutton, {
   
   days_in_data <- max(plot_dat$days) + 1
   
-  results <- spread_draws(m, 
-                          alpha[country],
-                          beta[country], 
-                          S[country],
-                          phi[country],
-                          nu[country]
-  ) %>% 
-    ungroup %>% 
+  results <-  res %>% 
     filter(country == id) %>% 
     mutate(iter = row_number()) %>% 
     select(iter, alpha, beta, S, phi, nu) %>% 
-    expand_grid(days = seq(-20, days_in_data + 50)) %>% 
-    mutate(z = alpha + beta * nu * days,
+    expand_grid(days = seq(-20, days_in_data + input$days)) %>% 
+    mutate(z = nu * (alpha + beta * days),
            f = S / (1 + exp(-z))^(1/nu),
            dfdt = beta * f * (1 - (f / S)^nu),
            daily_cases = rnbinom(n(), mu = dfdt * pop, size = phi)) %>% 
     group_by(iter) %>% 
-    mutate(cases = as.numeric(cumsum(daily_cases * (days > 0))) + start_cases,
-           cases_r0 = as.numeric(cumsum(daily_cases))) %>% 
+    mutate(cases = as.numeric(cumsum(daily_cases * (days > 0))) + start_cases) %>% 
     ungroup %>% 
-    select(iter, days, new_cases = daily_cases, cumulative_cases = cases, cases_r0)
+    select(iter, days, new_cases = daily_cases, cumulative_cases = cases)
   
   
   plot_lab1 <- str_c("New cases in  ", 
@@ -352,8 +370,7 @@ pred_plot <-  eventReactive(input$gobutton, {
   
   p1 <- results %>% 
     mutate(date = days + min(plot_dat$date)) %>% 
-    filter(date <= max(plot_dat$date) + 28,
-           days > 0) %>% 
+    filter(days > 0) %>% 
     group_by(date) %>% 
     summarise(median = median(new_cases),
               lower = quantile(new_cases, alph / 2),
@@ -376,8 +393,7 @@ pred_plot <-  eventReactive(input$gobutton, {
   
   p2 <- results %>% 
     mutate(date = days + min(plot_dat$date)) %>% 
-    filter(date <= max(plot_dat$date) + 28,
-           days > 0) %>% 
+    filter(days > 0) %>% 
     group_by(date) %>% 
     summarise(median = median(cumulative_cases),
               lower = quantile(cumulative_cases, alph / 2),
@@ -396,8 +412,7 @@ pred_plot <-  eventReactive(input$gobutton, {
   
   p3 <- results %>% 
     mutate(date = days + min(plot_dat$date)) %>% 
-    filter(date <= max(plot_dat$date) + 28,
-           days > 0) %>% 
+    filter(days > 0) %>% 
     filter(iter %in% sample(iter, size = 200)) %>% 
     ggplot(aes(date, cumulative_cases, group = iter)) +
     geom_line(alpha = 0.1) +
@@ -407,35 +422,6 @@ pred_plot <-  eventReactive(input$gobutton, {
     labs(y = "Count",
          subtitle = "Possible growth curves drawn from posterior distribution") +
     theme(axis.title.x = element_blank())
-  
-  p4 <- results %>% 
-    group_by(iter) %>% 
-    mutate(recovered_cases = lag(cases_r0, 15, default = 0),
-           dIdt = new_cases,
-           I = cases_r0 - recovered_cases,
-           N = pop,
-           S = N - cases_r0,
-           beta = dIdt * N / (S * I)) %>% 
-    ungroup %>% 
-    mutate(serial_interval = rgamma(n(), 30, 2.5),
-           r0 = beta * serial_interval) %>% 
-    group_by(date = days + min(plot_dat$date) - 1, days) %>% 
-    summarise(median = median(r0, na.rm = T),
-              upper = quantile(r0, 1 - alph/2, na.rm = T),
-              lower = quantile(r0, alph/2, na.rm = T)) %>% 
-    ungroup %>% 
-    filter(date <= max(plot_dat$date) + 28,
-           days > 0) %>% 
-    ggplot(aes(date, median)) +
-    geom_hline(yintercept = 1, lty = 1, size = 1, col = "grey70") +
-    geom_line() +
-    geom_line(aes(y = lower), lty = 2) +
-    geom_line(aes(y = upper), lty = 2) +
-    ggtitle(latex2exp::TeX("$R_t$ based on predicted growth and a Gamma(30, 2.5) serial interval"),
-            subtitle = "Diagnosed cases are assumed to recover in 15 days") +
-    ylab(latex2exp::TeX("$R_t$")) +
-    theme(axis.title.x = element_blank()) +
-    background_grid(major = "none", minor = "none")
   
   
   if (input$scale == "Log") {
@@ -449,7 +435,7 @@ pred_plot <-  eventReactive(input$gobutton, {
   }
   
   
-  plot_grid(p1, p2, p3, p4, nrow = 4)
+  plot_grid(p1, p2, p3, nrow = 4)
   
 })
 
@@ -464,7 +450,7 @@ output$pred_plot <- renderPlot({
 <!--/html_preserve-->
 <!--html_preserve-->
 <script type="application/shiny-prerendered" data-context="execution_dependencies">
-{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages","version"]},"class":{"type":"character","attributes":{},"value":["data.frame"]},"row.names":{"type":"integer","attributes":{},"value":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96]}},"value":[{"type":"character","attributes":{},"value":["arrayhelpers","assertthat","backports","base","broom","callr","cellranger","cli","coda","colorspace","compiler","cowplot","crayon","datasets","DBI","dbplyr","digest","dplyr","ellipsis","evaluate","fansi","fastmap","forcats","fs","generics","ggplot2","glue","graphics","grDevices","grid","gridExtra","gtable","haven","hms","htmltools","httpuv","httr","inline","jsonlite","kableExtra","knitr","later","lattice","lifecycle","loo","lubridate","magrittr","matrixStats","methods","mime","modelr","munsell","nlme","parallel","pillar","pkgbuild","pkgconfig","plyr","prettyunits","processx","promises","ps","purrr","R6","Rcpp","readr","readxl","reprex","rlang","rmarkdown","rstan","rstudioapi","rvest","scales","shiny","StanHeaders","stats","stats4","stringi","stringr","svUnit","tibble","tidybayes","tidyr","tidyselect","tidyverse","tools","utils","vctrs","viridisLite","webshot","withr","xfun","xml2","xtable","yaml"]},{"type":"character","attributes":{},"value":["1.1-0","0.2.1","1.1.6","4.0.0","0.5.6","3.4.3","1.1.0","2.0.2","0.19-3","1.4-1","4.0.0","1.0.0","1.3.4","4.0.0","1.1.0","1.4.3","0.6.25","0.8.5","0.3.0","0.14","0.4.1","1.0.1","0.5.0","1.4.1","0.0.2","3.3.0","1.4.0","4.0.0","4.0.0","4.0.0","2.3","0.3.0","2.2.0","0.5.3","0.4.0","1.5.2","1.4.1","0.3.15","1.6.1","1.1.0","1.28","1.0.0","0.20-41","0.2.0","2.2.0","1.7.8","1.5","0.56.0","4.0.0","0.9","0.1.6","0.5.0","3.1-147","4.0.0","1.4.3","1.0.7","2.0.3","1.8.6","1.1.1","3.4.2","1.1.0","1.3.2","0.3.4","2.4.1","1.0.4.6","1.3.1","1.3.1","0.3.0","0.4.5","2.1","2.19.3","0.11","0.3.5","1.1.0","1.4.0.2","2.19.2","4.0.0","4.0.0","1.4.6","1.4.0","1.0.3","3.0.1","2.0.3","1.0.2","1.0.0","1.3.0","4.0.0","4.0.0","0.2.4","0.3.0","0.5.2","2.2.0","0.13","1.3.1","1.8-4","2.2.1"]}]}]}
+{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages","version"]},"class":{"type":"character","attributes":{},"value":["data.frame"]},"row.names":{"type":"integer","attributes":{},"value":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96]}},"value":[{"type":"character","attributes":{},"value":["arrayhelpers","assertthat","backports","base","broom","callr","cellranger","cli","coda","colorspace","compiler","cowplot","crayon","datasets","DBI","dbplyr","digest","dplyr","ellipsis","evaluate","fansi","fastmap","forcats","fs","generics","ggplot2","glue","graphics","grDevices","grid","gridExtra","gtable","haven","hms","htmltools","httpuv","httr","inline","jsonlite","kableExtra","knitr","later","lattice","lifecycle","loo","lubridate","magrittr","matrixStats","methods","mime","modelr","munsell","nlme","parallel","pillar","pkgbuild","pkgconfig","plyr","prettyunits","processx","promises","ps","purrr","R6","Rcpp","readr","readxl","reprex","rlang","rmarkdown","rstan","rstudioapi","rvest","scales","shiny","StanHeaders","stats","stats4","stringi","stringr","svUnit","tibble","tidybayes","tidyr","tidyselect","tidyverse","tools","utils","vctrs","viridisLite","webshot","withr","xfun","xml2","xtable","yaml"]},{"type":"character","attributes":{},"value":["1.1-0","0.2.1","1.1.6","4.0.0","0.5.6","3.4.3","1.1.0","2.0.2","0.19-3","1.4-1","4.0.0","1.0.0","1.3.4","4.0.0","1.1.0","1.4.3","0.6.25","0.8.5","0.3.0","0.14","0.4.1","1.0.1","0.5.0","1.4.1","0.0.2","3.3.0","1.4.0","4.0.0","4.0.0","4.0.0","2.3","0.3.0","2.2.0","0.5.3","0.4.0","1.5.2","1.4.1","0.3.15","1.6.1","1.1.0","1.28","1.0.0","0.20-41","0.2.0","2.2.0","1.7.8","1.5","0.56.0","4.0.0","0.9","0.1.6","0.5.0","3.1-147","4.0.0","1.4.4","1.0.7","2.0.3","1.8.6","1.1.1","3.4.2","1.1.0","1.3.2","0.3.4","2.4.1","1.0.4.6","1.3.1","1.3.1","0.3.0","0.4.6","2.1","2.19.3","0.11","0.3.5","1.1.0","1.4.0.2","2.19.2","4.0.0","4.0.0","1.4.6","1.4.0","1.0.3","3.0.1","2.0.3","1.0.2","1.0.0","1.3.0","4.0.0","4.0.0","0.2.4","0.3.0","0.5.2","2.2.0","0.13","1.3.1","1.8-4","2.2.1"]}]}]}
 </script>
 <!--/html_preserve-->
 

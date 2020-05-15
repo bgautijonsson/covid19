@@ -85,3 +85,8 @@ model {
   new_cases ~ neg_binomial_2(dfdt .* pop[country], phi[country]);
 }
 
+generated quantities {
+  real log_lik[N_obs];
+  int sim_cases[N_obs]= poisson_rng(dfdt .* pop[country]);
+  for (i in 1:N_obs) log_lik[i] = poisson_log_lpmf(new_cases[i] | dfdt[i] .* pop[country[i]]);
+}

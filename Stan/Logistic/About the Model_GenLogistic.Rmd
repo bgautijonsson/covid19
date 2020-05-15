@@ -33,7 +33,6 @@ which_iceland <- d %>% filter(country == "Iceland") %>% .$country_id %>% unique
 n_countries <- max(d$country_id)
 ```
 
-
 ```{r, include = F, eval = F}
 # library(shinystan)
 # stan_obj <- launch_shinystan(m)
@@ -352,7 +351,7 @@ We have examined the model carefully to find what causes these divergent transit
 
 ## Country Level Effects
 
-```{r, fig.asp = 2.5, fig.width = 10}
+```{r, fig.asp = 3, fig.width = 10}
 results %>% 
   ungroup %>% 
   filter(par %in% c("beta", "alpha", "S", "phi_inv", "nu")) %>%
@@ -371,7 +370,7 @@ results %>%
   scroll_box(height = "600px")
 ```
 
-```{r, fig.width = 9, fig.asp = 1.8}
+```{r, fig.width = 10, fig.asp = 3}
 p <- results %>% 
   ungroup %>% 
   filter(par %in% c("beta", "alpha", "S", "phi_inv", "nu")) %>% 
@@ -383,7 +382,7 @@ p <- results %>%
   geom_linerange() +
   geom_point() +
   coord_flip() +
-  facet_wrap("par", scales = "free_x", nrow = 2) +
+  facet_wrap("par", scales = "free_x", ncol = 2) +
   scale_colour_manual(values = c("grey", "blue")) +
   labs(title = "Posterior medians and 95% PIs") +
   theme(axis.title = element_blank())

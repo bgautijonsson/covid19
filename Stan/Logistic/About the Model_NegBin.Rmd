@@ -1,7 +1,6 @@
 ---
 title: "Hierarchical Logistic Growth Curves"
 author: "Brynjólfur Gauti Jónsson"
-date: "04/02/2020"
 output: 
     html_document:
         theme: flatly
@@ -27,7 +26,7 @@ theme_set(theme_classic(base_size = 12) +
                             minor = "xy", major = "xy") +
             theme(legend.position = "none"))
 m <- read_rds("Hierarchical_Model_NegBin.rds")
-d <- read_csv("Interactive Model Checking/stan_data.csv")
+d <- read_csv("Interactive Model Checking/NegBin/stan_data.csv")
 countries <- d %>% distinct(country, country_id)
 which_iceland <- d %>% filter(country == "Iceland") %>% .$country_id %>% unique
 n_countries <- max(d$country_id)
@@ -50,6 +49,10 @@ results <- tidyMCMC(m, conf.int = T, rhat = T, ess = T,
 ```
 
 # Updates
+
+## 2020-05-06
+
+* Conveniently we can define a parameter $\nabla t$ as the time it takes a country to go from 10% of its maximum diagnosed cases to 90% of its diagnosed cases, and calculate it as $\nabla t = \frac{\ln(81)}{\beta}$. The country specific time interval and mean time interval posterior distributions are now shown along with the original parameters.
 
 ## 2020-04-14
 
@@ -356,10 +359,12 @@ We have examined the model carefully to find what causes these divergent transit
 
 ## Country Level Effects
 
+Conveniently we can define a parameter $\nabla t$ as the time it takes a country to go from 10% of its maximum diagnosed cases to 90% of its diagnosed cases, and calculate it as $\nabla t = \frac{\ln(81)}{\beta}$. The country specific posterior distributions are shown below along with the original parameters.
+
 ```{r}
 results %>% 
   ungroup %>% 
-  filter(par %in% c("beta", "alpha", "S", "phi_inv", "nu")) %>%
+  filter(par %in% c("beta", "alpha", "S", "phi_inv", "nu", "delta_t")) %>%
   mutate(par = str_replace(par, "phi_inv", "phi")) %>% 
   inner_join(countries, by = c("num" = "country_id")) %>% 
   mutate(par = str_to_title(par)) %>% 
@@ -375,10 +380,10 @@ results %>%
   scroll_box(height = "600px")
 ```
 
-```{r, fig.width = 9, fig.asp = 1.8}
+```{r, fig.width = 12, fig.asp = 3}
 p <- results %>% 
   ungroup %>% 
-  filter(par %in% c("beta", "alpha", "S", "phi_inv", "nu")) %>% 
+  filter(par %in% c("beta", "alpha", "S", "phi_inv", "nu", "delta_t")) %>% 
   mutate(par = str_replace(par, "phi_inv", "phi")) %>% 
   inner_join(countries, by = c("num" = "country_id")) %>% 
   mutate(par = str_to_title(par)) %>% 
@@ -387,7 +392,7 @@ p <- results %>%
   geom_linerange() +
   geom_point() +
   coord_flip() +
-  facet_wrap("par", scales = "free_x") +
+  facet_wrap("par", scales = "free_x", ncol = 2) +
   scale_colour_manual(values = c("grey", "blue")) +
   labs(title = "Posterior medians and 95% PIs") +
   theme(axis.title = element_blank())
@@ -401,8 +406,9 @@ ggplotly(p)
 results %>% 
   ungroup %>% 
   filter(par %in% c("mu_beta", "sigma_beta", 
+                    "mu_delta_t",
                     "mu_alpha", "sigma_alpha", 
-                    "mu_s", "kappa_s",
+                    "mu_s", "sigma_s", "kappa_s",
                     "sigma_phi_inv_sqrt", "mu_nu", "sigma_nu")) %>% 
   mutate(par = str_replace(par, "sigma_phi_inv_sqrt", "sigma_phi_sqrt")) %>% 
   select(par, everything(), -num, -term, -std.error) %>% 

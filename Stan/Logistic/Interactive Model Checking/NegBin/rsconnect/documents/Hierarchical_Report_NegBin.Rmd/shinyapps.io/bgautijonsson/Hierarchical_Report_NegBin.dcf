@@ -1,0 +1,13 @@
+name: Hierarchical_Report_NegBin
+title: Hierarchical_Report_NegBin
+username:
+account: bgautijonsson
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2000757
+bundleId: 3112773
+url: https://bgautijonsson.shinyapps.io/Hierarchical_Report_NegBin/
+when: 1588800165.24974
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: Hierarchical_Report_NegBin.html|Hierarchical_Report_NegBin_data/data_chunks_index.txt|Hierarchical_Report_NegBin_data/unnamed-chunk-1.RData

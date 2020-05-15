@@ -84,7 +84,7 @@ str(stan_data)
 
 ```{r}
 m <- sampling(stan_model("SIR_Model_Discrete_NonParametric.stan"), 
-              data  = stan_data, chains = 4, iter = 2000, warmup = 1000)
+              data  = stan_data, chains = 4, iter = 10000, warmup = 5000)
 ```
 
 ```{r}
@@ -94,7 +94,7 @@ tidyMCMC(m, conf.int = T, rhat = T, ess = T) %>%
 
 
 ```{r}
-tidyMCMC(m, pars = c("rho", "alpha", "phi_inv_sqrt", "log_beta_intercept", "sigma_beta", "r0", "r[58]"), 
+tidyMCMC(m, pars = c("rho", "alpha", "phi_inv_sqrt", "sigma_beta", "r0", "r[69]"), 
          conf.int = T, rhat = T, ess = T)
 ```
 
@@ -150,22 +150,24 @@ tidyMCMC(m, pars = "r", conf.int = T, rhat = T, ess = T) %>%
     geom_vline(xintercept = ymd("2020-03-16"), lty = 2) +
     # Seinna samkomubann
     geom_vline(xintercept = ymd("2020-03-24"), lty = 2) +
+    # Fyrsta tilslökun
+    geom_vline(xintercept = ymd("2020-05-04"), lty = 2) +
     scale_y_continuous(breaks = c(0, 1, 2, 3, 4, 5, 6), expand = expansion()) +
     scale_x_date(breaks = ymd(c("2020-03-03", 
                                 "2020-03-16", "2020-03-24",
                                 "2020-04-01", 
-                                "2020-04-15")),
+                                "2020-05-04")),
                  labels = c(quote("March 3^rd"), 
                             quote("March 16^th"), quote("March 24^th"),
                             quote("April 1^st"), 
-                            quote("April 15^th"))) +
+                            quote("May 4^th"))) +
     labs(y = "R") +
     theme(axis.title = element_blank(), 
           axis.text.x = element_markdown(),
           text = element_text(family = "Arial")) +
     coord_cartesian(ylim = c(0, 7)) +
     background_grid(major = "none", minor = "none") +
-    ggsave("r0_iceland.png", width = 6, height = 0.5 * 6, scale = 2)
+    ggsave("r0_iceland.png", width = 6, height = 0.5 * 6, scale = 2.5)
 ```
 
 ```{r}

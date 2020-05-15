@@ -23,44 +23,14 @@ theme_set(theme_classic(base_size = 12) +
 ```{r, context = "data"}
 d <- read_csv("stan_data_GenLogistic.csv")
 m <- read_rds("Hierarchical_Model_GenLogistic.rds")
-```
-
-
-```{r, include = FALSE, eval = FALSE}
-results <- spread_draws(
-    m, 
-    alpha[country], 
-    beta[country], 
-    S[country],
-    phi[country]
-) %>% 
-    ungroup %>% 
-    filter(country == id) %>% 
-    mutate(iter = row_number()) %>% 
-    select(
-        iter, 
-        alpha, 
-        beta, 
-        S
-    )
-
-
-iceland_d %>% 
-    select(date, case_rate) %>% 
-    mutate(case_rate = case_rate / 1000) %>% 
-    expand_grid(results) %>% 
-    mutate(days = as.numeric(date - min(date)),
-           z = alpha + days * beta,
-           fp = log(case_rate / (S - case_rate))) %>% 
-    filter(iter >= max(iter) - 1000) %>% 
-    ggplot(aes(z, fp)) +
-    geom_line(aes(group = iter), alpha = 0.1) +
-    geom_abline(intercept = 0, slope = 1, size = 2, lty = 2) +
-    coord_cartesian(xlim = 6 * c(-1, 1), ylim = 6 * c(-1, 1)) +
-    xlab(latex2exp::TeX("$\\alpha + \\beta \\cdot t$")) +
-    ylab(latex2exp::TeX("$\\log\\left( \\frac{P_{t}}{S - P_{t}}\\right)$")) +
-    labs(title = "Fisher-Pry transform applied to observed Icelandic Data",
-         subtitle = "Comparing predictions to observations on the logit scale")
+res <- spread_draws(m, 
+                    alpha[country],
+                    beta[country], 
+                    S[country],
+                    phi[country],
+                    nu[country],
+                    n = 2000) %>% 
+  ungroup
 ```
 
 
@@ -74,19 +44,22 @@ fluidRow(
                      label = "Country",
                      choices = unique(d$country), selected = "Iceland")
   ),
-  column(3,
+  column(2,
          numericInput(inputId = "conf",
                       label = "Quantiles", min = 0.01, max = 0.99, value = 0.95, step = 0.01)
   ),
-  column(3,
+  column(2,
          selectInput(inputId = "scale",
                      label = "Scale", choices = c("Additive", "Log"), selected = "Additive")
+  ),
+  column(2,
+         numericInput(inputId = "days",
+                      label = "Prediction length", min = 1, max = 100, value = 50, step = 1)
   )
 )
 
 plotOutput("pred_plot", height = "800px")
 ```
-
 
 ```{r, context = "server"}
 pred_plot <-  eventReactive(input$gobutton, {
@@ -106,27 +79,19 @@ pred_plot <-  eventReactive(input$gobutton, {
   
   days_in_data <- max(plot_dat$days) + 1
   
-  results <- spread_draws(m, 
-                          alpha[country],
-                          beta[country], 
-                          S[country],
-                          phi[country],
-                          nu[country]
-  ) %>% 
-    ungroup %>% 
+  results <-  res %>% 
     filter(country == id) %>% 
     mutate(iter = row_number()) %>% 
     select(iter, alpha, beta, S, phi, nu) %>% 
-    expand_grid(days = seq(-20, days_in_data + 50)) %>% 
-    mutate(z = alpha + beta * nu * days,
+    expand_grid(days = seq(-20, days_in_data + input$days)) %>% 
+    mutate(z = nu * (alpha + beta * days),
            f = S / (1 + exp(-z))^(1/nu),
            dfdt = beta * f * (1 - (f / S)^nu),
            daily_cases = rnbinom(n(), mu = dfdt * pop, size = phi)) %>% 
     group_by(iter) %>% 
-    mutate(cases = as.numeric(cumsum(daily_cases * (days > 0))) + start_cases,
-           cases_r0 = as.numeric(cumsum(daily_cases))) %>% 
+    mutate(cases = as.numeric(cumsum(daily_cases * (days > 0))) + start_cases) %>% 
     ungroup %>% 
-    select(iter, days, new_cases = daily_cases, cumulative_cases = cases, cases_r0)
+    select(iter, days, new_cases = daily_cases, cumulative_cases = cases)
   
   
   plot_lab1 <- str_c("New cases in  ", 
@@ -135,8 +100,7 @@ pred_plot <-  eventReactive(input$gobutton, {
   
   p1 <- results %>% 
     mutate(date = days + min(plot_dat$date)) %>% 
-    filter(date <= max(plot_dat$date) + 28,
-           days > 0) %>% 
+    filter(days > 0) %>% 
     group_by(date) %>% 
     summarise(median = median(new_cases),
               lower = quantile(new_cases, alph / 2),
@@ -159,8 +123,7 @@ pred_plot <-  eventReactive(input$gobutton, {
   
   p2 <- results %>% 
     mutate(date = days + min(plot_dat$date)) %>% 
-    filter(date <= max(plot_dat$date) + 28,
-           days > 0) %>% 
+    filter(days > 0) %>% 
     group_by(date) %>% 
     summarise(median = median(cumulative_cases),
               lower = quantile(cumulative_cases, alph / 2),
@@ -179,8 +142,7 @@ pred_plot <-  eventReactive(input$gobutton, {
   
   p3 <- results %>% 
     mutate(date = days + min(plot_dat$date)) %>% 
-    filter(date <= max(plot_dat$date) + 28,
-           days > 0) %>% 
+    filter(days > 0) %>% 
     filter(iter %in% sample(iter, size = 200)) %>% 
     ggplot(aes(date, cumulative_cases, group = iter)) +
     geom_line(alpha = 0.1) +
@@ -190,35 +152,6 @@ pred_plot <-  eventReactive(input$gobutton, {
     labs(y = "Count",
          subtitle = "Possible growth curves drawn from posterior distribution") +
     theme(axis.title.x = element_blank())
-  
-  p4 <- results %>% 
-    group_by(iter) %>% 
-    mutate(recovered_cases = lag(cases_r0, 15, default = 0),
-           dIdt = new_cases,
-           I = cases_r0 - recovered_cases,
-           N = pop,
-           S = N - cases_r0,
-           beta = dIdt * N / (S * I)) %>% 
-    ungroup %>% 
-    mutate(serial_interval = rgamma(n(), 30, 2.5),
-           r0 = beta * serial_interval) %>% 
-    group_by(date = days + min(plot_dat$date) - 1, days) %>% 
-    summarise(median = median(r0, na.rm = T),
-              upper = quantile(r0, 1 - alph/2, na.rm = T),
-              lower = quantile(r0, alph/2, na.rm = T)) %>% 
-    ungroup %>% 
-    filter(date <= max(plot_dat$date) + 28,
-           days > 0) %>% 
-    ggplot(aes(date, median)) +
-    geom_hline(yintercept = 1, lty = 1, size = 1, col = "grey70") +
-    geom_line() +
-    geom_line(aes(y = lower), lty = 2) +
-    geom_line(aes(y = upper), lty = 2) +
-    ggtitle(latex2exp::TeX("$R_t$ based on predicted growth and a Gamma(30, 2.5) serial interval"),
-            subtitle = "Diagnosed cases are assumed to recover in 15 days") +
-    ylab(latex2exp::TeX("$R_t$")) +
-    theme(axis.title.x = element_blank()) +
-    background_grid(major = "none", minor = "none")
   
   
   if (input$scale == "Log") {
@@ -232,7 +165,7 @@ pred_plot <-  eventReactive(input$gobutton, {
   }
   
   
-  plot_grid(p1, p2, p3, p4, nrow = 4)
+  plot_grid(p1, p2, p3, nrow = 4)
   
 })
 

@@ -30,12 +30,20 @@ stan_data <- list(N_obs = N_obs,
                   pop = pop)
 
 
-m <- sampling(stan_model("Stan/Logistic/Hierarchical_Logistic_Cases_NegBin.stan"), 
-              data  = stan_data, chains = 4, iter = 4000, warmup = 2000)
+m <- stan(
+    file = "Stan/Logistic/Hierarchical_Logistic_Cases_NegBin.stan", 
+    data  = stan_data, 
+    chains = 4, 
+    iter = 3000, 
+    warmup = 1000,
+    cores = 4,
+    save_warmup = FALSE,
+    control = list(max_treedepth = 15)
+)
 
 write_rds(m, "Stan/Logistic/Hierarchical_Model_NegBin.rds")
-write_rds(m, "Stan/Logistic/Interactive Model Checking/Hierarchical_Model_NegBin.rds")
-write_csv(d, "Stan/Logistic/Interactive Model Checking/stan_data.csv")
+write_rds(m, "Stan/Logistic/Interactive Model Checking/NegBin/Hierarchical_Model_NegBin.rds")
+write_csv(d, "Stan/Logistic/Interactive Model Checking/NegBin/stan_data.csv")
 write_csv(d, str_c("Input/Stan_Data/Stan_Data_", Sys.Date(), ".csv"))
 
 d %>% 

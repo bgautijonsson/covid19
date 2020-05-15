@@ -8,7 +8,14 @@ parallel:::setDefaultClusterOptions(setup_strategy = "sequential")
 source("Make_Stan_Data.R")
 
 d <- Make_Stan_Data() %>% 
-    filter(new_cases >= 0)
+    mutate(death_rate = total_deaths / pop * 1000) %>% 
+    filter(death_rate >= 0.01) %>% 
+    group_by(country) %>% 
+    filter(n() >= 7) %>% 
+    mutate(days = row_number()) %>% 
+    ungroup %>% 
+    filter(new_deaths >= 0) %>% 
+    mutate(country_id = as.numeric(as.factor(country)))
 
 
 N_obs <- nrow(d)
@@ -29,9 +36,15 @@ stan_data <- list(N_obs = N_obs,
                   country = country,
                   pop = pop)
 
-
-m <- sampling(stan_model("Stan/Logistic/Hierarchical_GenLogistic_Deaths_NegBin.stan"), 
-              data  = stan_data, chains = 4, iter = 4000, warmup = 2000)
+m <- stan(
+    file = "Stan/Logistic/Hierarchical_GenLogistic_Deaths_NegBin.stan", 
+    data  = stan_data, 
+    chains = 4, 
+    iter = 1000, 
+    warmup = 500,
+    cores = 4,
+    save_warmup = FALSE
+)
 
 write_rds(m, "Stan/Logistic/Hierarchical_Model_GenLogistic_Deaths.rds")
 write_rds(m, "Stan/Logistic/Interactive Model Checking/Hierarchical_Model_GenLogistic_Deaths.rds")

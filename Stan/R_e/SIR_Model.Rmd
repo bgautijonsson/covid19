@@ -270,3 +270,9 @@ spread_draws(m, pred_dI[days]) %>%
     geom_line(aes(y = lower), lty = 2) +
     geom_line(aes(y = upper), lty = 2)
 ```
+
+$$
+\beta_t - \beta_{t - 1} - (\beta_{t-1} - \beta_{t-2}) = 0 \\
+\beta_t = 2\beta_{t-1} - \beta_{t - 2} \\
+\beta_t \sim N(2\beta_{t-1} - \beta_{t-2}, \sigma)
+$$

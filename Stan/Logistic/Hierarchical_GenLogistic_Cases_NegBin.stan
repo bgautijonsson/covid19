@@ -11,6 +11,10 @@ data {
   vector[N_countries] pop;
 }
 
+transformed data {
+  vector[N_obs] log_pop = log(pop[country]);
+}
+
 parameters {
   // Since we use a non-centered parametrisation we first create normal(0, 1) variables for alpha and beta
   
@@ -54,49 +58,50 @@ transformed parameters {
   // Asymptote hyperparameters
   real<lower = 0> a_s = mu_s * kappa_s;
   real<lower = 0> b_s = (1 - mu_s) * kappa_s;
+  vector[N_countries] log_S = log(S);
   // Generalized Logistic Parameters
-  vector<lower = 0>[N_countries] nu = exp(mu_nu + sigma_nu * z_nu);
-  // Logistic equation calculations
-  vector[N_obs] linear = alpha[country] + nu[country] .* beta[country] .* days;
-  // vector[N_obs] linear = alpha[country] + beta[country] .* days;
-  vector<lower = 0>[N_obs] f;
-  vector<lower = 0>[N_obs] dfdt;
-  for (i in 1:N_obs) {
-    f[i] = S[country[i]] / pow(1 + exp(-linear[i]), inv(nu[country[i]]));
-    dfdt[i] = beta[country[i]] * f[i] * (1 - pow(f[i] / S[country[i]], nu[country[i]]));
-    
-    // f[i] = S[country[i]] / (1 + exp(-linear[i]));
-    // dfdt[i] = beta[country[i]] * f[i] * (1 - f[i] / S[country[i]]);
-    
-  }
+  vector[N_countries] log_nu = mu_nu + sigma_nu * z_nu;
+  vector<lower = 0>[N_countries] nu = exp(log_nu);
 }
 
 model {
+  // Logistic equation calculations
+  vector[N_obs] linear = nu[country] .* (alpha[country] +  beta[country] .* days);
+  vector[N_obs] extra = (inv(nu[country]) + 1) .* log(1 + exp(-linear));
+  vector[N_obs] log_dfdt = log_beta[country] + log_S[country] - linear - extra;
   // Alpha parameters
   mu_alpha ~ normal(0, 3);
-  sigma_alpha ~ exponential(0.2);
+  sigma_alpha ~ exponential(0.5);
   z_alpha ~ std_normal();
   
   // Beta parameters
-  mu_beta ~ normal(-2, 2);
-  sigma_beta ~ exponential(0.5);
+  mu_beta ~ normal(-2, 1);
+  sigma_beta ~ exponential(1);
   z_beta ~ std_normal();
   
   // Asymptote parameters
   mu_s ~ beta(1, 99);
-  kappa_s ~ exponential(0.001);
+  kappa_s ~ exponential(0.01);
   S ~ beta(a_s, b_s);
   
   // Overdispersion parameters
-  z_phi_inv_sqrt ~ exponential(1);
-  sigma_phi_inv_sqrt ~ exponential(0.5);
+  z_phi_inv_sqrt ~ std_normal();
+  sigma_phi_inv_sqrt ~ std_normal();
   
   // Generalized Logistic parameters
-  mu_nu ~ normal(0, 3);
+  mu_nu ~ normal(0, 1);
   sigma_nu ~ exponential(1);
   z_nu ~ std_normal();
   
   //  Likelihood
-  new_cases ~ neg_binomial_2(dfdt .* pop[country], phi[country]);
+  new_cases ~ neg_binomial_2_log(log_dfdt + log_pop, phi[country]);
 }
 
+generated quantities {
+  vector[N_obs] linear = nu[country] .* (alpha[country] +  beta[country] .* days);
+  vector[N_obs] extra = (inv(nu[country]) + 1) .* log(1 + exp(-linear));
+  vector[N_obs] log_dfdt = log_beta[country] + log_S[country] - linear - extra;
+  real log_lik[N_obs];
+  // int sim_cases[N_obs]= neg_binomial_2_rng(dfdt .* pop[country], phi[country]);
+  for (i in 1:N_obs) log_lik[i] = neg_binomial_2_log_lpmf(new_cases[i] | log_dfdt[i] + log_pop[i], phi[country[i]]);
+}

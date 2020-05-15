@@ -13,6 +13,10 @@ data {
   vector[N_countries] pop;
 }
 
+transformed data {
+  vector[N_obs] log_pop = log(pop[country]);
+}
+
 parameters {
   // Since we use a non-centered parametrisation we first create normal(0, 1) variables for alpha and beta
   

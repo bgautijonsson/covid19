@@ -8,11 +8,11 @@ options(mc.cores = parallel::detectCores())
 source("Make_Stan_Data.R")
 
 cur_date <- Sys.Date()
-i <- 0
+i <- 1
 
 while (TRUE) {
     
-    d <- Make_Stan_Data(min_case_rate = 0.1, min_days = 7 + i) %>% 
+    d <- Make_Stan_Data(min_case_rate = 0.1, min_days = 6 + i) %>% 
         filter(date <= cur_date, new_cases >= 0)
     
     N_obs <- nrow(d)
@@ -34,8 +34,15 @@ while (TRUE) {
                       country = country,
                       pop = pop)
     
-    m <- sampling(stan_model("Stan/Logistic/Hierarchical_Logistic_Cases_NegBin.stan"), 
-                  data  = stan_data, chains = 4, iter = 2000, warmup = 1000)
+    m <- stan(
+        file = "Stan/Logistic/Hierarchical_Logistic_Cases_NegBin.stan", 
+        data  = stan_data, 
+        chains = 4, 
+        iter = 2000, 
+        warmup = 1000,
+        cores = 4,
+        save_warmup = FALSE
+    )
     
     write_rds(m, str_c("Stan/Logistic/Past_Models_NegBin/Model_", cur_date, ".rds"))
     write_csv(d, str_c("Stan/Logistic/Past_Models_NegBin/Stan_Data_", cur_date, ".csv"))
